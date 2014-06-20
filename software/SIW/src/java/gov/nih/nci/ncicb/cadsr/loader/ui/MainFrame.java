@@ -85,7 +85,7 @@ import java.awt.event.WindowEvent;
 
    private JMenu helpMenu = new JMenu("Help");
    private JMenuItem aboutMenuItem = new JMenuItem("About");
-   private JMenuItem indexMenuItem = new JMenuItem("SIW on GForge");
+   private JMenuItem indexMenuItem = new JMenuItem("SIW on JIRA");
 
    private JSplitPane jSplitPane1 = new JSplitPane();
    private JSplitPane jSplitPane2 = new JSplitPane();
@@ -475,7 +475,7 @@ import java.awt.event.WindowEvent;
          public void actionPerformed(ActionEvent evt) {
            String errMsg = "Error attempting to launch web browser";
            String osName = System.getProperty("os.name");
-           String url = "http://gforge.nci.nih.gov/projects/siw/";
+           String url = "https://tracker.nci.nih.gov/browse/SIW";
            try {
              if (osName.startsWith("Mac OS")) {
                Class fileMgr = Class.forName("com.apple.eio.FileManager");
