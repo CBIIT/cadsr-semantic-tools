@@ -101,13 +101,22 @@ public class CadsrPublicApiModule implements CadsrModule {
 		try {
 			gov.nih.nci.cadsr.domain.Concept searchConcept = new gov.nih.nci.cadsr.domain.Concept();
 			searchConcept.setPreferredName(code);
+			DetachedCriteria detachedCrit = null;
 
 			// List listResult = new ArrayList(new
 			// HashSet(service.search(gov.nih.nci.cadsr.domain.Concept.class.getName(),
 			// searchConcept)));
-			List listResult = service.search(
-					gov.nih.nci.cadsr.domain.Concept.class.getName(),
-					searchConcept);
+			detachedCrit = DetachedCriteria.forClass(
+					gov.nih.nci.cadsr.domain.Concept.class).add(
+					Property.forName("preferredName").like(
+							searchConcept.getPreferredName()));
+			detachedCrit.setFetchMode("context", FetchMode.EAGER);
+
+		//	List listResult = service.search(
+			//		gov.nih.nci.cadsr.domain.Concept.class.getName(),
+				//	searchConcept);
+			List<gov.nih.nci.cadsr.domain.Concept> listResult = (List<gov.nih.nci.cadsr.domain.Concept>) (List<?>) service.query(detachedCrit);
+
 
 			if (listResult != null && listResult.size() == 1) {
 				gov.nih.nci.cadsr.domain.Concept con = (gov.nih.nci.cadsr.domain.Concept) listResult
