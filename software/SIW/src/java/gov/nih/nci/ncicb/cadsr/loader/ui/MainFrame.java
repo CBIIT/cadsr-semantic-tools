@@ -86,6 +86,7 @@ import java.awt.event.WindowEvent;
    private JMenu helpMenu = new JMenu("Help");
    private JMenuItem aboutMenuItem = new JMenuItem("About");
    private JMenuItem indexMenuItem = new JMenuItem("SIW on JIRA");
+   private JMenuItem indexMenuItem1 = new JMenuItem("Release Notes");
 
    private JSplitPane jSplitPane1 = new JSplitPane();
    private JSplitPane jSplitPane2 = new JSplitPane();
@@ -258,6 +259,7 @@ import java.awt.event.WindowEvent;
      }
 
      helpMenu.add(indexMenuItem);
+     helpMenu.add(indexMenuItem1);
      helpMenu.addSeparator();
      helpMenu.add(aboutMenuItem);
      mainMenuBar.add(helpMenu);
@@ -503,7 +505,40 @@ import java.awt.event.WindowEvent;
            }
          }
        });      
-   }
+   
+   indexMenuItem1.addActionListener(new ActionListener() {
+       public void actionPerformed(ActionEvent evt) {
+         String errMsg = "Error attempting to launch web browser";
+         String osName = System.getProperty("os.name");
+         String url = "https://wiki.nci.nih.gov/display/caDSR/SIW+and+UML+Loader+4.1.1+Release+Notes";
+         try {
+           if (osName.startsWith("Mac OS")) {
+             Class fileMgr = Class.forName("com.apple.eio.FileManager");
+             Method openURL = fileMgr.getDeclaredMethod("openURL",
+                                                        new Class[] {String.class});
+             openURL.invoke(null, new Object[] {url});
+           }
+           else if (osName.startsWith("Windows"))
+             Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+           else { //assume Unix or Linux
+             String[] browsers = {
+               "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape" };
+             String browser = null;
+             for (int count = 0; count < browsers.length && browser == null; count++)
+               if (Runtime.getRuntime().exec(
+                     new String[] {"which", browsers[count]}).waitFor() == 0)
+                 browser = browsers[count];
+             if (browser == null)
+               throw new Exception("Could not find web browser");
+             else
+               Runtime.getRuntime().exec(new String[] {browser, url});
+           }
+         } catch (Exception e) {
+           JOptionPane.showMessageDialog(null, errMsg + ":\n" + e.getLocalizedMessage());
+         }
+       }
+     });      
+ }
 
    public void viewChanged(ViewChangeEvent event) {
        UMLNode node = (UMLNode)event.getViewObject();
