@@ -51,7 +51,7 @@
                   <map>
                         <entry key="APPLICATION_SERVICE_BEAN" value-ref="LexEVSApplicationService"/>
                         <entry key="AUTHENTICATION_SERVICE_BEAN" value-ref="EvsAuthenticationProvider"/>
-                        <entry key="APPLICATION_SERVICE_URL" value="http://lexevsapi6.nci.nih.gov/lexevsapi61/http/applicationService"/>
+                        <entry key="APPLICATION_SERVICE_URL" value="http://lexevsapi6.nci.nih.gov/lexevsapi63/http/applicationService"/>
                         <entry key="APPLICATION_SERVICE_CONFIG" value-ref="LexEVSApplicationServiceConfig"/>
                   </map>
             </constructor-arg>

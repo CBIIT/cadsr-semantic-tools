@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="UML Loader / SIW" default="compile" basedir=".">
+<project name="UML Loader / SIW" default="nci-deploy" basedir=".">
 	<property file="dev.properties" />
 	<property file="build.properties" />
 	<property file="jnlp.properties" />
@@ -18,7 +18,6 @@
 	<property name="sqlsuite.dir" value="${basedir}/src/test/sqlsuite" />
 
 	<property file="${config.dir}/db.properties" prefix="db" />
-
 	<path id="proj.class.path">
 		<pathelement location="${class.dir}" />
 		<fileset dir="${lib.dir}">
@@ -26,7 +25,6 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-
 	<path id="run.class.path">
 		<pathelement location="${class.dir}" />
 		<fileset dir="${lib.dir}">
@@ -84,9 +82,7 @@
   </taskdef>
 -->
 
-	<target name="nci-deploy" depends="dist, sign">
-
-	</target>
+	<target name="nci-deploy" depends="clean, prepare, compile, package, dist" />
 
 	<target name="remote-deploy" depends="dist, sign, remote-delete">
 		<echo>Deploying binaries to remote file system "${SCP.USER}@${SCP.HOST}:${scpPath.dir}"</echo>
@@ -129,7 +125,7 @@
 		</jalopy>
 	</target>
 
-	<target name="clean">
+	<target name="clean">		
 		<delete dir="${class.dir}" failonerror="true" />
 		<delete dir="${dist.dir}/lib" />
 		<delete dir="${dist.dir}/siw.jnlp" />
@@ -139,10 +135,11 @@
 	<available file="build.properties" property="available.build.props" />
 
 	<target name="fail1" unless="available.cadsr">
-		<fail message="missing cadsr-api jar, please build cadsr service layer first" />
+		<fail message="missing cadsr-api jar, please build cadsr service layer first" />		
 	</target>
 
 	<target name="fail2" unless="available.build.props">
+		
 		<fail message="missing build.properties, please create one first first" />
 	</target>
 
@@ -154,24 +151,23 @@
 		<attribute name="Application-Name" value="${app.name}" />
 	</manifest>
 
-	<target name="compile" depends="fail1">
+	<target name="compile" depends="fail1">		
 		<mkdir dir="${class.dir}" />
-		<javac destdir="${class.dir}" debug="on" srcdir="${src.dir}" deprecation="false" fork="yes">
+		<javac destdir="${class.dir}" debug="on" srcdir="${src.dir}" deprecation="false" fork="yes" includeantruntime="true">
 			<!--
            <compilerarg value="-Xlint"/>
       -->
-			<classpath refid="proj.class.path" />
-		</javac>
-
+	<classpath refid="proj.class.path" />
+		</javac>		
 	</target>
 
-	<target name="compile-test" depends="compile">
+	<target name="compile-test" depends="compile">				
 		<javac destdir="${class.dir}" debug="on" srcdir="${test.src.dir}" deprecation="false" fork="yes">
 			<classpath refid="proj.class.path" />
 		</javac>
 	</target>
 
-	<target name="prepare" depends="compile">
+	<target name="prepare" depends="compile">		
 		<copy todir="${class.dir}" overwrite="true">
 			<fileset dir="${config.dir}">
 				<include name="*.properties" />
@@ -212,7 +208,7 @@
 
 	<!-- - - - - - - - - - - - - - - - - - 
           target: prepare-for-bl                      
-         - - - - - - - - - - - - - - - - - -->
+         - - - - - - - - - - - - - - - - -  -->
 	<target name="prepare-for-bulkloader" depends="prepare">
 		<delete>
 			<fileset dir="${class.dir}">
@@ -224,7 +220,7 @@
 	<!-- - - - - - - - - - - - - - - - - - 
           target: package                      
          - - - - - - - - - - - - - - - - - -->
-	<target name="package">
+	<target name="package">		
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}/lib" />
 		<jar destfile="${dist.dir}/lib/uml-loader.jar" manifest="${basedir}/src/web/MANIFEST.MF">

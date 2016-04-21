@@ -62,9 +62,9 @@ public class ConceptPersister implements Persister {
 
   Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
 		{
-			put('Ü', 'Y');
-			put('’', '\'');
-			put('´', '\'');
+			put('ï¿½', 'Y');
+			put('ï¿½', '\'');
+			put('ï¿½', '\'');
 		}
 	};
   public ConceptPersister() {

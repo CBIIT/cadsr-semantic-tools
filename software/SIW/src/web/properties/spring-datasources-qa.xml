@@ -6,7 +6,7 @@
 
   <bean id="dataSource" class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
     <property name="driverType"><value>oracle.jdbc.driver.OracleDriver</value></property>
-    <property name="URL"><value>jdbc:oracle:thin:@cbiodb530.nci.nih.gov:1521:DSRQA</value></property>
+    <property name="URL"><value>jdbc:oracle:thin:@ncidb-q110-d.nci.nih.gov:1551:DSRQA</value></property>
     <property name="user"><value>UMLLDR</value></property>
     <property name="password"><value>${db.passwd}</value></property>
   </bean>
