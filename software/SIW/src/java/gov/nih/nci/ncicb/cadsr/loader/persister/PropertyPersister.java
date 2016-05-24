@@ -54,13 +54,13 @@ public class PropertyPersister implements Persister {
 		initDAOs();
 	}
 	
-	  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
+/*	  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
 			{
-				put('Ü', 'Y');
-				put('’', '\'');
-				put('´', '\'');
+				put('ï¿½', 'Y');
+				put('ï¿½', '\'');
+				put('ï¿½', '\'');
 			}
-		};
+		};*/
 
 	public void persist() {
 		Property prop = DomainObjectFactory.newProperty();
