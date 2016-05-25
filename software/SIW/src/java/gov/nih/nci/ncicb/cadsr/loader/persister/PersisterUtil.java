@@ -44,9 +44,9 @@ public class PersisterUtil {
   
   Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
 		{
-			put('�', 'Y');
-			put('�', '\'');
-			put('�', '\'');
+				put('Ü', 'Y');
+				put('’', '\'');
+				put('´', '\'');
 		}
 	};
 
