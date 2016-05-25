@@ -68,13 +68,6 @@ public class ObjectClassPersister implements Persister {
     initDAOs();
   }
 
-/*  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
-		{
-			put('�', 'Y');
-			put('�', '\'');
-			put('�', '\'');
-		}
-	};*/
   public void persist()   {
     ObjectClass oc = DomainObjectFactory.newObjectClass();
     List<ObjectClass> ocs = elements.getElements(oc);

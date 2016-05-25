@@ -55,13 +55,6 @@ public class ValueDomainPersister extends UMLPersister {
   public ValueDomainPersister() {
     initDAOs();
   }
- /* Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
-		{
-			put('�', 'Y');
-			put('�', '\'');
-			put('�', '\'');
-		}
-	};*/
 
   public void persist() {
     ValueDomain vd = DomainObjectFactory.newValueDomain();

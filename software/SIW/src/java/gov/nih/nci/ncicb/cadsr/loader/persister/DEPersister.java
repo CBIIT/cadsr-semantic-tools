@@ -55,13 +55,6 @@ public class DEPersister implements Persister {
     initDAOs();
   }
 
-/*  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
-		{
-			put('�', 'Y');
-			put('�', '\'');
-			put('�', '\'');
-		}
-	};*/
   public void persist() {
     DataElement de = DomainObjectFactory.newDataElement();
     List<DataElement> des = elements.getElements(de);

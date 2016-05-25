@@ -57,13 +57,6 @@ public class DECPersister implements Persister {
     initDAOs();
   }
 
- /* Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
-		{
-			put('�', 'Y');
-			put('�', '\'');
-			put('�', '\'');
-		}
-	};*/
   public void persist() {
     DataElementConcept dec = DomainObjectFactory.newDataElementConcept();
     List<DataElementConcept> decs = elements.getElements(dec);
