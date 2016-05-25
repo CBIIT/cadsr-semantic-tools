@@ -153,7 +153,7 @@
 
 	<target name="compile" depends="fail1">		
 		<mkdir dir="${class.dir}" />
-		<javac destdir="${class.dir}" debug="on" srcdir="${src.dir}" deprecation="false" fork="yes" includeantruntime="true">
+		<javac destdir="${class.dir}" encoding="UTF-8" debug="on" srcdir="${src.dir}" deprecation="false" fork="yes" includeantruntime="true">
 			<!--
            <compilerarg value="-Xlint"/>
       -->
@@ -162,7 +162,7 @@
 	</target>
 
 	<target name="compile-test" depends="compile">				
-		<javac destdir="${class.dir}" debug="on" srcdir="${test.src.dir}" deprecation="false" fork="yes">
+		<javac destdir="${class.dir}" encoding="UTF-8" debug="on" srcdir="${test.src.dir}" deprecation="false" fork="yes">
 			<classpath refid="proj.class.path" />
 		</javac>
 	</target>
@@ -585,7 +585,7 @@
 	<replacefilter token="@@PASSWORD@@" value="${password}" />
 </replace>
 
-<javac destdir="${class.dir}" debug="on" srcdir="${sqlsuite.dir}/src" deprecation="false" fork="yes">
+<javac destdir="${class.dir}" encoding="UTF-8" debug="on" srcdir="${sqlsuite.dir}/src" deprecation="false" fork="yes">
 	<classpath refid="proj.class.path" />
 </javac>
 
