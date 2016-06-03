@@ -128,8 +128,9 @@ public class DECPersister implements Persister {
 
 	// does this dec exist?
 	List l = dataElementConceptDAO.find(newDec, eager);
-
+	logger.debug("***** decs size : " + l.size());
 	if (l.size() == 0) {
+		logger.debug("***** one or more decs ");
           if(dec.getConceptualDomain() == null)
             dec.setConceptualDomain(defaults.getConceptualDomain());
           dec.setContext(defaults.getContext());
@@ -166,11 +167,11 @@ public class DECPersister implements Persister {
 		        builder.append(replacementChar != null ? replacementChar : currentChar);
 		    }
 		   dec.setPreferredDefinition(builder.toString());
-		    
+		   logger.debug("***** preferred name "+dec.getPreferredName()+" public ID "+dec.getPublicId());
 		   newDec = dataElementConceptDAO.create(dec);
 	  logger.info(PropertyAccessor.getProperty("created.dec"));
 
-	} else {
+	} else {		
 	  newDec = (DataElementConcept) l.get(0);
 	  logger.info(PropertyAccessor.getProperty("existed.dec"));
 
