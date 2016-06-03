@@ -139,11 +139,12 @@ public class CadsrLoader {
           logger.error(e);
           System.exit(1);
         } // end of try-catch
+        logger.debug("***** After init params "+i);
         defaults.initWithDB();
         defaults.setUsername(username);
-
+        logger.debug("***** before parse "+i);
         parser.parse(fileDir + "/" + filenames[i]);
-      
+        logger.debug("***** After parse "+i);
       }
 
       ValidationItems items = validator.validate();
@@ -171,7 +172,7 @@ public class CadsrLoader {
       progressFrame.setVisible(true);
     
       persister.setProgressListener(progressFrame);
-
+      logger.debug("***** before persist ");
       persister.persist();
 
       progressFrame.dispose();

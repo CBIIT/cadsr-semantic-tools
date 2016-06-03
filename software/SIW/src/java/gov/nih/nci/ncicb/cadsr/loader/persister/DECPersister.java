@@ -60,7 +60,7 @@ public class DECPersister implements Persister {
   public void persist() {
     DataElementConcept dec = DomainObjectFactory.newDataElementConcept();
     List<DataElementConcept> decs = elements.getElements(dec);
-
+    logger.debug("***** Inside DEC Persist ");
     int count = 0;
     sendProgressEvent(count++, decs.size(), "DECs");
 
@@ -217,6 +217,7 @@ public class DECPersister implements Persister {
 
       }
     }
+    logger.debug("***** End DEC persist");
 
   }
 
