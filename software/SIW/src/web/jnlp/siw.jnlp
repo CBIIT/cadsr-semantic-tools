@@ -103,7 +103,7 @@
 	<jar href="lib/jaxrpc.jar" />
 	<jar href="lib/axis.jar" />
 	<jar href="lib/lucene-analyzers-common-5.3.1.jar" />
-	<jar href="lib/ucene-analyzers-phonetic-5.3.1.jar" />
+	<jar href="lib/lucene-analyzers-phonetic-5.3.1.jar" />
 	<jar href="lib/lucene-codecs-5.3.1.jar" />
 	<jar href="lib/lucene-core-5.3.1.jar" />
 	<jar href="lib/lucene-join-5.3.1.jar" />
