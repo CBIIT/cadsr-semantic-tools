@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "https://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
   
   <!-- CaDSR beans -->
@@ -9,7 +9,7 @@
       <map>
         <entry key="APPLICATION_SERVICE_BEAN" value-ref="cadsrApplicationService"/>
         <entry key="AUTHENTICATION_SERVICE_BEAN" value-ref="cadsrAuthenticationProvider"/>
-        <entry key="APPLICATION_SERVICE_URL"  value="http://cadsrapi.nci.nih.gov/cadsrapi41"/>
+        <entry key="APPLICATION_SERVICE_URL"  value="https://cadsrapi.nci.nih.gov/cadsrapi4"/>
         <entry key="APPLICATION_SERVICE_CONFIG"  value-ref="LexEVSApplicationServiceConfig"/>
       </map>
     </constructor-arg>
@@ -18,7 +18,7 @@
   <bean id="cadsrApplicationService" class="org.springframework.aop.framework.ProxyFactoryBean">
     <property name="target">
       <bean class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-        <property name="serviceUrl" value="http://cadsrapi.nci.nih.gov/cadsrapi41/http/applicationService"/>
+        <property name="serviceUrl" value="https://cadsrapi.nci.nih.gov/cadsrapi4/http/applicationService"/>
         <property name="serviceInterface" value="gov.nih.nci.system.applicationservice.ApplicationService"/>
         <property name="httpInvokerRequestExecutor">
           <bean class="org.acegisecurity.context.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor"/>
@@ -32,7 +32,7 @@
   <bean id="cadsrAuthenticationProvider" class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
     <property name="remoteAuthenticationManager">
       <bean class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-        <property name="serviceUrl" value="http://cadsrapi.nci.nih.gov/cadsrapi41/http/remoteAuthenticationManager"/>
+        <property name="serviceUrl" value="https://cadsrapi.nci.nih.gov/cadsrapi4/http/remoteAuthenticationManager"/>
         <property name="serviceInterface" value="org.acegisecurity.providers.rcp.RemoteAuthenticationManager"/>
       </bean>
     </property>
@@ -51,7 +51,7 @@
                   <map>
                         <entry key="APPLICATION_SERVICE_BEAN" value-ref="LexEVSApplicationService"/>
                         <entry key="AUTHENTICATION_SERVICE_BEAN" value-ref="EvsAuthenticationProvider"/>
-                        <entry key="APPLICATION_SERVICE_URL" value="http://lexevsapi6.nci.nih.gov/lexevsapi63/http/applicationService"/>
+                        <entry key="APPLICATION_SERVICE_URL" value="https://lexevsapi6.nci.nih.gov/lexevsapi64/http/applicationService"/>
                         <entry key="APPLICATION_SERVICE_CONFIG" value-ref="LexEVSApplicationServiceConfig"/>
                   </map>
             </constructor-arg>
@@ -83,7 +83,7 @@
       </bean>     
       
        <bean id="AppService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" singleton="false">
-            <property name="serviceUrl" value="http://lexevsapi6.nci.nih.gov/lexevsapi63/http/applicationService"/>
+            <property name="serviceUrl" value="https://lexevsapi6.nci.nih.gov/lexevsapi64/http/applicationService"/>
             <property name="serviceInterface" value="org.LexGrid.LexBIG.caCore.interfaces.LexEVSApplicationService"/>
             <property name="httpInvokerRequestExecutor">
                  <bean class="org.LexGrid.LexBIG.caCore.client.proxy.ProxyUnwrappingHttpInvokerRequestExecutor">
@@ -95,7 +95,7 @@
       <bean id="EvsAuthenticationProvider" class="org.acegisecurity.providers.rcp.RemoteAuthenticationProvider">
             <property name="remoteAuthenticationManager">
                   <bean class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-                      <property name="serviceUrl" value="http://lexevsapi6.nci.nih.gov/lexevsapi63/http/applicationService"/>
+                      <property name="serviceUrl" value="https://lexevsapi6.nci.nih.gov/lexevsapi64/http/applicationService"/>
                       <property name="serviceInterface" value="org.acegisecurity.providers.rcp.RemoteAuthenticationManager"/>
                   </bean>
             </property>
