@@ -467,7 +467,7 @@ public class DEPanel extends JPanel
   }
   
   private String getCDEBrowserURL(){
-    cdeURL = "http://cdebrowser.nci.nih.gov/CDEBrowser/";  
+    cdeURL = "https://cdebrowser.nci.nih.gov/CDEBrowser/";  
   
     // Add code to construst URL for CDE.
    

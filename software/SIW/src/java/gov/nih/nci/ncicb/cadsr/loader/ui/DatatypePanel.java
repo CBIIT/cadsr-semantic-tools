@@ -133,7 +133,7 @@ public class DatatypePanel extends JPanel
  
   public static void main(String[] args) {
     DatatypeMapping dm = DatatypeMapping.getInstance();
-    dm.setMappingURL("http://cadsrsiw-dev.nci.nih.gov/datatype-mapping.xml");
+    dm.setMappingURL("https://cadsrsiw-dev.nci.nih.gov/datatype-mapping.xml");
 
     UserSelections.getInstance().setProperty("FILENAME", "/home/ludetc/temp/xmi/temp.xmi");
 

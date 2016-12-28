@@ -1034,7 +1034,7 @@ public class CadsrPublicApiModule implements CadsrModule {
 
 	public static void main(String[] args) {
 		CadsrPublicApiModule testModule = new CadsrPublicApiModule(
-				"http://cabio.nci.nih.gov/cacore32/http/remoteService");
+				"https://cabio.nci.nih.gov/cacore32/http/remoteService");
 		try {
 
 			// System.out.println("Test Find CS");
