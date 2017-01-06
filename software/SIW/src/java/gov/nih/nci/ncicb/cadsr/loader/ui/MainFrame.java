@@ -510,7 +510,7 @@ import java.awt.event.WindowEvent;
        public void actionPerformed(ActionEvent evt) {
          String errMsg = "Error attempting to launch web browser";
          String osName = System.getProperty("os.name");
-         String url = "https://wiki.nci.nih.gov/display/caDSR/SIW+and+UML+Loader+4.1.2+Release+Notes";
+         String url = "https://wiki.nci.nih.gov/display/caDSR/SIW+and+UML+Loader+Release+Notes";
          try {
            if (osName.startsWith("Mac OS")) {
              Class fileMgr = Class.forName("com.apple.eio.FileManager");
