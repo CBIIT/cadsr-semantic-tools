@@ -75,7 +75,8 @@ public class LexEVSQueryServiceImpl implements LexEVSQueryService {
 			return results;
 		}
 	
-	public List findConceptsByCode(String conceptCode, boolean includeRetiredConcepts, int rowCount, String vocabName)
+// Old code left here for reference	 
+/*	public List findConceptsByCode(String conceptCode, boolean includeRetiredConcepts, int rowCount, String vocabName)
 			throws EVSException {
 		List<EVSConcept> evsConcepts = new ArrayList<EVSConcept>();
 		try {
@@ -95,7 +96,7 @@ public class LexEVSQueryServiceImpl implements LexEVSQueryService {
 			throw new EVSException("Error finding concept for code ["+conceptCode+"]", e);
 		}
 		return evsConcepts;
-	}
+	} */
 	
 	public List findConceptsByCode(String conceptCode, boolean includeRetiredConcepts, int rowCount) throws EVSException {
 		return findConceptsByCode(conceptCode, includeRetiredConcepts, rowCount, NCIT_SCHEME_NAME);
@@ -169,6 +170,38 @@ public class LexEVSQueryServiceImpl implements LexEVSQueryService {
 		}
 		return evsConcepts;
 	}
+	
+	public List findConceptsByCode(String conceptCode, boolean includeRetiredConcepts, int rowCount, String vocabName)
+			throws EVSException {
+		List<EVSConcept> evsConcepts = new ArrayList<EVSConcept>();
+		try {
+			CodedNodeSet cns = service.getNodeSet(vocabName, null, null);
+			/*cns = cns.restrictToMatchingProperties(
+							Constructors.createLocalNameList("conceptCode"), 
+							null, 
+							conceptCode, 
+							MatchAlgorithms.exactMatch.name(), 
+							null
+						);*/
+			String[][] termAndMatchAlgorithmName = getTermAndMatchAlgorithmName(conceptCode);			
+			cns = cns.restrictToMatchingDesignations(
+					termAndMatchAlgorithmName[0][0], 
+					SearchDesignationOption.ALL, 
+					termAndMatchAlgorithmName[0][1],
+					null
+				);
+			//cns=cns.restrictToMatchingDesignations(searchTerm, SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery",  null);
+			cns = restrictToSource(cns, "NCI");			
+			
+			ResolvedConceptReferencesIterator results = resolveNodeSet(cns, includeRetiredConcepts);
+			evsConcepts = getEVSConcepts(results);
+		} catch (Exception e) {
+			log.error("Error finding concept for code ["+conceptCode+"]", e);
+			throw new EVSException("Error finding concept for code ["+conceptCode+"]", e);
+		}
+		return evsConcepts;
+	}	
+	
 	
 	public List<EVSConcept> findConceptsBySynonym(String searchTerm,
 			boolean includeRetiredConcepts, int rowCount) throws EVSException {
