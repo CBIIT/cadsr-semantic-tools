@@ -183,11 +183,11 @@ public class LexEVSQueryServiceImpl implements LexEVSQueryService {
 							MatchAlgorithms.exactMatch.name(), 
 							null
 						);*/
-			String[][] termAndMatchAlgorithmName = getTermAndMatchAlgorithmName(conceptCode);			
+		
 			cns = cns.restrictToMatchingDesignations(
-					termAndMatchAlgorithmName[0][0], 
+					conceptCode, 
 					SearchDesignationOption.ALL, 
-					termAndMatchAlgorithmName[0][1],
+					MatchAlgorithms.exactMatch.name(),
 					null
 				);
 			//cns=cns.restrictToMatchingDesignations(searchTerm, SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery",  null);
