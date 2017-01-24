@@ -176,13 +176,7 @@ public class LexEVSQueryServiceImpl implements LexEVSQueryService {
 		List<EVSConcept> evsConcepts = new ArrayList<EVSConcept>();
 		try {
 			CodedNodeSet cns = service.getNodeSet(vocabName, null, null);
-			cns = cns.restrictToMatchingProperties(
-							Constructors.createLocalNameList("conceptCode"), 
-							null, 
-							conceptCode, 
-							MatchAlgorithms.exactMatch.name(), 
-							null
-						);
+			cns = cns.restrictToCodes(Constructors.createConceptReferenceList(conceptCode));
 		
 			/*cns = cns.restrictToMatchingDesignations(
 					conceptCode, 
