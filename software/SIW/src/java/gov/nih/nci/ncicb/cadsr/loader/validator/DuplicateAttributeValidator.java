@@ -231,18 +231,12 @@ public class DuplicateAttributeValidator implements Validator
         	  if(de.getDataElementConcept().getObjectClass() == oc) {
         		  if(de2.getDataElementConcept().getObjectClass() == oc) {
         			  if(de.getDataElementConcept().getProperty().getLongName().equals(
-                              de2.getDataElementConcept().getProperty().getLongName())) {
-        				  		
-        					  compareVDTags(de.getDataElementConcept().getProperty().getLongName(), oc.getLongName());
-		        			  /*	  items.addItem(new ValidationError
-		                                  (PropertyAccessor.getProperty
-		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()),de));         						  
-        					  } else {*/
+                              de2.getDataElementConcept().getProperty().getLongName())) {        				  		
+        					  	compareVDTags(de.getDataElementConcept().getProperty().getLongName(), oc.getLongName());
         					  if (isDuplicate)
 		        				  items.addItem(new ValidationWarning
 		                                  (PropertyAccessor.getProperty
 		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()),de)); 
-        				  //}
         			  }          
         		  }
         		  else {
@@ -529,7 +523,7 @@ public class DuplicateAttributeValidator implements Validator
 	    }
 */
 	    //tv = att.getTaggedValue(reviewTag);
-	    if(tv != null) {
+/*	    if(tv != null) {
 	      event.setReviewed(tv.getValue().equals("1")?true:false);
 	    }
 
@@ -546,7 +540,7 @@ public class DuplicateAttributeValidator implements Validator
 	      } catch (NumberFormatException e){
 	        logger.warn("de ID is not a number, ignoring: " + tv.getValue());     
 	      } // end of try-catch
-	    }
+	    } */
 
 	    tv = att.getTaggedValue(TV_VD_ID);
 	    if(tv != null) {
@@ -565,6 +559,14 @@ public class DuplicateAttributeValidator implements Validator
 	        logger.warn("vd version is not a number, ignoring: " + tv.getValue());     
 	      } // end of try-catch
 	    }
+	    
+	    if (vdIdVersion.equals("")) {
+	    	tv = att.getTaggedValue(TV_VALUE_DOMAIN);
+	    	if(tv != null) {	   	    
+	   	     	vdIdVersion = tv.getValue().trim();
+	   	     }
+	    }
+	    
 	    if (vdTags.contains(vdIdVersion)) {
 	    	isDuplicate = true;
 	    } else {
