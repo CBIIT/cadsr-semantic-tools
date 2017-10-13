@@ -42,10 +42,10 @@ public class UMLPersister implements Persister {
   }
 
   public void persist() {
-
-    for(Persister p : persisters)
-      p.persist();
-    
+    for(Persister p : persisters) {
+    	logger.debug(">>>>>>>>Active Persister: " + p.getClass().getSimpleName() + "<<<<<<<<");
+    	p.persist();
+    }
   }
 
 

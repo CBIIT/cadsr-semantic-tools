@@ -281,6 +281,9 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 
 		ValueMeaning vm = DomainObjectFactory.newValueMeaning();
 		vm.setLongName(event.getName());
+		//SIW-627
+		vm.setPublicId(event.getPersistenceId());
+		vm.setVersion(event.getPersistenceVersion());
 
 		vm.setLifecycle(UMLDefaults.getInstance().getLifecycle());
 

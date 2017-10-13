@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="gov.nih.nci.ncicb.cadsr.domain.bean.ValueMeaningBean"
+        table="VALUE_MEANINGS"
+    >
+
+        <id
+            name="id"
+            column="VM_IDSEQ"
+            type="java.lang.String"
+        >
+          <generator class="gov.nih.nci.ncicb.cadsr.hibernate.AcIdGenerator"/>
+        </id>
+
+        <property
+            name="comments"
+            type="string"
+            update="true"
+            insert="true"
+            column="COMMENTS"
+            length="2000"
+        />
+
+        <many-to-one
+          name="conceptDerivationRule"
+          class="gov.nih.nci.ncicb.cadsr.domain.bean.ConceptDerivationRuleBean"
+          cascade="none"
+          outer-join="auto"
+          update="true"
+          insert="true"
+          column="CONDR_IDSEQ"
+          lazy="proxy"
+        />
+
+        <property
+            name="preferredName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PREFERRED_NAME"
+            length="30"
+        />
+
+        <property
+            name="longName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="LONG_NAME"
+            length="255"
+        />
+        <property
+            name="publicId"
+            type="string"
+            update="true"
+            insert="true"
+            column="VM_ID"
+            length="36"
+        />
+        
+        <property
+            name="version"
+            type="java.lang.Float"
+            update="true"
+            insert="true"
+            column="VERSION"
+        />
+
+        <property
+            name="preferredDefinition"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PREFERRED_DEFINITION"
+        />
+
+        <many-to-one
+            name="context"
+            class="gov.nih.nci.ncicb.cadsr.domain.bean.ContextBean"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="CONTE_IDSEQ"
+            lazy="false"
+          fetch="join"
+        />
+        
+        <component
+            name="audit"
+            class="gov.nih.nci.ncicb.cadsr.domain.bean.AuditBean"
+        >
+        <property
+            name="creationDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="DATE_CREATED"
+            not-null="false"
+        />
+
+        <property
+            name="modifiedBy"
+            type="string"
+            update="true"
+            insert="true"
+            column="MODIFIED_BY"
+        />
+
+        <property
+            name="createdBy"
+            type="string"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+        />
+
+        <property
+            name="modificationDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="DATE_MODIFIED"
+            not-null="false"
+        />
+
+        </component>
+
+        <component
+            name="lifecycle"
+            class="gov.nih.nci.ncicb.cadsr.domain.bean.LifecycleBean"
+        >
+        <property
+            name="endDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="END_DATE"
+            not-null="false"
+        />
+
+        <property
+            name="beginDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="BEGIN_DATE"
+            not-null="false"
+        />
+
+        </component>
+
+        <property
+            name="changeNote"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="CHANGE_NOTE"
+            length="2000"
+        />
+
+        <property
+            name="origin"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ORIGIN"
+            length="240"
+        />
+
+        <bag
+            name="alternateNames"
+            inverse="true"
+            cascade="none"
+        >
+
+            <key
+                column="AC_IDSEQ"
+            >
+            </key>
+
+            <one-to-many
+                  class="gov.nih.nci.ncicb.cadsr.domain.bean.AlternateNameBean"
+            />
+
+      </bag>
+
+        <bag
+            name="definitions"
+            inverse="true"
+            cascade="none"
+        >
+
+            <key
+                column="AC_IDSEQ"
+            >
+            </key>
+
+            <one-to-many
+                  class="gov.nih.nci.ncicb.cadsr.domain.bean.DefinitionBean"
+            />
+
+      </bag>
+
+        <bag
+            name="acCsCsis"
+            inverse="true"
+            cascade="none"
+        >
+
+            <key
+                column="AC_IDSEQ"
+            >
+            </key>
+
+            <one-to-many
+                  class="gov.nih.nci.ncicb.cadsr.domain.bean.AdminComponentClassSchemeClassSchemeItemBean"
+            />
+
+      </bag>
+
+        <property
+            name="latestVersionIndicator"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="LATEST_VERSION_IND"
+            length="3"
+        />
+
+        <property
+            name="deletedIndicator"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="DELETED_IND"
+            length="3"
+        />
+
+        <bag
+            name="referenceDocuments"
+            inverse="true"
+            cascade="none"
+        >
+
+            <key
+                column="AC_IDSEQ"
+            >
+            </key>
+
+            <one-to-many
+                  class="gov.nih.nci.ncicb.cadsr.domain.bean.ReferenceDocumentBean"
+            />
+
+      </bag>
+      
+      <bag
+            name="adminComponentContacts"
+            inverse="true"
+            cascade="none"
+        >
+
+            <key
+                column="AC_IDSEQ"
+            >
+            </key>
+
+            <one-to-many
+                  class="gov.nih.nci.ncicb.cadsr.domain.bean.AdminComponentContactBean"
+            />
+
+      </bag>     
+      
+    </class>
+
+</hibernate-mapping>

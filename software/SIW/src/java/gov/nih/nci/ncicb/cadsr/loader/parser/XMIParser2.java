@@ -92,6 +92,9 @@ public class XMIParser2 implements Parser {
   public static final String TV_CD_VERSION = "CADSR_ConceptualDomainVersion";
   public static final String TV_REP_ID = "CADSR_RepresentationPublicID";
   public static final String TV_REP_VERSION = "CADSR_RepresentationVersion";
+  //SIW-627
+  public static final String TV_VM_ID = "CADSR_ValueMeaningPublicID";
+  public static final String TV_VM_VERSION = "CADSR_ValueMeaningVersion";
 
   public static final String TV_INHERITED_DE_ID = "CADSR_Inherited.{1}.DE_ID";
   public static final String TV_INHERITED_DE_VERSION = "CADSR_Inherited.{1}.DE_VERSION";
@@ -935,6 +938,22 @@ public class XMIParser2 implements Parser {
           event.setDescription(description);
         }
       }
+    }
+    //SIW-627
+    UMLTaggedValue tvPublicId = att.getTaggedValue(TV_VM_ID, true);
+    UMLTaggedValue tvVersion = att.getTaggedValue(TV_VM_VERSION, true);
+    
+    if (tvPublicId != null) {
+        event.setPersistenceId(tvPublicId.getValue());
+    }
+    
+    if (tvVersion != null) {
+    	try {
+        event.setPersistenceVersion(new Float(tvVersion.getValue()));
+    	}
+    	catch (NumberFormatException e) {
+    		logger.error("ValueMeaningVerion is not numeric", e);
+    	}
     }
 
     setConceptInfo(att, event, TV_TYPE_VM);
