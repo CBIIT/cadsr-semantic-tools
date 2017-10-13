@@ -1,0 +1,6 @@
+/bin/
+/src/java/gov/nih/nci/ncicb/xmiinout
+*.log
+/classes/
+/dataBackup/
+/dist/
