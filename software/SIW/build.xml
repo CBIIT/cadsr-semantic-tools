@@ -158,7 +158,12 @@
            <compilerarg value="-Xlint"/>
       -->
 	<classpath refid="proj.class.path" />
-		</javac>		
+		</javac>
+        <copy todir="${class.dir}/gov/nih/nci/ncicb/cadsr/domain/bean">
+            <fileset dir="${src.dir}/java/gov/nih/nci/ncicb/cadsr/domain/bean">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
 	</target>
 
 	<target name="compile-test" depends="compile">				
