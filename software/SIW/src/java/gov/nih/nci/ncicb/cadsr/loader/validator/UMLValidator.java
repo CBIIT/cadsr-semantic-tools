@@ -21,19 +21,21 @@ package gov.nih.nci.ncicb.cadsr.loader.validator;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 import gov.nih.nci.ncicb.cadsr.loader.UserSelections;
 import gov.nih.nci.ncicb.cadsr.loader.event.ProgressListener;
 
 public class UMLValidator implements Validator {
-
+private Logger logger = Logger.getLogger(UMLValidator.class.getName());
   private List<Validator> validators;
 
   public UMLValidator() {
   }
   
   public void addProgressListener(ProgressListener l) {
-    for(Validator val : validators)
-      val.addProgressListener(l);
+    for(Validator val : validators) 
+    	val.addProgressListener(l);
   }
   
   /**
@@ -53,6 +55,7 @@ public class UMLValidator implements Validator {
       if(validatorChoices != null && validatorChoices.get(name) != null && validatorChoices.get(name).equals(true)) {
         continue;
       }
+      logger.debug(">>>Active validator: " + val.getClass().getSimpleName()+"<<<");
       val.validate();
     }
 

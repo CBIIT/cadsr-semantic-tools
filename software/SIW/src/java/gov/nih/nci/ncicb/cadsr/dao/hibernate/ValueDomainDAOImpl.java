@@ -1,6 +1,22 @@
 /** <a href="http://www.cpupk.com/decompiler">Eclipse Class Decompiler</a> plugin, Copyright (c) 2017 Chen Chao. **/
 package gov.nih.nci.ncicb.cadsr.dao.hibernate;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.HibernateException;
+import org.hibernate.NonUniqueResultException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Projections;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
 import gov.nih.nci.ncicb.cadsr.dao.DAOCreateException;
 import gov.nih.nci.ncicb.cadsr.dao.ValueDomainDAO;
 import gov.nih.nci.ncicb.cadsr.domain.ComponentConcept;
@@ -14,25 +30,7 @@ import gov.nih.nci.ncicb.cadsr.domain.ValueDomainPermissibleValue;
 import gov.nih.nci.ncicb.cadsr.domain.ValueMeaning;
 import gov.nih.nci.ncicb.cadsr.domain.bean.ConceptDerivationRuleBean;
 import gov.nih.nci.ncicb.cadsr.domain.bean.ValueDomainPermissibleValueBean;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.HibernateException;
-import org.hibernate.NonUniqueResultException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Expression;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.SimpleExpression;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import gov.nih.nci.ncicb.cadsr.domain.bean.ValueMeaningBean;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDomainDAO {
 	public List findByNameLike(String name) {
@@ -112,8 +110,61 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 		return ((List) getHibernateTemplate().execute(callback));
 	}
 	///////////////////////
+	/**
+	 * 
+	 * @param cdr shall not be null concatenated list of concept codes
+	 * @param session
+	 * @return ValueMeaning or null
+	 */
+	protected ValueMeaning seachValueMeaningByCdr(final String cdr, final Session session) {
+		//SIW-793
+		final String sqlVmByLongName = "SELECT {vm.*} "
+			+ "FROM SBR.VALUE_MEANINGS vm "
+			+ "inner join SBR.AC_STATUS_LOV ws on vm.ASL_NAME = ws.ASL_NAME "
+			+ "inner join SBREXT.CON_DERIVATION_RULES_EXT cdr on vm.CONDR_IDSEQ = cdr.CONDR_IDSEQ "
+			+ "where cdr.NAME = :condr "
+			+ "order by ws.DISPLAY_ORDER, vm.VM_ID DESC";
+		logger.debug("Searching VM by CDR: " + cdr);
+		
+		ValueMeaning valueMeaning = null;
+		Query query = session.createSQLQuery(sqlVmByLongName).addEntity("vm", ValueMeaningBean.class);
+		List vmList = query.setString("condr", cdr).list();
+		if((vmList != null) && (! vmList.isEmpty())) {
+			valueMeaning = searchValueMeaningByPublicId((ValueMeaning)vmList.get(0), session);
+		}
+		return valueMeaning;
+	}
+	/**
+	 * This method search by Long name case insensitive.
+	 * 
+	 * @param longName shall not be null
+	 * @param session
+	 * @return ValueMeaning or null
+	 */
+	protected ValueMeaning seachValueMeaningByLongName(final String longName, final Session session) {
+		//SIW-793
+		final String sqlVmByLongName = "SELECT {vm.*} "
+			+ "FROM SBR.VALUE_MEANINGS vm "
+			+ "inner join SBR.AC_STATUS_LOV ws on vm.ASL_NAME = ws.ASL_NAME "
+			+ "where upper(vm.LONG_NAME) = :vmLongName "
+			+ "order by ws.DISPLAY_ORDER, vm.VM_ID DESC";
+		
+		ValueMeaning valueMeaning = null;
+		Query query = session.createSQLQuery(sqlVmByLongName).addEntity("vm", ValueMeaningBean.class);
+		List vmList = query.setString("vmLongName", longName.toUpperCase()).list();
+		if((vmList != null) && (! vmList.isEmpty())) {
+			valueMeaning = searchValueMeaningByPublicId((ValueMeaning)vmList.get(0), session);
+		}
+		return valueMeaning;
+	}
 	//SIW-617
-	protected ValueMeaning searchValueMeaningByPublicId(ValueMeaning vm, Session session) {
+	/**
+	 * 
+	 * @param vm not null
+	 * @param session
+	 * @return VM by ID or null
+	 */
+	protected ValueMeaning searchValueMeaningByPublicId(final ValueMeaning vm, final Session session) {
 		ValueMeaning result = null;
         Query query = session.createQuery("from ValueMeaningBean where publicId = :publicId and version = :version");
         query.setString("publicId", vm.getPublicId());
@@ -139,7 +190,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	}
 	
 	//SIW-627
-	protected void saveVdPvs(final ValueDomain vd, PermissibleValue pv, Session session) {
+	protected void saveVdPvs(final ValueDomain vd, final PermissibleValue pv, final Session session) {
         ValueDomainPermissibleValue vdPv = new ValueDomainPermissibleValueBean();
 
         vdPv.setValueDomain(vd);
@@ -149,14 +200,19 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
         session.save(vdPv);
         session.flush();
 	}
-	
+	/**
+	 * We call this method for XMI VM without CDR.
+	 * 
+	 * @param vd
+	 * @param vm
+	 * @param session
+	 * @return ValueMeaning
+	 * @throws Exception
+	 */
 	//SIW-627
-	protected ValueMeaning saveValueMeaningWithoutConcept(final ValueDomain vd, ValueMeaning vm, Session session) throws Exception {
-
-        Query query = session.createQuery("from ValueMeaningBean where upper(trim(longName)) = upper(:longName)");
-        query.setString("longName", vm.getLongName().trim());
-        //FIXME SIW-793 we need to change this code not to throw an error but select VM accordingly
-        ValueMeaning byNameVm = (ValueMeaning)query.uniqueResult();
+	protected ValueMeaning saveValueMeaningWithoutConcept(final ValueDomain vd, ValueMeaning vm, final Session session) throws Exception {
+        //SIW-793 this call does not to throw an error. It selects VM WS Status ordered staring with RELEASED, the most recent with the highest Public ID 
+        ValueMeaning byNameVm = seachValueMeaningByLongName(vm.getLongName().trim(), session);
 
         if (byNameVm == null) {
           vm.setConceptDerivationRule(null);
@@ -184,20 +240,14 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	 * @param session
 	 * @throws Exception
 	 */
-	protected ValueMeaning saveValueMeaningByConceptCodes(final ValueDomain vd, ValueMeaning vm, String conStr, Session session) throws Exception {
+	protected ValueMeaning saveValueMeaningWithConceptCodes(final ValueDomain vd, ValueMeaning vm, String conStr, final Session session) throws Exception {
 		ValueMeaning vmResult;
-        Criteria criteria = session.createCriteria(vm.getClass());
-        criteria.createCriteria("conceptDerivationRule").add(Expression.eq("codesConcatenation", conStr));
-        //FIXME SIW-793
-        ValueDomainDAOImpl.this.logger.debug("Search VM by CDR: " + conStr);
-        
-        ValueMeaning byConceptVm = (ValueMeaning)criteria.uniqueResult();
+        //SIW-793
+        ValueMeaning byConceptVm = seachValueMeaningByCdr(conStr, session);
 
         if (byConceptVm == null) {
-          criteria = session.createCriteria(vm.getClass());
-          criteria.add(Expression.eq("longName", vm.getLongName()).ignoreCase());
-          //FIXME SIW-793
-          ValueMeaning byNameVm = (ValueMeaning)criteria.uniqueResult();
+          //SIW-793
+          ValueMeaning byNameVm = seachValueMeaningByLongName(vm.getLongName(), session);
           ConceptDerivationRule conDR;
           if (byNameVm == null) {//this is a new VM
             conDR = vm.getConceptDerivationRule();
@@ -257,26 +307,26 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	}
 	
 	//SIW-617
-	protected void processPermissibleValues(final ValueDomain vd, List<PermissibleValue> pvs, Session session) {
-        for (PermissibleValue pv : pvs) {
-        	
+	protected void processPermissibleValues(final ValueDomain vd, List<PermissibleValue> pvs, final Session session) {
+		ValueDomainDAOImpl.this.logger.debug("Processing VD with LongName: " + vd.getLongName());
+        for (PermissibleValue pv : pvs) {      	
             ValueMeaning vm = pv.getValueMeaning();
-            pv.setValue(vm.getLongName());//TODO do we need this?
-            ValueDomainDAOImpl.this.logger.debug("...current PermissibleValue: " + pv.getValue());
+            ValueDomainDAOImpl.this.logger.debug("...Processing VM with LongName: " + vm.getLongName());
+            pv.setValue(vm.getLongName());
             
-            boolean receivedVmId = false;
+            boolean receivedVmById = false;
             try
             {
               if (StringUtils.isNotBlank(vm.getPublicId())) {
                     ValueDomainDAOImpl.this.logger.debug(".......searching VM by Public ID: " + vm.getPublicId());
                     ValueMeaning vmReceived = searchValueMeaningByPublicId(vm, session);
-                    receivedVmId = (vmReceived != null);
-                    if (receivedVmId) {
+                    receivedVmById = (vmReceived != null);
+                    if (receivedVmById) {
                     	vm = vmReceived;
                     }
                     else {
                         ValueDomainDAOImpl.this.logger.error("!!! Could not find VM by ID: " + vm.getPublicId() + ". This PV/VM pair is skipped");
-                    	continue;
+                    	continue;//SIW-627 description: If the ERROR isn't fixed, and the VM Public ID is still invalid, the system should ignore the PV/VM.
                     }
               }
               
@@ -284,7 +334,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
                 throw new Throwable("VM Name is empty, cannot be saved");
               }
               
-              if (! receivedVmId) {
+              if (! receivedVmById) {
             	  if (StringUtils.isBlank(vm.getPreferredDefinition())) {
                       vm.setPreferredDefinition("No Definition Loaded");
             	  }
@@ -320,7 +370,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	              }
 	              else {
 	            	  //SIW-627 code re-factoring
-	            	  vm = saveValueMeaningByConceptCodes(vd, vm, conSb.toString(), session);
+	            	  vm = saveValueMeaningWithConceptCodes(vd, vm, conSb.toString(), session);
 	              }
               }//end of not receivedVmId
 
