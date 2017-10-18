@@ -268,20 +268,26 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
             try
             {
               if (StringUtils.isNotBlank(vm.getPublicId())) {
-                    ValueDomainDAOImpl.this.logger.debug(".......found VM Public ID: " + vm.getPublicId());
-                    vm = searchValueMeaningByPublicId(vm, session);
-                    receivedVmId = (vm != null);
+                    ValueDomainDAOImpl.this.logger.debug(".......searching VM by Public ID: " + vm.getPublicId());
+                    ValueMeaning vmReceived = searchValueMeaningByPublicId(vm, session);
+                    receivedVmId = (vmReceived != null);
+                    if (receivedVmId) {
+                    	vm = vmReceived;
+                    }
+                    else {
+                        ValueDomainDAOImpl.this.logger.error("!!! Could not find VM by ID: " + vm.getPublicId() + ". This PV/VM pair is skipped");
+                    	continue;
+                    }
               }
               
               if ((vm.getLongName() == null) || (vm.getLongName().trim().length() == 0)) {
                 throw new Throwable("VM Name is empty, cannot be saved");
               }
-
-              if ((! receivedVmId) && (StringUtils.isBlank(vm.getPreferredDefinition()))) {
-                vm.setPreferredDefinition("No Definition Loaded");
-              }
               
               if (! receivedVmId) {
+            	  if (StringUtils.isBlank(vm.getPreferredDefinition())) {
+                      vm.setPreferredDefinition("No Definition Loaded");
+            	  }
 	              StringBuilder longNameSb = new StringBuilder();
 	              StringBuilder conSb = new StringBuilder();
 	

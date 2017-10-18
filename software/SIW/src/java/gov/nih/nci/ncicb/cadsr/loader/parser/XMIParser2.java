@@ -945,11 +945,13 @@ public class XMIParser2 implements Parser {
     
     if (tvPublicId != null) {
         event.setPersistenceId(tvPublicId.getValue());
+        //we use a default VM version value 1 if ID is given
+        event.setPersistenceVersion(1f);
     }
     
     if (tvVersion != null) {
     	try {
-        event.setPersistenceVersion(new Float(tvVersion.getValue()));
+    		event.setPersistenceVersion(new Float(tvVersion.getValue()));
     	}
     	catch (NumberFormatException e) {
     		logger.error("ValueMeaningVerion is not numeric", e);
