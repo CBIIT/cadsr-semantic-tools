@@ -55,4 +55,14 @@ public class ValueMeaningBean extends AdminComponentBean implements ValueMeaning
 	public int hashCode() {
 		return this.id.hashCode();
 	}
+
+	@Override
+	public String toString() {
+		return "ValueMeaningBean [comments=" + getComments() + ", idseq=" + getId() + ", publicId=" + getPublicId()
+				+ ", getPreferredName()=" + getPreferredName() + ", getLongName()=" + getLongName() + ", getVersion()="
+				+ getVersion() + ", getPreferredDefinition()=" + getPreferredDefinition() + 
+				", getWorkflowStatus()=" + getWorkflowStatus()
+				+ ", getChangeNote()=" + getChangeNote() + ", getOrigin()=" + getOrigin() + "]";
+	}
+	
 }

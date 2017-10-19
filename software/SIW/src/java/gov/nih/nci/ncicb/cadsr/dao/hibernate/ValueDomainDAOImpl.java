@@ -170,6 +170,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
         query.setString("publicId", vm.getPublicId());
         query.setFloat("version", vm.getVersion());
         result = (ValueMeaning)query.uniqueResult();//could be null
+        logger.info("Found caDSR VM by PublicID: " + );
 		return result;
 	}
 	
@@ -213,64 +214,88 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	protected ValueMeaning saveValueMeaningWithoutConcept(final ValueDomain vd, ValueMeaning vm, final Session session) throws Exception {
         //SIW-793 this call does not to throw an error. It selects VM WS Status ordered staring with RELEASED, the most recent with the highest Public ID 
         ValueMeaning byNameVm = seachValueMeaningByLongName(vm.getLongName().trim(), session);
-
+        logger.info("Received XMI ValueMeaning to search by LongName with no CDR: " + buildValueMeaningString(vm));
         if (byNameVm == null) {
           vm.setConceptDerivationRule(null);
-
           session.save(vm);
           session.flush();
+          logger.info("ValueMeaning is not found by LongName; a new VM with no CDR is created in caDSR DB: " + buildValueMeaningString(vm));
         }
         else if ((vm.getPreferredDefinition().equals("No Definition Loaded")) || (byNameVm.getPreferredDefinition().equalsIgnoreCase(vm.getPreferredDefinition())))
         {
           vm = byNameVm;
+          logger.info("ValueMeaning is found by LongName in caDSR DB to use for PV: " + buildValueMeaningString(vm));
         }
         else {
-          throw new Exception("VM " + byNameVm.getLongName() + " already exists with a different definition, please consider fixing the data before attemtping to reload - 1");
+          throw new Exception("VM " + buildValueMeaningString(byNameVm) + " already exists with a different definition, please consider fixing the data before attemtping to reload - 1");
         }
         return vm;
       
+	}
+	public static String buildValueMeaningString(final ValueMeaning vm) {
+		String tmp;
+		return "ValueMeaning ["+ "longName=" + vm.getLongName()
+		+ ", preferredDefinition=" + vm.getPreferredDefinition()
+		+ (StringUtils.isBlank(tmp = vm.getPreferredName()) ? "" : ", preferredName=" + tmp)
+		+ (StringUtils.isBlank(tmp = vm.getPublicId()) ? "" : ", publicId=" + tmp)
+		+ (vm.getVersion() == null ? "" : ", version=" + vm.getVersion())
+		+ (StringUtils.isBlank(tmp = vm.getWorkflowStatus()) ? "" : ", workflowStatus=" + tmp)
+		+ (StringUtils.isBlank(tmp = vm.getOrigin()) ? "" : ", origin=" + tmp)
+		+ (StringUtils.isBlank(tmp = vm.getId()) ? "" : ", idseq=" + tmp) 
+		+ (StringUtils.isBlank(tmp = vm.getComments()) ? "" : "comments=" + tmp)
+		+ (StringUtils.isBlank(tmp = vm.getChangeNote()) ? "" : ", changeNote=" + tmp)
+		+ "]";
 	}
 	//SIW-627
 	/**
 	 * 
 	 * @param vd not null
-	 * @param vm not null
+	 * @param vm not null from XMI
 	 * @param pv not null
 	 * @param conStr not null
 	 * @param session
 	 * @throws Exception
 	 */
-	protected ValueMeaning saveValueMeaningWithConceptCodes(final ValueDomain vd, ValueMeaning vm, String conStr, final Session session) throws Exception {
+	protected ValueMeaning saveValueMeaningWithConceptCodes(ValueMeaning vm, String conStr, final Session session) throws Exception {
 		ValueMeaning vmResult;
         //SIW-793
         ValueMeaning byConceptVm = seachValueMeaningByCdr(conStr, session);
-
+        logger.debug("ValueMeaning from XMI: " + buildValueMeaningString(vm));
+        
         if (byConceptVm == null) {
           //SIW-793
+          logger.info("ValueMeaning is not found by CDR: " + conStr);
           ValueMeaning byNameVm = seachValueMeaningByLongName(vm.getLongName(), session);
           ConceptDerivationRule conDR;
           if (byNameVm == null) {//this is a new VM
+        	logger.info("ValueMeaning not found by CDR: " + conStr + ", and not found by LongName");
             conDR = vm.getConceptDerivationRule();
             conDR.setAudit(vm.getAudit());
             ValueDomainDAOImpl.this.saveCondr(session, conDR);
             session.flush();
             session.refresh(conDR);
+            logger.info("Created CDR in caDSR DB: " + conDR);
             //Creating a new VM
             session.save(vm);
             session.flush();
             vmResult = vm;
+            logger.info("Created CDR in caDSR DB: " + buildValueMeaningString(vmResult));
           }
           else { //We found a VM candidate
+        	logger.info("ValueMeaning not found by CDR: " + conStr + ", but found by LongName: " + vm.getLongName() + byNameVm);
+        	
             if ((byNameVm.getConceptDerivationRule() != null) && (byNameVm.getConceptDerivationRule().getComponentConcepts().size() > 0)) {
-              throw new Exception("VM " + byNameVm.getLongName() + " already exists but it's name does not match its concept. Skipping this VM. Please consider manually fixing the data before attemptin to reload.");
+              throw new Exception("Received XMI VM " + buildValueMeaningString(vm) + " already exists but it's name does not match its concept. Skipping this VM. "
+              		+ "Please consider manually fixing the data before attemptin to reload. VM from DB: " + buildValueMeaningString(byNameVm));
             }
-
             if ((byNameVm.getPreferredDefinition().equalsIgnoreCase(vm.getPreferredDefinition())) || 
             		(byNameVm.getPreferredDefinition().equalsIgnoreCase("No Definition Loaded")) || 
-            		(byNameVm.getPreferredDefinition().trim().equalsIgnoreCase(byNameVm.getLongName().trim()))) {
+            		(byNameVm.getPreferredDefinition().trim().equalsIgnoreCase(byNameVm.getLongName().trim()))) {//TODO why do we compare caDSR VM LongName with VM PreferredDefinition
+              logger.info("caDSR VM found to update CDR: " + buildValueMeaningString(byNameVm));
               conDR = vm.getConceptDerivationRule();
               conDR.setAudit(vm.getAudit());
               ValueDomainDAOImpl.this.saveCondr(session, conDR);
+              logger.info("Created CDR in caDSR DB: " + conDR);
               session.flush();
               session.refresh(conDR);
 
@@ -282,20 +307,26 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
               byNameVm.setConceptDerivationRule(conDR);
               session.saveOrUpdate(byNameVm);
               vmResult = byNameVm;
+              logger.info("caDSR DB VM updated with CDR: " + buildValueMeaningString(byNameVm));
             }
-            else {
+            else {//TODO why do we compare caDSR VM LongName with VM PreferredDefinition
+              logger.info("Error with caDSR DB VM: " + buildValueMeaningString(byNameVm));
               if (byNameVm.getLongName().equalsIgnoreCase(byNameVm.getPreferredDefinition())) {
-                throw new Exception("VM " + byNameVm.getLongName() + " already exists with a different definition, please consider fixing the data before attemtping to reload - 2");
+                throw new Exception("VM Long name: " + byNameVm.getLongName() + ", VM PreferredDefinition: " + byNameVm.getPreferredDefinition()
+                + " already exists with a different definition, please consider fixing the data before attemtping to reload - 2");
               }
-              throw new Exception("VM " + byNameVm.getLongName() + " already exists with a different definition, please consider fixing the data before attemtping to reload - 3");
+              throw new Exception("VM " + byNameVm.getLongName() + ", VM PreferredDefinition: " + byNameVm.getPreferredDefinition() +
+            		  " already exists with a different definition, please consider fixing the data before attemtping to reload - 3");
             }
           }
         }
-        else {
+        else {//we found caDSR VM based on CDR
         	vmResult = byConceptVm;
+        	logger.info("Found DB VM by CDR: " + buildValueMeaningString(byConceptVm));
         }
-        return vmResult;
-      
+    	logger.debug("Returning DB VM found by CDR: " + buildValueMeaningString(vmResult));
+
+        return vmResult;   
 	}
 	
 	//SIW-627
@@ -308,10 +339,10 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	
 	//SIW-617
 	protected void processPermissibleValues(final ValueDomain vd, List<PermissibleValue> pvs, final Session session) {
-		ValueDomainDAOImpl.this.logger.debug("Processing VD with LongName: " + vd.getLongName());
+		ValueDomainDAOImpl.this.logger.debug("Processing PVs of VD with LongName: " + vd.getLongName());
         for (PermissibleValue pv : pvs) {      	
             ValueMeaning vm = pv.getValueMeaning();
-            ValueDomainDAOImpl.this.logger.debug("...Processing VM with LongName: " + vm.getLongName());
+            ValueDomainDAOImpl.this.logger.debug("...Processing PV VM from XMI: " + buildValueMeaningString(vm));
             pv.setValue(vm.getLongName());
             
             boolean receivedVmById = false;
@@ -323,6 +354,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
                     receivedVmById = (vmReceived != null);
                     if (receivedVmById) {
                     	vm = vmReceived;
+                    	logger.info("Found caDSR VM by PublicID: " + buildValueMeaningString(vm));
                     }
                     else {
                         ValueDomainDAOImpl.this.logger.error("!!! Could not find VM by ID: " + vm.getPublicId() + ". This PV/VM pair is skipped");
@@ -370,7 +402,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	              }
 	              else {
 	            	  //SIW-627 code re-factoring
-	            	  vm = saveValueMeaningWithConceptCodes(vd, vm, conSb.toString(), session);
+	            	  vm = saveValueMeaningWithConceptCodes(vm, conSb.toString(), session);
 	              }
               }//end of not receivedVmId
 
@@ -382,9 +414,9 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
             catch (NonUniqueResultException ex) {
               ValueDomainDAOImpl.this.logger.error("Could not load VM : " + vm.getLongName() + " because there are already more than one VM by this name");
               ValueDomainDAOImpl.this.logger.error("Please consider fixing the data before attempting to reload.");
+              ValueDomainDAOImpl.this.logger.error(ex);
             } catch (Throwable t) {
               ValueDomainDAOImpl.this.logger.error("Could not load VM : " + vm.getLongName() + " -- Please consider loading manually.");
-              ValueDomainDAOImpl.this.logger.error("loader reported following error: ");
               ValueDomainDAOImpl.this.logger.error(t);
             }
           }		
