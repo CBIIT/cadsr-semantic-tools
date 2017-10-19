@@ -170,7 +170,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
         query.setString("publicId", vm.getPublicId());
         query.setFloat("version", vm.getVersion());
         result = (ValueMeaning)query.uniqueResult();//could be null
-        logger.info("Found caDSR VM by PublicID: " + );
+        logger.info("Found caDSR VM by PublicID: " + buildValueMeaningString(result));
 		return result;
 	}
 	
