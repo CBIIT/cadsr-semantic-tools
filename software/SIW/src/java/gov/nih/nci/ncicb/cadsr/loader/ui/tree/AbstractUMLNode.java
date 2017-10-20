@@ -44,10 +44,18 @@ public abstract class AbstractUMLNode<ParentNode extends UMLNode> implements UML
   public String getDisplay() {
     return display;
   }
+  
+  public void setDisplay(String newDisplay) {
+	    this.display = newDisplay;
+	  }  
 
   public String getFullPath() {
     return fullPath;
   }
+  
+  public void setFullPath(String newFullPath) {
+	    this.fullPath = newFullPath; 
+	  }  
 
   public Icon getIcon() {
     return icon;

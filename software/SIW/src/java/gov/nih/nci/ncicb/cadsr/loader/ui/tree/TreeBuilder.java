@@ -21,11 +21,13 @@ package gov.nih.nci.ncicb.cadsr.loader.ui.tree;
 
 import gov.nih.nci.ncicb.cadsr.domain.*;
 import gov.nih.nci.ncicb.cadsr.loader.defaults.UMLDefaults;
+import gov.nih.nci.ncicb.cadsr.loader.event.UMLDefaultHandler;
 import gov.nih.nci.ncicb.cadsr.loader.*;
 import gov.nih.nci.ncicb.cadsr.loader.validator.*;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
 import gov.nih.nci.ncicb.cadsr.loader.ui.event.*;
 import gov.nih.nci.ncicb.cadsr.loader.ReviewTracker;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -43,6 +45,7 @@ public class TreeBuilder implements UserPreferencesListener {
   
   private ReviewTracker reviewTracker;
   private static TreeBuilder instance = new TreeBuilder();
+  private Logger logger = Logger.getLogger(TreeBuilder.class.getName());  
   
   private TreeBuilder() {
     RunMode runMode = (RunMode)(UserSelections.getInstance().getProperty("MODE"));
@@ -194,6 +197,7 @@ public class TreeBuilder implements UserPreferencesListener {
     // Find all DEs that have this OC.
     DataElement o = DomainObjectFactory.newDataElement();
     List<DataElement> des = elements.getElements(o);
+    Boolean isDuplicate = new Boolean (false);    
     List<AttributeNode> inherited = new ArrayList<AttributeNode>();
     PackageNode inheritedPackage = new PackageNode("Inherited Attributes", "Inherited Attributes", true);
 
@@ -213,19 +217,12 @@ public class TreeBuilder implements UserPreferencesListener {
           
           Boolean reviewed = reviewTracker.get(node.getFullPath());
           
-          if(inheritedList.isInherited(de)) {
-            node = new InheritedAttributeNode(de);
-            inherited.add((InheritedAttributeNode)node);
-          } else {
-            parentNode.addChild(node);
-            ((AttributeNode) node).setReviewed(reviewed);
-          }            
 
           List<ValidationItem> items = findValidationItems(de.getDataElementConcept().getProperty());
           for(ValidationItem item : items) {
             ValidationNode vNode = null;
             if (item instanceof ValidationWarning) {
-              vNode = new WarningNode(item);
+            		vNode = new WarningNode(item);	
             } else {
               vNode = new ErrorNode(item);
             }
@@ -235,12 +232,37 @@ public class TreeBuilder implements UserPreferencesListener {
           for(ValidationItem item : items) {
             ValidationNode vNode = null;
             if (item instanceof ValidationWarning) {
-              vNode = new WarningNode(item);
+            	if (item.getMessage()!=null && item.getMessage().indexOf("attribute is duplicated") > -1) {
+            		isDuplicate = true;	            		
+            	}
+            	vNode = new WarningNode(item);
             } else {
               vNode = new ErrorNode(item);
             }
             node.addValidationNode(vNode);
-          }
+          }           
+          
+          if(inheritedList.isInherited(de)) {
+            node = new InheritedAttributeNode(de);
+            inherited.add((InheritedAttributeNode)node);
+          } else {        	
+        	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class  
+        	if (parentNode.getChildren().contains(node)) {
+        		if (!isDuplicate) {
+	        		//((AttributeNode) node).setDisplay(node.getDisplay()+"(1)");
+	        		((AttributeNode) node).setFullPath(node.getFullPath()+"(1)");
+	        		if (!parentNode.getChildren().contains(node)) {
+	        			logger.info("No more duplicates");
+	        		}
+	        		parentNode.addChild(node);
+        		}        		
+        	} else {
+        		parentNode.addChild(node);	
+        	}        	        	
+            ((AttributeNode) node).setReviewed(reviewed);
+          }            
+
+
         }
       } catch (NullPointerException e){
         e.printStackTrace();

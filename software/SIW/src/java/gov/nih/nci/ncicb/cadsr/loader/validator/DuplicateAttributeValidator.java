@@ -49,7 +49,7 @@ public class DuplicateAttributeValidator implements Validator
   private ProgressListener progressListener;
   
   private HashSet<String> vdTags = new HashSet<String>(); 
-  Boolean isDuplicate = new Boolean(false);
+  int dupeCount = 0;
   
   private UMLHandler listener;
   
@@ -207,7 +207,7 @@ public class DuplicateAttributeValidator implements Validator
   public ValidationItems validate() {
     List<ObjectClass> ocs = elements.getElements(DomainObjectFactory.newObjectClass());
     List<DataElement> des = elements.getElements(DomainObjectFactory.newDataElement());
-
+   
     ProgressEvent evt = new ProgressEvent();
     evt.setMessage("Validating Object Classes ...");
     evt.setGoal(ocs.size());
@@ -219,10 +219,10 @@ public class DuplicateAttributeValidator implements Validator
     
     for(ObjectClass oc : ocs) {
       evt = new ProgressEvent();
-      evt.setMessage(" Validating " + oc.getLongName());
+      evt.setMessage(" Validating " + oc.getLongName());      
       evt.setStatus(count++);
       fireProgressEvent(evt);
-      
+      List<DataElement> matchedDes = new ArrayList<DataElement>();      
       List<ObjectClass> childOCs = inheritedAttrs.getChildrenOc(oc);
       NewGeneralizationEvent event = new NewGeneralizationEvent();
       for(DataElement de : des) {
@@ -231,12 +231,23 @@ public class DuplicateAttributeValidator implements Validator
         	  if(de.getDataElementConcept().getObjectClass() == oc) {
         		  if(de2.getDataElementConcept().getObjectClass() == oc) {
         			  if(de.getDataElementConcept().getProperty().getLongName().equals(
-                              de2.getDataElementConcept().getProperty().getLongName())) {        				  		
+                              de2.getDataElementConcept().getProperty().getLongName())) {
+        				// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class        				  
+        				  		if (matchedDes.contains(de) || matchedDes.contains(de2)) {
+        				  			continue;
+        				  		} else {
+        				  		dupeCount = 0;
+        				  	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class        				  		
         					  	compareVDTags(de.getDataElementConcept().getProperty().getLongName(), oc.getLongName());
-        					  if (isDuplicate)
+        					  if (dupeCount > 0) {
 		        				  items.addItem(new ValidationWarning
 		                                  (PropertyAccessor.getProperty
-		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()),de)); 
+		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()),de));		        				
+        					  }
+        					// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
+        					  matchedDes.add(de);
+        					  matchedDes.add(de2);
+        				  		}
         			  }          
         		  }
         		  else {
@@ -256,22 +267,23 @@ public class DuplicateAttributeValidator implements Validator
         }
         
     }
-  }
-  logger.info("Warning items: " + items.getWarnings().size());  
+ }
+ // SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class
+  /*logger.info("Warning items: " + items.getWarnings().size());  
   for (ValidationWarning warn : items.getWarnings()) {
 	  logger.info("Warning message: " + warn.getMessage());
-  }
+  }*/
   return items;
 }
   
   
+//SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
   private void compareVDTags(String longName, String objectClassName) {
 	  
 	  String filename;
 			filename = (String) userSelections.getProperty("FILENAME");
 			userSelections.setProperty("LongName", longName);
-			userSelections.setProperty("ObjectClassName", objectClassName);
-			logger.info("File Name: "+filename);         
+			userSelections.setProperty("ObjectClassName", objectClassName);         
 			XmiInOutHandler handler = (XmiInOutHandler)UserSelections.getInstance().getProperty("XMI_HANDLER");
 			UMLModel model = handler.getModel();
 			try {
@@ -322,6 +334,7 @@ public class DuplicateAttributeValidator implements Validator
 	  return null;
   }
   
+//SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
   private void doPackages(UMLModel model) throws ParserException{
 	  for(UMLPackage pkg : model.getPackages()) {
 		  doPackage(pkg);
@@ -329,6 +342,7 @@ public class DuplicateAttributeValidator implements Validator
 	  
   }
   
+//SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
   private void doPackage(UMLPackage pack) throws ParserException {
 	    if (packageName.length() == 0) {
 	      packageName = pack.getName();
@@ -351,16 +365,17 @@ public class DuplicateAttributeValidator implements Validator
 	      packageName = oldPackage;
 	    }
 	    String ocName = (String)userSelections.getProperty("ObjectClassName");
-	    logger.info("Object Class Name for the attributes: "+ocName);
+	    //logger.info("Object Class Name for the attributes: "+ocName);
 	    for(UMLClass clazz : pack.getClasses()) {
-	    	logger.info("Matching OC name: "+LookupUtil.getPackageName(clazz.getPackage())+"."+clazz.getName());
-	    	//if ((LookupUtil.getPackageName(clazz.getPackage())+"."+clazz.getName()).equalsIgnoreCase(ocName))
+	    	//logger.info("Matching OC name: "+LookupUtil.getPackageName(clazz.getPackage())+"."+clazz.getName());
+	    	if ((LookupUtil.getPackageName(clazz.getPackage())+"."+clazz.getName()).equalsIgnoreCase(ocName))
 	    		doClass(clazz);
 	    }
 
 	    packageName = "";
 	  }
   
+//SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
   private void doClass(UMLClass clazz) throws ParserException {
 	    String pName = LookupUtil.getPackageName(clazz.getPackage());
 
@@ -412,53 +427,6 @@ public class DuplicateAttributeValidator implements Validator
 	      return;
 	    }
 
-	    /*String description = getDocumentation(clazz, TV_CADSR_DESCRIPTION);
-	    if(description != null) {
-	      event.setDescription(description);
-	    } else {
-	      description = getDocumentation(clazz, TV_DOCUMENTATION);
-	      if(description != null) {
-	        event.setDescription(description);
-	      } else {
-	        description = getDocumentation(clazz, TV_DESCRIPTION);
-	        if(description != null) {
-	          event.setDescription(description);
-	        }
-	      }
-	    }*/
-
-	    /*UMLTaggedValue tv = clazz.getTaggedValue(reviewTag);
-	    if(tv != null) {
-	      event.setReviewed(tv.getValue().equals("1")?true:false);
-	    }
-
-	    tv = clazz.getTaggedValue(TV_GME_NAMESPACE);
-	    if(tv != null) {
-	      event.setGmeNamespace(tv.getValue());
-	    }
-
-	    tv = clazz.getTaggedValue(TV_GME_XML_ELEMENT);
-	    if(tv != null) {
-	      event.setGmeXmlElement(tv.getValue());
-	    }
-
-	    tv = clazz.getTaggedValue(TV_EXCLUDE_SEMANTIC_INHERITANCE);
-	    if(tv != null) {
-	      event.setExcludeFromSemanticInheritance(tv.getValue().equals("1")?true:false);
-	    }
-	    
-	    String reason = getSplitTaggedValue(clazz, TV_EXCLUDE_SEMANTIC_INHERITANCE_REASON, "_");
-	    if(!StringUtil.isEmpty(reason)) {
-	      event.setExcludeFromSemanticInheritanceReason(reason);
-	    }
-
-
-	    if(isInPackageFilter(pName)) {
-	      listener.newClass(event);
-	    } else {
-	      logger.info(PropertyAccessor.getProperty("class.filtered", className));
-	      return;
-	    }*/
  
 	    String longName = (String)userSelections.getProperty("LongName");
 
@@ -470,13 +438,13 @@ public class DuplicateAttributeValidator implements Validator
 
 	  }
   
+//SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class  
   private void doAttribute(UMLAttribute att) throws ParserException {
 	    NewAttributeEvent event = new NewAttributeEvent(att.getName().trim());
 	    event.setClassName(className);
 	    currentElementIndex++;
 	    ProgressEvent evt = new ProgressEvent();
 	    evt.setMessage("Parsing " + att.getName());
-	    logger.info("Parsing " + att.getName());
 	    evt.setStatus(currentElementIndex);
 	    fireProgressEvent(evt);
 	    
@@ -506,45 +474,10 @@ public class DuplicateAttributeValidator implements Validator
 	    }
 	    
 	    event.setType(att.getDatatype().getName());
-/*
-	    String description = getDocumentation(att, TV_CADSR_DESCRIPTION);
-	    if(description != null) {
-	      event.setDescription(description);
-	    } else {
-	      description = getDocumentation(att, TV_DESCRIPTION);
-	      if(description != null) {
-	        event.setDescription(description);
-	      } else {
-	        description = getDocumentation(att, TV_DOCUMENTATION);
-	        if(description != null) {
-	          event.setDescription(description);
-	        }
-	      }
-	    }
-*/
-	    //tv = att.getTaggedValue(reviewTag);
-/*	    if(tv != null) {
-	      event.setReviewed(tv.getValue().equals("1")?true:false);
-	    }
 
-	    // Is this attribute mapped to an existing CDE?
-	    tv = att.getTaggedValue(TV_DE_ID);
-	    if(tv != null) {
-	      event.setPersistenceId(tv.getValue().trim());
-	    }
-
-	    tv = att.getTaggedValue(TV_DE_VERSION);
-	    if(tv != null) {
-	      try {
-	        event.setPersistenceVersion(new Float(tv.getValue()));
-	      } catch (NumberFormatException e){
-	        logger.warn("de ID is not a number, ignoring: " + tv.getValue());     
-	      } // end of try-catch
-	    } */
 
 	    tv = att.getTaggedValue(TV_VD_ID);
 	    if(tv != null) {
-	     logger.info("VD ID from doAttribute: "+tv.getName()+" :: String: "+tv.getValue()+ " :: for Attribute - "+att.getName()+" :: Class Name - "+className);
 	     vdIdVersion = tv.getValue().trim();
 	      event.setTypeId(tv.getValue().trim());
 	    }
@@ -552,7 +485,6 @@ public class DuplicateAttributeValidator implements Validator
 	    tv = att.getTaggedValue(TV_VD_VERSION);
 	    if(tv != null) {
 	      try {
-	    	  logger.info("VD version from doAttribute: "+tv.getName()+" :: String: "+tv.getValue().trim()+ " :: for Attribute - "+att.getName()+" :: Class Name - "+className);
 	    	  vdIdVersion = vdIdVersion +  new Float(tv.getValue());
 	        event.setTypeVersion(new Float(tv.getValue()));
 	      } catch (NumberFormatException e){
@@ -568,7 +500,7 @@ public class DuplicateAttributeValidator implements Validator
 	    }
 	    
 	    if (vdTags.contains(vdIdVersion)) {
-	    	isDuplicate = true;
+	    	dupeCount++;
 	    } else {
 	    	vdTags.add(vdIdVersion);
 	    }
