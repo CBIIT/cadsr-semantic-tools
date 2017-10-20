@@ -153,6 +153,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 		Query query = session.createSQLQuery(sqlVmByLongName).addEntity("vm", ValueMeaningBean.class);
 		List vmList = query.setString("vmLongName", longName.toUpperCase()).list();
 		if((vmList != null) && (! vmList.isEmpty())) {
+			logger.info("Found caDSR VM by XMI-provided LongName: " + buildValueMeaningString((ValueMeaning)vmList.get(0)));
 			valueMeaning = searchValueMeaningByPublicId((ValueMeaning)vmList.get(0), session);
 		}
 		return valueMeaning;
@@ -177,8 +178,12 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	//SIW-627 re-factored from create
 	protected void saveOrFindPermissibleValue(final ValueDomain vd, ValueMeaning vm, PermissibleValue pv, Session session) {
         Criteria criteria = session.createCriteria(pv.getClass());
-        criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning").add(Expression.eq("longName", pv.getValueMeaning().getLongName()));
-
+        if (StringUtils.isNotBlank(vm.getPublicId())) {
+        	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning").add(Expression.eq("publicId", vm.getPublicId()));
+        }
+        else {
+        	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning").add(Expression.eq("longName", vm.getLongName()));
+        }
         List l = criteria.list();
         if (l.size() == 0) {
           session.save(pv);
@@ -234,6 +239,7 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	}
 	public static String buildValueMeaningString(final ValueMeaning vm) {
 		String tmp;
+		if (vm == null) return null;
 		return "ValueMeaning ["+ "longName=" + vm.getLongName()
 		+ ", preferredDefinition=" + vm.getPreferredDefinition()
 		+ (StringUtils.isBlank(tmp = vm.getPreferredName()) ? "" : ", preferredName=" + tmp)
