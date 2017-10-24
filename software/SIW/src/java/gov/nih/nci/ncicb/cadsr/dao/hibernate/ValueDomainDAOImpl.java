@@ -179,7 +179,9 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	protected void saveOrFindPermissibleValue(final ValueDomain vd, ValueMeaning vm, PermissibleValue pv, Session session) {
         Criteria criteria = session.createCriteria(pv.getClass());
         if (StringUtils.isNotBlank(vm.getPublicId())) {
-        	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning").add(Expression.eq("publicId", vm.getPublicId()));
+        	Float versionNumber = (vm.getVersion() != null) ? vm.getVersion() : 1f;
+        	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning")
+        		.add(Expression.eq("publicId", vm.getPublicId())).add(Expression.eq("version", versionNumber));
         }
         else {
         	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning").add(Expression.eq("longName", vm.getLongName()));
