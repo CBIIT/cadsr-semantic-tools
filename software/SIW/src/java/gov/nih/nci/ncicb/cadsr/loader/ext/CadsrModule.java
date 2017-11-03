@@ -37,6 +37,10 @@ public interface CadsrModule
 
   public Collection<gov.nih.nci.ncicb.cadsr.domain.ValueDomain>
     findValueDomain(Map<String, Object> queryFields) throws Exception;
+  
+  //SIW-627
+  public Collection<gov.nih.nci.ncicb.cadsr.domain.ValueMeaning>
+    findValueMeaning(Map<String, Object> queryFields) throws Exception;
 
   public Collection<gov.nih.nci.ncicb.cadsr.domain.Property>
     findProperty(Map<String, Object> queryFields) throws Exception;

@@ -127,7 +127,8 @@ public class CadsrDialog extends JDialog implements ActionListener, KeyListener,
   public static final int MODE_CD = 5;
   public static final int MODE_CS = 7;
   public static final int MODE_REP = 9;
-  
+  //SIW-627
+  public static final int MODE_VM = 10;
   private int mode;
 
   private static Logger logger = Logger.getLogger(CadsrDialog.class.getName());
@@ -163,6 +164,9 @@ public class CadsrDialog extends JDialog implements ActionListener, KeyListener,
       break;
     case MODE_REP:
       this.setTitle("Search for Rep Term");
+      break;
+    case MODE_VM://SIW-627
+      this.setTitle("Search for Value Meaning");
       break;
     }
 
@@ -238,7 +242,7 @@ public class CadsrDialog extends JDialog implements ActionListener, KeyListener,
     resultTable.getColumnModel().getColumn(3).setCellRenderer(tcrColumn);
     resultTable.getColumnModel().getColumn(4).setCellRenderer(tcrColumn);
     
-    if(mode == MODE_VD) {
+    if((mode == MODE_VD) || (mode == MODE_VM)) {
       resultTable.getColumnModel().getColumn(6).setMaxWidth(0);
       resultTable.getColumnModel().getColumn(6).setResizable(false);
     }
@@ -574,6 +578,17 @@ public class CadsrDialog extends JDialog implements ActionListener, KeyListener,
                     && (vd.getWorkflowStatus().toUpperCase().indexOf("RETIRED") == -1))
                         resultSet.add(new SearchResultWrapper(vd));
           }
+          break;
+        case MODE_VM:
+            for(ValueMeaning vm : cadsrModule.findValueMeaning(queryFields)){
+              if(cbStatus)
+                  resultSet.add(new SearchResultWrapper(vm));
+              else
+                  if(vm.getWorkflowStatus() != null 
+                      && (vm.getWorkflowStatus().toUpperCase().indexOf("RETIRED") == -1))
+                          resultSet.add(new SearchResultWrapper(vm));
+            }
+            break;
         }
       } catch (Exception e){
         logger.error("Error querying Cadsr " + e);

@@ -452,30 +452,28 @@ public class XMIWriter2 implements ElementWriter {
     changeTracker.clear();
   }
   
-  //SIW-627
+  //SIW-627 moved PV Update code to a separate function
   private void updatePV(PermissibleValue pv, String fullVDName) {
       ValueMeaning vm = pv.getValueMeaning();
       String fullPropName = fullVDName + "." + pv.getValue();//SIW-627
       UMLAttribute att = attributeMap.get(fullPropName);
       boolean changed = changeTracker.get(fullPropName);
-      logger.debug("++++++++PermissibleValue vm" + vm + ", fullPropName: " + fullPropName + ", changed? " + changed);
-
+      logger.debug("...PermissibleValue fullPropName: " + fullPropName + ", changed? " + changed + ", VM: " + vm);
+      
       String [] conceptCodes = ConceptUtil.getConceptCodes(vm);
       // is one of the concepts in this VM changed?
       for(String s : conceptCodes)
         changed = changed | changeTracker.get(s);
 
-      if(changed) {
-          if((att != null)){
-            removeSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, "");
-            for(Definition def : (List<Definition>) vm.getDefinitions()) {
-              if(def.getType().equals(Definition.TYPE_UML_VM)) {
-                DefinitionSplitter.addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
+      if (changed && (att != null)) {
+        removeSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, "");
+        for(Definition def : (List<Definition>) vm.getDefinitions()) {
+          if(def.getType().equals(Definition.TYPE_UML_VM)) {
+            DefinitionSplitter.addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
 //                addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
-                break;
-              }
-            }
+            break;
           }
+        }
           // drop all current concept tagged values
         Collection<UMLTaggedValue> allTvs = att.getTaggedValues();
         for(UMLTaggedValue tv : allTvs) {
@@ -485,6 +483,22 @@ public class XMIWriter2 implements ElementWriter {
         }
 
         addConceptTvs(att, conceptCodes, XMIParser2.TV_TYPE_VM);
+        
+        ////////
+        //SIW-627 drop VM ID related Attributes
+        att.removeTaggedValue(XMIParser2.TV_VM_ID);
+        att.removeTaggedValue(XMIParser2.TV_VM_VERSION);
+        //SIW-627 add VM ID related Attributes
+        if(vm.getPublicId() != null) {
+        	att.addTaggedValue(XMIParser2.TV_VM_ID, vm.getPublicId());
+        	logger.debug("XMI saving PV VM ID: " + vm.getPublicId());
+        }
+        if(vm.getVersion() != null) {
+        	att.addTaggedValue(XMIParser2.TV_VM_VERSION,""+vm.getVersion());
+        }
+      }
+      else if (att == null) {
+    	  logger.info("XMI element AKA UMLAttribute is for found for the path: " + fullPropName);
       }
   }
   

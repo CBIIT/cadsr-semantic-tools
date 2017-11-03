@@ -387,15 +387,41 @@ public class CadsrTransformer {
     return outPv;
   }
 
-
+  /**
+   * Transforms a Value Meaning from public API to private API.
+   * Public cadsr-beans.jar; Private cadsr-api.jar
+   */
   public static gov.nih.nci.ncicb.cadsr.domain.ValueMeaning vmPublicToPrivate(gov.nih.nci.cadsr.domain.ValueMeaning inVm) {
     gov.nih.nci.ncicb.cadsr.domain.ValueMeaning outVm = DomainObjectFactory.newValueMeaning();
+    //SIW-627
+    outVm.setLongName(inVm.getLongName());
+    outVm.setContext(contextPublicToPrivate(inVm.getContext()));
+    outVm.setOrigin(inVm.getOrigin());
+    outVm.setPublicId(""+inVm.getPublicID().intValue());
+    outVm.setVersion(inVm.getVersion());
+    outVm.setWorkflowStatus(inVm.getWorkflowStatusName());
+    outVm.setPreferredDefinition(inVm.getPreferredDefinition());
     
-//    outVm.setValue(inVm.getShortMeaning());
-
     return outVm;
   }
+  
+  /**
+   * Transforms a Value Meaning List from public API to private API.
+   * Public cadsr-beans.jar; Private cadsr-api.jar
+   */
+  public static Collection<gov.nih.nci.ncicb.cadsr.domain.ValueMeaning> vmListPublicToPrivate(List<gov.nih.nci.cadsr.domain.ValueMeaning> inVMs) {
+	  //SIW-627
+    List<gov.nih.nci.ncicb.cadsr.domain.ValueMeaning> outVMs = new ArrayList<gov.nih.nci.ncicb.cadsr.domain.ValueMeaning>();
 
+    if(! (inVMs == null)) {
+	    for(int i=0;i<inVMs.size();i++){
+	    	outVMs.add(vmPublicToPrivate(inVMs.get(i)));
+	    }
+    }
+    	    
+    return outVMs;
+  }
+  
   public static Collection<gov.nih.nci.ncicb.cadsr.domain.PermissibleValue> pvListPublicToPrivate(List<gov.nih.nci.cadsr.domain.PermissibleValue> inPvs) {
 
     List<gov.nih.nci.ncicb.cadsr.domain.PermissibleValue> outPvs = 

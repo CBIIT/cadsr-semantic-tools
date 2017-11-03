@@ -2,6 +2,7 @@ package gov.nih.nci.ncicb.cadsr.loader.ui;
 import gov.nih.nci.ncicb.cadsr.domain.Concept;
 import gov.nih.nci.ncicb.cadsr.domain.DataElement;
 import gov.nih.nci.ncicb.cadsr.domain.ObjectClass;
+import gov.nih.nci.ncicb.cadsr.domain.ValueMeaning;
 import gov.nih.nci.ncicb.cadsr.loader.UserSelections;
 import gov.nih.nci.ncicb.cadsr.loader.event.ReviewEvent;
 import gov.nih.nci.ncicb.cadsr.loader.event.ReviewEventType;
@@ -58,7 +59,8 @@ public class ButtonPanel extends JPanel implements ActionListener,
   static final String 
     SWITCH_TO_DE = "Map to CDE",
     SWITCH_TO_OC = "Map to OC",
-    SWITCH_TO_CONCEPT = "Map to Concepts";
+    SWITCH_TO_CONCEPT = "Map to Concepts",
+    SWITCH_TO_VM_ID = "Map to VM";//SIW-627
     
   private RunMode runMode = null;
     
@@ -123,8 +125,23 @@ public class ButtonPanel extends JPanel implements ActionListener,
       {
         setSwitchButtonText(ButtonPanel.SWITCH_TO_OC);
       }
-    } else if(editable == null) { 
-      return;
+    } else if(editable instanceof PublicIdPanel) {//SIW-627
+
+    	ValueMeaning vm = (ValueMeaning)conceptEditorPanel.getNode().getUserObject();
+    	if(StringUtil.isEmpty(vm.getPublicId())) 
+    	{
+    	   setSwitchButtonText(ButtonPanel.SWITCH_TO_VM_ID);
+    	   this.addButtonPanel.setVisible(true);
+    	}
+    	else 
+    	{
+    	    setSwitchButtonText(ButtonPanel.SWITCH_TO_CONCEPT);
+        	this.addButtonPanel.setVisible(false);
+        }
+    	switchButton.setVisible(true);
+    }
+    else if(editable == null) { 
+      this.addButtonPanel.setVisible(true);
     }
   }
   
@@ -188,6 +205,7 @@ public class ButtonPanel extends JPanel implements ActionListener,
     if(concepts.length == 0) {
       if(node instanceof ValueMeaningNode) {
         reviewButtonState = true;
+        //FIXME SIW-793 if the VM does not have a concept code, the SIW should throw an error, so the user must select concepts using the SIW search feature.
       } else
         reviewButtonState = false;
     } else 
@@ -221,7 +239,11 @@ public class ButtonPanel extends JPanel implements ActionListener,
       } else {
         addButtonPanel.setVisible(true);
       }
-    } else if(editable == null) {
+    } else if(editable instanceof PublicIdPanel) {//SIW-617
+    //FIXME if VM Public ID we do not show Add button
+    	
+    }
+    else if(editable == null) {
       addButtonPanel.setVisible(true);
     } 
     
@@ -257,16 +279,21 @@ public class ButtonPanel extends JPanel implements ActionListener,
           conceptEditorPanel.getVDPanel().updateNode(conceptEditorPanel.getNode());
         } else if(editable instanceof OCPanel) {
           switchButton.setText(SWITCH_TO_OC);
-        } else if(editable == null) {
-        
+        } else if(editable instanceof PublicIdPanel) {//SIW-627
+            switchButton.setText(SWITCH_TO_VM_ID);
+        }
+        else if(editable == null) {
+
         }
         addButtonPanel.setVisible(true);
       } else if(switchButton.getText().equals(SWITCH_TO_OC)) {
          ((UMLElementViewPanel)viewPanel).switchCards(UMLElementViewPanel.OC_PANEL_KEY);
          switchButton.setText(SWITCH_TO_CONCEPT);
-      }
+      } else if(switchButton.getText().equals(SWITCH_TO_VM_ID)) {//SIW-627
+          ((UMLElementViewPanel)viewPanel).switchCards(UMLElementViewPanel.VM_PUBLIC_ID_PANEL_KEY);
+          switchButton.setText(SWITCH_TO_CONCEPT);
+          addButtonPanel.setVisible(false);
+       }
     }
   }
- 
-  
 }

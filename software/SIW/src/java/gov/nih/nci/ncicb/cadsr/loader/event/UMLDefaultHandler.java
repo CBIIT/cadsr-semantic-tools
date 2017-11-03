@@ -269,7 +269,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 	}
 
 	public void newValueMeaning(NewValueMeaningEvent event) {
-		logger.info("Value Meaning: " + event.getName());
+		logger.info("newValueMeaning event.getName(): " + event.getName());
 
 		List<Concept> concepts = createConcepts(event);
 

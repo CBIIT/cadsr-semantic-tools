@@ -159,7 +159,7 @@ public class ApplyButtonPanel extends JPanel implements ActionListener, Property
     reviewListeners.add(listener);
   }
 
-  private void setApplyButtonState(boolean b) {
+  protected void setApplyButtonState(boolean b) {
     applyButton.setEnabled(b);
 
     PropertyChangeEvent evt = new PropertyChangeEvent(this, SAVE, null, b);

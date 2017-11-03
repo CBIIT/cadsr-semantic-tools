@@ -40,10 +40,11 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
 /**
- * Layer to the EVS external API.
+ * Layer to the caDSR external API.
  * 
  * @author <a href="mailto:chris.ludet@oracle.com">Christophe Ludet</a>
  */
+@SuppressWarnings("unchecked")
 public class CadsrPublicApiModule implements CadsrModule {
 
 	private static ApplicationService service = null;
@@ -245,7 +246,48 @@ public class CadsrPublicApiModule implements CadsrModule {
 
 		return CadsrTransformer.vdListPublicToPrivate(resultListVD);
 	}
+	/**
+	 * This method expects Public ID or longName
+	 * @param queryFields
+	 * @return Collection of ValueMeaning beans
+	 * @throws Exception
+	 */
+	//SIW-627
+	public Collection<gov.nih.nci.ncicb.cadsr.domain.ValueMeaning> findValueMeaning(
+			Map<String, Object> queryFields) throws Exception {
+		//SIW-627
+		gov.nih.nci.cadsr.domain.ValueMeaning vm = new gov.nih.nci.cadsr.domain.ValueMeaning();
 
+		DetachedCriteria detachedCrit = null;
+		buildExample(vm, queryFields);
+		if ((vm.getPublicID() != null) && (vm.getVersion() != null)) {
+			detachedCrit = DetachedCriteria.forClass(
+					gov.nih.nci.cadsr.domain.ValueMeaning.class).add(Property.forName("publicID").eq(vm.getPublicID()))
+					.add(Property.forName("version").eq(vm.getVersion()));
+		} else if (vm.getPublicID() != null) {
+			detachedCrit = DetachedCriteria.forClass(
+					gov.nih.nci.cadsr.domain.ValueMeaning.class).add(
+					Property.forName("publicID").eq(vm.getPublicID())); // .add(
+																		// Property.forName("version").eq(vd.getVersion()));
+		} else if ((vm.getLongName() != null) && (vm.getLongName().contains("*"))) {
+			detachedCrit = DetachedCriteria.forClass(
+					gov.nih.nci.cadsr.domain.ValueMeaning.class).add(
+							Property.forName("longName").like(
+									vm.getLongName().replace("*", "")+ "%").ignoreCase()); 
+		} else{
+			detachedCrit = DetachedCriteria.forClass(
+					gov.nih.nci.cadsr.domain.ValueMeaning.class).add(
+							Property.forName("longName").like(
+									vm.getLongName()).ignoreCase());
+		}
+		
+		detachedCrit.setFetchMode("context", FetchMode.EAGER);
+
+		List<gov.nih.nci.cadsr.domain.ValueMeaning> resultListVM = (List<gov.nih.nci.cadsr.domain.ValueMeaning>) (List<?>) service.query(detachedCrit);
+
+		return CadsrTransformer.vmListPublicToPrivate(resultListVM);
+	}
+	
 	public Collection<gov.nih.nci.ncicb.cadsr.domain.Property> findProperty(
 			Map<String, Object> queryFields) throws Exception {
 

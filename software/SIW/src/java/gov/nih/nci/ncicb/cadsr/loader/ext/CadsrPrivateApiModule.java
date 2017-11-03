@@ -85,7 +85,12 @@ public class CadsrPrivateApiModule implements CadsrModule
 
   }
 
+  public Collection<ValueMeaning>
+  	findValueMeaning(Map<String, Object> queryFields) throws Exception  {
+	  throw new UnsupportedOperationException("findValueMeaning not implemented");
 
+  }
+  
   public Collection<Property>
     findProperty(Map<String, Object> queryFields) throws Exception  {
 

@@ -179,6 +179,7 @@
         <ref bean="cadsrDEDialog"/>
         <ref bean="cadsrCSDialog"/>
         <ref bean="cadsrVDDialog"/>
+        <ref bean="cadsrVMDialog"/>
         <ref bean="cadsrCDDialog"/>
         <ref bean="cadsrREPDialog"/>
         <ref bean="deReuseDialog"/>
@@ -452,7 +453,13 @@
     >
     <constructor-arg><value>3</value></constructor-arg>
   </bean>
-
+  
+  <bean name="cadsrVMDialog"
+    class="gov.nih.nci.ncicb.cadsr.loader.ui.CadsrDialog"
+    >
+    <constructor-arg><value>10</value></constructor-arg>
+  </bean>
+  
   <bean name="deReuseDialog"
     class="gov.nih.nci.ncicb.cadsr.loader.ui.DEReuseDialog"
     >
@@ -476,8 +483,7 @@
     <property name="cadsrREPDialog">
       <ref bean="cadsrREPDialog"/>
     </property>
-  </bean>  
-
+  </bean> 
 
   <bean name="mteVDPanel"
     class="gov.nih.nci.ncicb.cadsr.loader.ui.MapToExistingVDPanel">
