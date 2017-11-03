@@ -4,16 +4,14 @@
 package gov.nih.nci.ncicb.cadsr.loader.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+//import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,37 +20,24 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 
 import gov.nih.nci.cadsr.common.Logger;
-import gov.nih.nci.ncicb.cadsr.domain.ConceptualDomain;
-import gov.nih.nci.ncicb.cadsr.domain.ValueDomain;
 import gov.nih.nci.ncicb.cadsr.domain.ValueMeaning;
 import gov.nih.nci.ncicb.cadsr.loader.event.ElementChangeEvent;
 import gov.nih.nci.ncicb.cadsr.loader.event.ElementChangeListener;
 import gov.nih.nci.ncicb.cadsr.loader.ext.CadsrPublicApiModule;
-import gov.nih.nci.ncicb.cadsr.loader.ui.ConceptUI.TextFieldLimiter;
 import gov.nih.nci.ncicb.cadsr.loader.ui.tree.UMLNode;
 import gov.nih.nci.ncicb.cadsr.loader.ui.tree.ValueMeaningNode;
 import gov.nih.nci.ncicb.cadsr.loader.ui.util.UIUtil;
 import gov.nih.nci.ncicb.cadsr.loader.util.BeansAccessor;
 import gov.nih.nci.ncicb.cadsr.loader.util.ConventionUtil;
-import gov.nih.nci.ncicb.cadsr.loader.util.PropertyAccessor;
 import gov.nih.nci.ncicb.cadsr.loader.util.StringUtil;
 
 @SuppressWarnings("rawtypes")
@@ -61,8 +46,6 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 {
 	private static final long serialVersionUID = 1L;
 	private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PublicIdPanel.class.getName());
-    //public JTextArea longName = new JTextArea("long name");//FIXME remove
-    //public JLabel longNameLabel = new JLabel("long name in here");//FIXME remove
     protected JTextArea longNameArea = new JTextArea(4, 54);
     private JButton cdSearchButton = new JButton("Search");
     public JLabel vmPublicIdJLabel;
@@ -119,26 +102,10 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	        	vm.setVersion(1f);
 	        }
 	        
-	        //I keep this commented code now for a chance we want VM LongName be scrollable; 
-	        //TODO remove when VM LongName format is decided 
-//		        TextFieldLimiter tf = new TextFieldLimiter(2000);
-//		        longName.setDocument(tf);
-//		        longName.setFont(new Font("Serif", Font.ITALIC, 16));
-//		        longName.setLineWrap(true);
-//		        longName.setWrapStyleWord(true);
-//		        longName.setEnabled(false);
-//		        longName.setText("FIXME: we shall see VM Long name here retrieved from caDSR");
-//		        JScrollPane longNameScrollPane = new JScrollPane(longName);
-//		        longNameScrollPane
-//		          .setVerticalScrollBarPolicy
-//		          (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//		        longNameScrollPane.setPreferredSize(new Dimension(400, 64));
-//		        UIUtil.insertInBag(publicIdPanel, longNameScrollPane, 0, 2, 2, 1);//col 0 row 2 width 2 height 1
-	        
 	        UIUtil.insertInBag(publicIdPanel, new JLabel("VM Long Name: "), 0, 1);//col 0 row 1       
 	        UIUtil.insertInBag(publicIdPanel, longNameArea, 0, 2, 2, 1);
 	        JPanel vdCDIdVersionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-	        vdCDIdVersionPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
+	        //vdCDIdVersionPanel.setBorder(BorderFactory.createLineBorder(Color.blue));//TODO for DEBUG only
 	        vmPublicIdJLabel = new JLabel();
 	        vdCDIdVersionPanel.add(vmPublicIdJLabel);
 	        vmPublicIdJLabel.setText(ConventionUtil.publicIdVersion(vm));
@@ -155,9 +122,7 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	            	cadsrVMDialog.setAlwaysOnTop(true);
 	                cadsrVMDialog.setVisible(true);
 	                tempVM = (gov.nih.nci.ncicb.cadsr.domain.ValueMeaning)cadsrVMDialog.getAdminComponent();
-	                //vmPublicToPrivate
 	                if(tempVM == null) return;
-	                //initValues();
 	                logger.debug("Foung VM in caDSR: " + tempVM);
 	                setVmSearchedValues();
 	                firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
