@@ -19,6 +19,8 @@
  */
 package gov.nih.nci.ncicb.cadsr.loader.parser;
 
+import org.apache.log4j.Logger;
+
 import gov.nih.nci.ncicb.cadsr.domain.*;
 import gov.nih.nci.ncicb.cadsr.loader.*;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
@@ -29,7 +31,6 @@ import gov.nih.nci.ncicb.xmiinout.handler.*;
 import gov.nih.nci.ncicb.xmiinout.domain.*;
 
 import java.util.*;
-
 /**
  * A writer for XMI files 
  *
@@ -56,7 +57,7 @@ public class XMIWriter2 implements ElementWriter {
   private UMLModel model = null;
   private XmiInOutHandler handler = null;
 
-//  private Logger logger = Logger.getLogger(XMIWriter2.class.getName());
+  private Logger logger = Logger.getLogger(XMIWriter2.class.getName());
 
   public XMIWriter2() {
   }
@@ -364,37 +365,7 @@ public class XMIWriter2 implements ElementWriter {
       }        
 
       for(PermissibleValue pv : vd.getPermissibleValues()) {
-        ValueMeaning vm = pv.getValueMeaning();
-        String fullPropName = fullVDName + "." + vm.getLongName();
-        UMLAttribute att = attributeMap.get(fullPropName);
-        boolean changed = changeTracker.get(fullPropName);
-
-        String [] conceptCodes = ConceptUtil.getConceptCodes(vm);
-        // is one of the concepts in this VM changed?
-        for(String s : conceptCodes)
-          changed = changed | changeTracker.get(s);
-
-        if(changed) {
-            if((att != null)){
-              removeSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, "");
-              for(Definition def : (List<Definition>) vm.getDefinitions()) {
-                if(def.getType().equals(Definition.TYPE_UML_VM)) {
-                  DefinitionSplitter.addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
-//                  addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
-                  break;
-                }
-              }
-            }
-            // drop all current concept tagged values
-          Collection<UMLTaggedValue> allTvs = att.getTaggedValues();
-          for(UMLTaggedValue tv : allTvs) {
-            if(tv.getName().startsWith(XMIParser2.TV_TYPE_VM) ||
-               tv.getName().startsWith(XMIParser2.TV_TYPE_VM + "Qualifier"))
-            att.removeTaggedValue(tv.getName());
-          }
-
-          addConceptTvs(att, conceptCodes, XMIParser2.TV_TYPE_VM);
-        }
+    	  updatePV(pv, fullVDName);//SIW re-factored the code put PV in a separate function
       }
     }
 
@@ -479,6 +450,42 @@ public class XMIWriter2 implements ElementWriter {
     }
     
     changeTracker.clear();
+  }
+  
+  //SIW-627
+  private void updatePV(PermissibleValue pv, String fullVDName) {
+      ValueMeaning vm = pv.getValueMeaning();
+      String fullPropName = fullVDName + "." + pv.getValue();//SIW-627
+      UMLAttribute att = attributeMap.get(fullPropName);
+      boolean changed = changeTracker.get(fullPropName);
+      logger.debug("++++++++PermissibleValue vm" + vm + ", fullPropName: " + fullPropName + ", changed? " + changed);
+
+      String [] conceptCodes = ConceptUtil.getConceptCodes(vm);
+      // is one of the concepts in this VM changed?
+      for(String s : conceptCodes)
+        changed = changed | changeTracker.get(s);
+
+      if(changed) {
+          if((att != null)){
+            removeSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, "");
+            for(Definition def : (List<Definition>) vm.getDefinitions()) {
+              if(def.getType().equals(Definition.TYPE_UML_VM)) {
+                DefinitionSplitter.addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
+//                addSplitTaggedValue(att, XMIParser2.TV_CADSR_DESCRIPTION, def.getDefinition(), "");
+                break;
+              }
+            }
+          }
+          // drop all current concept tagged values
+        Collection<UMLTaggedValue> allTvs = att.getTaggedValues();
+        for(UMLTaggedValue tv : allTvs) {
+          if(tv.getName().startsWith(XMIParser2.TV_TYPE_VM) ||
+             tv.getName().startsWith(XMIParser2.TV_TYPE_VM + "Qualifier"))
+          att.removeTaggedValue(tv.getName());
+        }
+
+        addConceptTvs(att, conceptCodes, XMIParser2.TV_TYPE_VM);
+      }
   }
   
   private void dropCurrentAssocTvs(UMLTaggableElement elt) {
