@@ -80,7 +80,13 @@ public class UMLElementViewPanel extends JPanel
     if (ocPanel != null) { ocPanel.addPropertyChangeListener(buttonPanel); }
     if (gmePanel != null) { gmePanel.addPropertyChangeListener(buttonPanel); }
     if (dsp != null) { dsp.addPropertyChangeListener(buttonPanel); }
-    if (publicIdPanel != null) { publicIdPanel.addPropertyChangeListener(buttonPanel); } //SIW-627 publicIdPanel
+    //SIW-627 publicIdPanel
+    publicIdPanel.addPropertyChangeListener(buttonPanel);
+    ValueMeaning vm = (ValueMeaning) node.getUserObject();
+    if (vm != null) {
+    	buttonPanel.setSwitchButtonEnabled(StringUtil.isEmpty(vm.getPublicId()));	
+    }
+    
     // TODO uncomment to enable concept inheritance feature
     //excludeSemPanel.addPropertyChangeListener(buttonPanel);
 

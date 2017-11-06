@@ -776,7 +776,7 @@ class SearchResultWrapper {
   public String getVersion() 
   {
     if (ac != null)
-      return ac.getVersion().toString();
+      return "" + ac.getVersion();
     else
       return new Float(sr.getVersion()).toString();
   }

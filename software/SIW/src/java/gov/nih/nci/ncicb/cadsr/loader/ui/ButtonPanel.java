@@ -180,6 +180,11 @@ public class ButtonPanel extends JPanel implements ActionListener,
   {
     switchButton.setText(text);
   }
+
+  protected void setSwitchButtonEnabled(boolean isEnabled) 
+  {
+    switchButton.setEnabled(isEnabled);
+  }
   
   public void setEnabled(boolean enabled) {
       addButtonPanel.setVisible(enabled);

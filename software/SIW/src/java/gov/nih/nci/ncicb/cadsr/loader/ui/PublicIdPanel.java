@@ -30,6 +30,7 @@ import javax.swing.event.DocumentListener;
 
 import gov.nih.nci.cadsr.common.Logger;
 import gov.nih.nci.ncicb.cadsr.domain.ValueMeaning;
+import gov.nih.nci.ncicb.cadsr.domain.bean.ValueMeaningBean;
 import gov.nih.nci.ncicb.cadsr.loader.event.ElementChangeEvent;
 import gov.nih.nci.ncicb.cadsr.loader.event.ElementChangeListener;
 import gov.nih.nci.ncicb.cadsr.loader.ext.CadsrPublicApiModule;
@@ -116,6 +117,10 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	        UIUtil.insertInBag(publicIdPanel, new JLabel("VM ID Version:"), 0, 0);//col 0 row 0
 	        UIUtil.insertInBag(publicIdPanel, vdCDIdVersionPanel, 1, 0);//col 1 row 0
 	        UIUtil.insertInBag(publicIdPanel, deleteButton, 2, 0);
+	        
+	        //tempVM - create a new object for now to keep values for Apply operation
+	        initTempVm(vm);
+	        
 	        cdSearchButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {
 	            	CadsrDialog cadsrVMDialog = BeansAccessor.getCadsrVMDialog();
@@ -126,6 +131,8 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	                logger.debug("Foung VM in caDSR: " + tempVM);
 	                setVmSearchedValues();
 	                firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
+	                //We do not allow concept editing if VM ID is given
+	                firePropertyChangeEvent(new PropertyChangeEvent(this, ButtonPanel.SWITCH, null, StringUtil.isEmpty(tempVM.getPublicId())));
 	                fireElementChangeEvent(new ElementChangeEvent(node));
 	              }});
 	        deleteButton.addActionListener(new ActionListener() {
@@ -133,8 +140,9 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	            	longNameArea.setText(null);
 	            	vmPublicIdJLabel.setText(null);
 	            	ValueMeaning vm = (ValueMeaning)node.getUserObject();
-	            	vm.setPublicId(null);
-	            	vm.setVersion(null);
+	            	tempVM.setPublicId(null);
+	            	tempVM.setVersion(null);
+	            	tempVM.setLongName(null);
 	            	//this is to enable Apply button
 	            	firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
 	            	fireElementChangeEvent(new ElementChangeEvent(node));
@@ -146,7 +154,14 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
         }  
     }
     
-    private void setLongName(ValueMeaning vm2) {
+    private void initTempVm(ValueMeaning vm2) {
+		tempVM =  (gov.nih.nci.ncicb.cadsr.domain.ValueMeaning)new ValueMeaningBean();
+		tempVM.setPublicId(vm2.getPublicId());
+		tempVM.setVersion(vm2.getVersion());
+		tempVM.setLongName(vm2.getLongName());	
+	}
+
+	private void setLongName(ValueMeaning vm2) {
     	if (vm2 == null) return;
     	
     	Map<String, Object> queryFields = new HashMap<String, Object>();
@@ -162,6 +177,8 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	    				longNameArea.setText(vmCurr.getLongName());
 	    				vm2.setLongName(vmCurr.getLongName());
 	    				logger.debug("ValueMeaning is found by public ID: " + vm2);
+	    		        //enable SWITCH if VM is empty
+	    		        firePropertyChangeEvent(new PropertyChangeEvent(this, ButtonPanel.SWITCH, null, false));
 	    				break;//we take the first one found should be the only one
 	    			}
     			}
@@ -209,6 +226,10 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 			vm.setVersion(tempVM.getVersion());
 			vm.setLongName(tempVM.getLongName());	
 		}
+		if (StringUtil.isEmpty(vm.getPublicId())) {
+        	//We allow concept editing if VM ID is removed (?)
+            firePropertyChangeEvent(new PropertyChangeEvent(this, ButtonPanel.SWITCH, null, true));
+		}		
 		logger.debug("New VM after Apply Pressed: " + vm + ", node.getFullPath(): " + node.getFullPath());
     }
 	
@@ -228,7 +249,7 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	}   
        
     public void addPropertyChangeListener(PropertyChangeListener l) {
-        super.addPropertyChangeListener(l);;
+        super.addPropertyChangeListener(l);
         if (propChangeListeners != null) { propChangeListeners.add(l); }
     }
 
