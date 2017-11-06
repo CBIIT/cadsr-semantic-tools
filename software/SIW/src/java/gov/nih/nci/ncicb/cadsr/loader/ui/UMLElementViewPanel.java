@@ -56,7 +56,9 @@ public class UMLElementViewPanel extends JPanel
     gmePanel= new GMEViewPanel(node);
     dsp = new DescriptionPanel(node);
     //SIW-627 VM public ID and Version panel
-    publicIdPanel = new PublicIdPanel(node);
+    if(node instanceof ValueMeaningNode) {
+    	publicIdPanel = new PublicIdPanel(node);
+    }
 
     // TODO uncomment to enable concept inheritance feature
     //excludeSemPanel = new ExcludeFromSemanticInheritancePanel(node);
@@ -81,12 +83,15 @@ public class UMLElementViewPanel extends JPanel
     if (gmePanel != null) { gmePanel.addPropertyChangeListener(buttonPanel); }
     if (dsp != null) { dsp.addPropertyChangeListener(buttonPanel); }
     //SIW-627 publicIdPanel
-    publicIdPanel.addPropertyChangeListener(buttonPanel);
-    ValueMeaning vm = (ValueMeaning) node.getUserObject();
-    if (vm != null) {
-    	buttonPanel.setSwitchButtonEnabled(StringUtil.isEmpty(vm.getPublicId()));	
-    }
+    if (publicIdPanel != null) {
+    	publicIdPanel.addPropertyChangeListener(buttonPanel);
     
+    	Object userOblect = node.getUserObject();
+    	if ((userOblect != null) && (userOblect instanceof ValueMeaning)) {
+    		ValueMeaning vm = (ValueMeaning)userOblect;
+    		buttonPanel.setSwitchButtonEnabled(StringUtil.isEmpty(vm.getPublicId()));	
+    	}
+    }
     // TODO uncomment to enable concept inheritance feature
     //excludeSemPanel.addPropertyChangeListener(buttonPanel);
 
@@ -104,12 +109,14 @@ public class UMLElementViewPanel extends JPanel
     cardPanel.add(dePanel, DE_PANEL_KEY);
     cardPanel.add(ocPanel, OC_PANEL_KEY);
     cardPanel.add(cannotMapVMInfoPanel, CANNOT_MAP_VM_KEY);
-    cardPanel.add(publicIdPanel, VM_PUBLIC_ID_PANEL_KEY);//SIW-627
-    
+    if (publicIdPanel != null) {//SIW-627
+    	cardPanel.add(publicIdPanel, VM_PUBLIC_ID_PANEL_KEY);
+        panelKeyMap.put(VM_PUBLIC_ID_PANEL_KEY, publicIdPanel);
+
+    }
     panelKeyMap.put(CONCEPT_PANEL_KEY, conceptEditorPanel);
     panelKeyMap.put(DE_PANEL_KEY, dePanel);
     panelKeyMap.put(OC_PANEL_KEY, ocPanel);
-    panelKeyMap.put(VM_PUBLIC_ID_PANEL_KEY, publicIdPanel);//SIW-627
     
     setLayout(new BorderLayout());
     
@@ -259,7 +266,8 @@ public class UMLElementViewPanel extends JPanel
     conceptEditorPanel.addElementChangeListener(listener);
     dePanel.addElementChangeListener(listener);
     dsp.addElementChangeListener(listener);
-    publicIdPanel.addElementChangeListener(listener);//SIW-627
+    if (publicIdPanel != null)
+    	publicIdPanel.addElementChangeListener(listener);//SIW-627
  // TODO uncomment to enable concept inheritance feature
 //    excludeSemPanel.addElementChangeListener(listener);
   }

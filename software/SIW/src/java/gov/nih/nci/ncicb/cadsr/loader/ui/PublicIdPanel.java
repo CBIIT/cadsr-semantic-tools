@@ -112,7 +112,7 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	        vmPublicIdJLabel.setText(ConventionUtil.publicIdVersion(vm));
 	        //FIXME API call if empty VM long name
 	        longNameArea.setText(StringUtil.isEmpty(vm.getPublicId())? null : vm.getLongName());
-	        setLongName(vm);//searching VM name if VM ID is provided
+	        assignLongName(vm);//searching VM name if VM ID is provided
 	        vdCDIdVersionPanel.add(cdSearchButton);
 	        UIUtil.insertInBag(publicIdPanel, new JLabel("VM ID Version:"), 0, 0);//col 0 row 0
 	        UIUtil.insertInBag(publicIdPanel, vdCDIdVersionPanel, 1, 0);//col 1 row 0
@@ -161,7 +161,7 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 		tempVM.setLongName(vm2.getLongName());	
 	}
 
-	private void setLongName(ValueMeaning vm2) {
+	private void assignLongName(ValueMeaning vm2) {
     	if (vm2 == null) return;
     	
     	Map<String, Object> queryFields = new HashMap<String, Object>();
@@ -183,8 +183,9 @@ public class PublicIdPanel extends JPanel implements Editable, DocumentListener
 	    			}
     			}
     			else {
-    				//FIXME add error to Error panel; VM ID is wrong
+    				//VM ID is wrong
     				logger.error("VM ID provided in XMI is not found in caDSR: " + vm2);
+    				longNameArea.setText(null);
     			}
     		}
     		else {

@@ -315,6 +315,13 @@
     class="gov.nih.nci.ncicb.cadsr.loader.validator.ValueDomainValidator">
     <constructor-arg><value>1</value></constructor-arg>
   </bean>
+  <bean name="siwValueMeaningValidator"
+    class="gov.nih.nci.ncicb.cadsr.loader.validator.ValueMeaningValidator">
+    <property name="cadsrModule">
+      <ref bean="publicCadsrModule"/>
+    </property>
+  </bean>
+  
   <bean name="conceptCodeValidator"
     class="gov.nih.nci.ncicb.cadsr.loader.validator.ConceptCodeValidator"/>
   <bean name="datatypeValidator"
@@ -360,6 +367,7 @@
         <ref bean="conceptCodeValidator"/>
         <ref bean="datatypeValidator"/>
         <ref bean="siwValueDomainValidator"/>
+        <ref bean="siwValueMeaningValidator"/>
         <ref bean="associationValidator"/>
         <ref bean="duplicateValidator"/>
         <ref bean="latestVersionValidator"/>
