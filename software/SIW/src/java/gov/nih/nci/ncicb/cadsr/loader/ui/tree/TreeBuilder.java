@@ -21,7 +21,6 @@ package gov.nih.nci.ncicb.cadsr.loader.ui.tree;
 
 import gov.nih.nci.ncicb.cadsr.domain.*;
 import gov.nih.nci.ncicb.cadsr.loader.defaults.UMLDefaults;
-import gov.nih.nci.ncicb.cadsr.loader.event.UMLDefaultHandler;
 import gov.nih.nci.ncicb.cadsr.loader.*;
 import gov.nih.nci.ncicb.cadsr.loader.validator.*;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
@@ -250,7 +249,8 @@ public class TreeBuilder implements UserPreferencesListener {
         	if (parentNode.getChildren().contains(node)) {
         		if (!isDuplicate) {
 	        		//((AttributeNode) node).setDisplay(node.getDisplay()+"(1)");
-	        		((AttributeNode) node).setFullPath(node.getFullPath()+"(1)");
+        			//FIXME SIW-794 It is not enough to use 1; we can have more than 2 duplicates - Natalia
+	        		((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(1));
 	        		if (!parentNode.getChildren().contains(node)) {
 	        			logger.info("No more duplicates");
 	        		}

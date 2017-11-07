@@ -184,8 +184,11 @@ public class XMIWriter2 implements ElementWriter {
         }
       }
     }
-
+    //SIW-794 Natalia we can have duplicated attribute names
+    int cdeNumber = 0;
+    Map <String, Integer> altDuplicates = new HashMap<String, Integer>();//to track attribute names to catch duplicates
     for(DataElement de : des) {
+      logger.debug("...CDE order number: " + cdeNumber);
       DataElementConcept dec = de.getDataElementConcept();
       String fullPropName = null;
 
@@ -193,12 +196,31 @@ public class XMIWriter2 implements ElementWriter {
         if(an.getType().equals(AlternateName.TYPE_FULL_NAME))
           fullPropName = an.getName();
       }
+      logger.debug("fullPropName: " + fullPropName);
+
       sendProgressEvent(status++, goal, "Attribute: " + fullPropName);
-
-      UMLAttribute att = attributeMap.get(fullPropName);
+      UMLAttribute att;
         
-      boolean changed = changeTracker.get(fullPropName);
-
+      boolean changed;
+      
+      Integer pos = altDuplicates.get(fullPropName);
+      if (pos == null) {
+    	  altDuplicates.put(fullPropName, 0);//we add for possible duplicates
+    	  changed = changeTracker.get(fullPropName);//check if the first appearance changed
+    	  att = attributeMap.get(fullPropName);
+      }
+      else {
+    	  int posNum = pos.intValue() + 1;//this means we have more than one Att with this name
+    	  altDuplicates.put(fullPropName, posNum);
+    	  String dupFormattedSuffix = StringUtil.buildDupFormatted(posNum);
+    	  String fullNameWIthDup = fullPropName+dupFormattedSuffix;
+    	  att = attributeMap.get(fullNameWIthDup);
+    	  changed = changeTracker.get(fullNameWIthDup);//check if duplicated name changed based on its position in the attribute list
+    	  logger.debug("fullPropName duplicated formatted: " + fullNameWIthDup +", changed? " + changed);
+      }
+      logger.debug("fullPropName changed: " + changed);
+      //End of SIW-794 changes
+      
       String [] conceptCodes = dec.getProperty().getPreferredName().split(":");
       // is one of the concepts in this Property changed?
       for(String s : conceptCodes)
@@ -286,6 +308,7 @@ public class XMIWriter2 implements ElementWriter {
         }
 
       }
+      cdeNumber++;
     }
 
     for(ValueDomain vd : vds) {
@@ -751,8 +774,26 @@ public class XMIWriter2 implements ElementWriter {
         className = getPackageName(pkg) + "." + clazz.getName().trim();
       }
       classMap.put(className, clazz);
+      //SIW-764 Natalia OC Attributes can be duplicated
+      Map <String, Integer> altDuplicates = new HashMap<String, Integer>();//to track attribute names to catch duplicates
+      
       for(UMLAttribute att : clazz.getAttributes()) {
-        attributeMap.put(className + "." + att.getName().trim(), att);
+    	  String attKey;
+    	  String attName = att.getName().trim();
+    	  if (! className.startsWith("ValueDomains")) {
+	    	Integer pos = altDuplicates.get(attName);
+	    	if (pos == null) {
+	    		altDuplicates.put(attName, 0);
+	    	}
+	    	else {
+	      	  int posNum = pos.intValue() + 1;//this means we have more than one Att with this name
+	      	  altDuplicates.put(attName, posNum);
+	    	  String dupFormattedSuffix = StringUtil.buildDupFormatted(posNum);
+	    	  attName = attName + dupFormattedSuffix;	    	 	    		
+	    	}
+    	  }
+    	  attKey = className + "." + attName;
+          attributeMap.put(attKey, att);
       }
     }
 

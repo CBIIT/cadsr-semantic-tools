@@ -20,7 +20,13 @@
 package gov.nih.nci.ncicb.cadsr.loader.util;
 
 public class StringUtil {
-
+	  public static final String dupFormattedString = "bbbb(%d)bbbb";
+	  
+	  //SIW-794 Natalia
+	  public static  final String buildDupFormatted(int idx) {
+		  return String.format(dupFormattedString, idx);
+	  }
+	  
   /**
    * @return the same String with the first char is uppercase.
    */
