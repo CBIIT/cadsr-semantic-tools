@@ -392,16 +392,20 @@ public class CadsrTransformer {
    * Public cadsr-beans.jar; Private cadsr-api.jar
    */
   public static gov.nih.nci.ncicb.cadsr.domain.ValueMeaning vmPublicToPrivate(gov.nih.nci.cadsr.domain.ValueMeaning inVm) {
-    gov.nih.nci.ncicb.cadsr.domain.ValueMeaning outVm = DomainObjectFactory.newValueMeaning();
+    gov.nih.nci.ncicb.cadsr.domain.ValueMeaning outVm = DomainObjectFactory.newValueMeaning();       
     //SIW-627
     outVm.setLongName(inVm.getLongName());
-    outVm.setContext(contextPublicToPrivate(inVm.getContext()));
     outVm.setOrigin(inVm.getOrigin());
-    outVm.setPublicId(""+inVm.getPublicID().intValue());
+    Long vmPublicId = inVm.getPublicID();
+    outVm.setPublicId(vmPublicId != null ? "" + vmPublicId.longValue() : null);
     outVm.setVersion(inVm.getVersion());
     outVm.setWorkflowStatus(inVm.getWorkflowStatusName());
     outVm.setPreferredDefinition(inVm.getPreferredDefinition());
-    
+    try {
+    	//when we receive inVm from caDSR API it does not have context which require a separate API call
+        outVm.setContext(contextPublicToPrivate(inVm.getContext()));
+    }
+    catch(Exception e) { }
     return outVm;
   }
   
