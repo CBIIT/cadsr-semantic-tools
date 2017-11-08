@@ -201,7 +201,7 @@ public class TreeBuilder implements UserPreferencesListener {
     PackageNode inheritedPackage = new PackageNode("Inherited Attributes", "Inherited Attributes", true);
 
     InheritedAttributeList inheritedList = InheritedAttributeList.getInstance();
-    
+    Map <String, Integer> altDuplicates = new HashMap<String, Integer>(); 
     for(DataElement de : des) {
       try {
         String fullClassName = null;
@@ -245,12 +245,25 @@ public class TreeBuilder implements UserPreferencesListener {
             node = new InheritedAttributeNode(de);
             inherited.add((InheritedAttributeNode)node);
           } else {        	
-        	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class  
-        	if (parentNode.getChildren().contains(node)) {
+        	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class
+        	  
+        	  
+        	if (parentNode.getChildren().contains(node)) {        		
         		if (!isDuplicate) {
 	        		//((AttributeNode) node).setDisplay(node.getDisplay()+"(1)");
         			//FIXME SIW-794 It is not enough to use 1; we can have more than 2 duplicates - Natalia
-	        		((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(1));
+        			Integer nodeOrder = altDuplicates.get(node.getFullPath());
+        			logger.info("**** Node order: "+nodeOrder);
+        			if (nodeOrder == null) {
+        				altDuplicates.put(node.getFullPath(), 1);
+        				((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(1));        				
+        			} else  {
+        				int dupeCount = nodeOrder.intValue() + 1;
+        				altDuplicates.put(node.getFullPath(), dupeCount);
+        				((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(dupeCount));        				
+        			}        			
+	        		
+        			logger.debug("****  Attribute Node full path: "+((AttributeNode) node).getFullPath());
 	        		if (!parentNode.getChildren().contains(node)) {
 	        			logger.info("No more duplicates");
 	        		}

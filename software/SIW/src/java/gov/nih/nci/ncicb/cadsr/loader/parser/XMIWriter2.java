@@ -774,7 +774,7 @@ public class XMIWriter2 implements ElementWriter {
         className = getPackageName(pkg) + "." + clazz.getName().trim();
       }
       classMap.put(className, clazz);
-      //SIW-764 Natalia OC Attributes can be duplicated
+      //SIW-794 Natalia OC Attributes can be duplicated
       Map <String, Integer> altDuplicates = new HashMap<String, Integer>();//to track attribute names to catch duplicates
       
       for(UMLAttribute att : clazz.getAttributes()) {
@@ -789,7 +789,7 @@ public class XMIWriter2 implements ElementWriter {
 	      	  int posNum = pos.intValue() + 1;//this means we have more than one Att with this name
 	      	  altDuplicates.put(attName, posNum);
 	    	  String dupFormattedSuffix = StringUtil.buildDupFormatted(posNum);
-	    	  attName = attName + dupFormattedSuffix;	    	 	    		
+	    	  attName = attName + dupFormattedSuffix;
 	    	}
     	  }
     	  attKey = className + "." + attName;
