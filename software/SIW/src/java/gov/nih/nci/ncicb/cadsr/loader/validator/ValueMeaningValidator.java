@@ -93,8 +93,7 @@ public class ValueMeaningValidator implements Validator, CadsrModuleListener {
                             if ((coll == null) || (coll.isEmpty())) {
                             	items.addItem(new ValidationError
                                         (PropertyAccessor.getProperty
-                                         ("local.vm.doesnt.exist", "",
-                                          vm.getPublicId() + "v" + vm.getVersion()), vm));
+                                         ("cadsr.vm.id.doesnt.exist", vm.getPublicId() + "v" + vm.getVersion()), vm));
                             }      
             	  }
               }
