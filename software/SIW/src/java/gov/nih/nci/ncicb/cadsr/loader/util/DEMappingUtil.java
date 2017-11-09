@@ -31,14 +31,28 @@ public class DEMappingUtil {
 
   private static Map<DataElement, Boolean> lvdMapping = 
     new HashMap<DataElement, Boolean>();
+  
+  private static Map<DataElement, String> lvdMappedValues = 
+		    new HashMap<DataElement, String>();  
 
   
   
   public static void setMappedToLVD(DataElement de, Boolean state) {
     lvdMapping.remove(de);
-    lvdMapping.put(de, state);
+    lvdMapping.put(de, state);    
   }
-
+  public static void setLVDValues(DataElement de, String lvd) {
+	  lvdMappedValues.put(de, lvd);
+  }
+  
+  //SIW-794 Getting the Local Value Domain for the Data Element
+  public static String getLVDValue(DataElement de){
+	  String lvdLongName = "";
+	  if (lvdMappedValues.containsKey(de))
+		  lvdLongName = lvdMappedValues.get(de);
+	  return lvdLongName;
+  }
+  
   public static Boolean isMappedToLVD(DataElement de) {
     if(!lvdMapping.containsKey(de))
       return false;

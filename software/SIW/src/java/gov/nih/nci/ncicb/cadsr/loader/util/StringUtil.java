@@ -20,7 +20,7 @@
 package gov.nih.nci.ncicb.cadsr.loader.util;
 
 public class StringUtil {
-	  public static final String dupFormattedString = "bbbb(%d)bbbb";
+	  public static final String dupFormattedString = "-(%d)";
 	  
 	  //SIW-794 Natalia
 	  public static  final String buildDupFormatted(int idx) {

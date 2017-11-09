@@ -2,22 +2,40 @@ package gov.nih.nci.ncicb.cadsr.loader.validator;
 import gov.nih.nci.ncicb.cadsr.domain.DataElement;
 import gov.nih.nci.ncicb.cadsr.domain.DomainObjectFactory;
 import gov.nih.nci.ncicb.cadsr.domain.ObjectClass;
+import gov.nih.nci.ncicb.cadsr.domain.ValueDomain;
 import gov.nih.nci.ncicb.cadsr.domain.Concept;
 import gov.nih.nci.ncicb.cadsr.loader.ElementsLists;
+import gov.nih.nci.ncicb.cadsr.loader.UserSelections;
 import gov.nih.nci.ncicb.cadsr.loader.event.ProgressListener;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
+import gov.nih.nci.ncicb.xmiinout.domain.UMLAttribute;
+import gov.nih.nci.ncicb.xmiinout.domain.UMLClass;
+import gov.nih.nci.ncicb.xmiinout.domain.UMLModel;
+import gov.nih.nci.ncicb.xmiinout.domain.UMLPackage;
+import gov.nih.nci.ncicb.xmiinout.handler.XmiInOutHandler;
 import gov.nih.nci.ncicb.cadsr.loader.ext.CadsrModule;
 import gov.nih.nci.ncicb.cadsr.loader.ext.CadsrModuleListener;
+import gov.nih.nci.ncicb.cadsr.loader.parser.ParserException;
+import gov.nih.nci.ncicb.cadsr.loader.parser.XMIParser2;
+import gov.nih.nci.ncicb.cadsr.loader.ui.MapToLVD;
+
 import java.util.*;
+
+import org.apache.log4j.Logger;
 
 public class DuplicateValidator implements Validator, CadsrModuleListener
 {
   private ElementsLists elements = ElementsLists.getInstance();
-  
+
   private ValidationItems items = ValidationItems.getInstance();
+  
+  private ValueDomain localValueDomain = null;
 
   private CadsrModule cadsrModule;
   
+  //private UMLModel model = null;
+  //private XmiInOutHandler handler = null;  
+  private HashMap<String, UMLAttribute> attributeMap = new HashMap<String, UMLAttribute>();  
   public DuplicateValidator()
   {
   }
@@ -26,7 +44,12 @@ public class DuplicateValidator implements Validator, CadsrModuleListener
 
   }
   
+  private Logger logger = Logger.getLogger(DuplicateValidator.class.getName());
   public ValidationItems validate() {
+	  
+	  
+      
+	  
     List<ObjectClass> ocs = elements.getElements(DomainObjectFactory.newObjectClass());
     Map<String, ObjectClass> listed = new HashMap<String, ObjectClass>();
     Map<String, ObjectClass> prefNameList = new HashMap<String, ObjectClass>();
@@ -80,10 +103,24 @@ public class DuplicateValidator implements Validator, CadsrModuleListener
               if (cadsrModule.isPublic()) {
             	  Collections.reverse(concepts); //order of concepts returned by the public and private apis is reversed. reverse collection to make them same
               }
-              conceptConcat = ConceptUtil.preferredNameFromConcepts(concepts);
+              conceptConcat = ConceptUtil.preferredNameFromConcepts(concepts);              
             } else {
-              conceptConcat = de.getDataElementConcept().getProperty().getPreferredName();
+              conceptConcat = de.getDataElementConcept().getProperty().getPreferredName();             
             }
+            
+         // SIW-794 Adding Value domain as criteria
+            if (!StringUtil.isEmpty(de.getValueDomain().getPublicId())) {
+            	if (!StringUtil.isEmpty(conceptConcat)) {
+            		conceptConcat = conceptConcat + ":" +  de.getValueDomain().getPublicId() + ":" + de.getValueDomain().getVersion();
+            	}            		
+            }             
+            // SIW-794 Adding Local Value domain as criteria
+            if (DEMappingUtil.isMappedToLVD(de) && DEMappingUtil.getLVDValue(de)!=null) {
+            	if (DEMappingUtil.getLVDValue(de).length()>0)
+            		conceptConcat = conceptConcat + ":" + DEMappingUtil.getLVDValue(de);            	
+            }
+                                
+            
             if(deList.containsKey(conceptConcat)) {
               ValidationError item = new  ValidationError
                             (PropertyAccessor.getProperty
@@ -105,4 +142,6 @@ public class DuplicateValidator implements Validator, CadsrModuleListener
   public void setCadsrModule(CadsrModule module) {
     this.cadsrModule = module;
   }
+  
+  
 }

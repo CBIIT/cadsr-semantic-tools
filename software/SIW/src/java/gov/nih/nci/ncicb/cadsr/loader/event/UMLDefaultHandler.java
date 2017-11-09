@@ -507,6 +507,8 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 			if (!StringUtil.isEmpty(event.getLocalType())) {
 				DEMappingUtil.setMappedToLVD(de, true);
 				vd.setLongName(event.getLocalType());
+				// SIW-794 Adding local value domain to a map to retrieve later for comparison
+				DEMappingUtil.setLVDValues(de, vd.getLongName());				
 			} else
 				vd.setLongName(datatype);
 
@@ -520,7 +522,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 
 		}
 
-		logger.debug("DE LONG_NAME: " + de.getLongName());
+
 
 		// Store alt Name for DE:
 		// packageName.ClassName.PropertyName
@@ -978,6 +980,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 									.newValueDomain();
 							vd.setLongName(localType);
 							newDe.setValueDomain(vd);
+							logger.debug("***** 982 setMappedto LVD true - VD LONG_NAME for " + newDe.getPublicId()+ ":"+ newDe.getLongName() +": " + vd.getLongName());
 						} else {
 							// check existing vd mapping
 							IdVersionPair vdIdVersionPair = event

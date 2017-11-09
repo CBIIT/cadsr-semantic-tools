@@ -7,6 +7,8 @@ import gov.nih.nci.ncicb.cadsr.loader.event.ElementChangeListener;
 import gov.nih.nci.ncicb.cadsr.loader.ui.tree.*;
 import gov.nih.nci.ncicb.cadsr.loader.ui.util.UIUtil;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
+import gov.nih.nci.ncicb.cadsr.loader.validator.DuplicateValidator;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,6 +21,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import javax.swing.text.PlainDocument;
+
+import org.apache.log4j.Logger;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import java.util.ArrayList;
@@ -57,6 +62,8 @@ public class ConceptEditorPanel extends JPanel
     
   private static boolean editable = false;
   private boolean verify, inheritanceUpdate;
+  
+  private ValueDomain currentVd;
 
   static {
     UserSelections selections = UserSelections.getInstance();
@@ -68,7 +75,7 @@ public class ConceptEditorPanel extends JPanel
   private UserPreferences prefs = UserPreferences.getInstance();
 
   private ConceptInheritanceViewPanel conceptInheritanceViewPanel = new ConceptInheritanceViewPanel();
-
+  private Logger logger = Logger.getLogger(ConceptEditorPanel.class.getName());
   public ConceptEditorPanel(UMLNode node) 
   {
       this.node = node;
@@ -126,6 +133,7 @@ public class ConceptEditorPanel extends JPanel
         getElements(DomainObjectFactory.newObjectClass());
 
       ObjectClass currentOc = (ObjectClass)node.getUserObject();
+      
 
       for(ObjectClass oc : ocs) {
         if(currentOc != oc) {
@@ -144,14 +152,22 @@ public class ConceptEditorPanel extends JPanel
 
       if(des != null && ocs != null) {
         for(DataElement de : des) {
-          if((de.getDataElementConcept().getObjectClass() == 
-              currentDe.getDataElementConcept().getObjectClass())
-             && (de != currentDe))
-            if(newPrefName
-               .equals
-               (de.getDataElementConcept()
-                .getProperty().getPreferredName()))
-              return de;
+            String localValueDomain = null;        	
+            if (DEMappingUtil.isMappedToLVD(de) && DEMappingUtil.getLVDValue(de)!=null) {
+            	if (DEMappingUtil.getLVDValue(de).length()>0)
+            			localValueDomain = DEMappingUtil.getLVDValue(de);
+            }        	
+          if((de.getDataElementConcept().getObjectClass() == currentDe.getDataElementConcept().getObjectClass())
+             && (de != currentDe)) 
+          		{  //SIW-794 Adding Value domain as criteria - both from caDSR & Local
+	            	if((newPrefName.equals(de.getDataElementConcept().getProperty().getPreferredName())) &&
+	            		((currentDe.getValueDomain().equals(de.getValueDomain())) || (localValueDomain!=null && localValueDomain.equals(de.getValueDomain().getLongName()))))
+	            		
+	            	{
+	            			logger.debug("******   Match! - "+de.getValueDomain().getLongName());
+	            				return de; 
+	            	}
+            }
         }
       }
       return null;

@@ -249,9 +249,7 @@ public class TreeBuilder implements UserPreferencesListener {
         	  
         	  
         	if (parentNode.getChildren().contains(node)) {        		
-        		if (!isDuplicate) {
-	        		//((AttributeNode) node).setDisplay(node.getDisplay()+"(1)");
-        			//FIXME SIW-794 It is not enough to use 1; we can have more than 2 duplicates - Natalia
+        		if (!isDuplicate) {        			
         			Integer nodeOrder = altDuplicates.get(node.getFullPath());
         			logger.info("**** Node order: "+nodeOrder);
         			if (nodeOrder == null) {
