@@ -38,6 +38,7 @@ public class TreeBuilder implements UserPreferencesListener {
   private UMLNode rootNode;
 
   private List<TreeListener> treeListeners = new ArrayList<TreeListener>();
+  
   private boolean inClassAssociations = false,
     showAssociations = true, showValueDomains = true,
     showInheritedAttributes = false;
@@ -216,7 +217,6 @@ public class TreeBuilder implements UserPreferencesListener {
           
           Boolean reviewed = reviewTracker.get(node.getFullPath());
           
-
           List<ValidationItem> items = findValidationItems(de.getDataElementConcept().getProperty());
           for(ValidationItem item : items) {
             ValidationNode vNode = null;
@@ -228,30 +228,52 @@ public class TreeBuilder implements UserPreferencesListener {
             node.addValidationNode(vNode);
           }
           items = findValidationItems(de);
+
           for(ValidationItem item : items) {
+            boolean itemIgnore = false;        	  
             ValidationNode vNode = null;
             if (item instanceof ValidationWarning) {
-            	if (item.getMessage()!=null && item.getMessage().indexOf("attribute is duplicated") > -1) {
-            		isDuplicate = true;	            		
+            	//if (item.getMessage()!=null && item.getMessage().indexOf("attribute is duplicated") > -1) { //Remove after confirmation
+            	if (item.getMessage()!=null && item.equals(PropertyAccessor.getProperty
+		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()))) {
+            		isDuplicate = true;                	          		
+            	} 
+            	//Remove after confirmation
+            	/*if (item.getMessage()!=null && item.getMessage().indexOf("has the same concept mapping as Attribute") > -1) {
+            		logger.debug("*****   Item get message is - "+item.getMessage()+" :: But the property accessor message is -- "+PropertyAccessor.getProperty
+                            ("de.same.mapping", de.getDataElementConcept().getProperty().getLongName()));
+            		itemIgnore = true;            		
+            	} else {
+            		isDuplicate = false;
+            	}*/
+            	if (!itemIgnore)
+            		vNode = new WarningNode(item);  
+            } /*else if (item instanceof ValidationError) {
+            	if (item.getMessage()!=null && item.getMessage().indexOf("has the same concept mapping") > -1) {
+            		logger.debug("*****   Item get message is - "+item.getMessage()+" :: But the property accessor message is -- "+PropertyAccessor.getProperty
+                            ("de.same.mapping", de.getDataElementConcept().getProperty().getLongName()));
+            		itemIgnore = true;            		
+            	} else {
+            		isDuplicate = false;
             	}
-            	vNode = new WarningNode(item);
-            } else {
-              vNode = new ErrorNode(item);
+            	if (!itemIgnore)            	
+            		vNode = new ErrorNode(item);
+            }*/
+            else {
+            	vNode = new ErrorNode(item);
             }
-            node.addValidationNode(vNode);
+            if (vNode!=null)
+            	node.addValidationNode(vNode);
           }           
           
           if(inheritedList.isInherited(de)) {
             node = new InheritedAttributeNode(de);
             inherited.add((InheritedAttributeNode)node);
           } else {        	
-        	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class
-        	  
-        	  
+        	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class        	          	  
         	if (parentNode.getChildren().contains(node)) {        		
         		if (!isDuplicate) {        			
         			Integer nodeOrder = altDuplicates.get(node.getFullPath());
-        			logger.info("**** Node order: "+nodeOrder);
         			if (nodeOrder == null) {
         				altDuplicates.put(node.getFullPath(), 1);
         				((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(1));        				
@@ -259,9 +281,7 @@ public class TreeBuilder implements UserPreferencesListener {
         				int dupeCount = nodeOrder.intValue() + 1;
         				altDuplicates.put(node.getFullPath(), dupeCount);
         				((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(dupeCount));        				
-        			}        			
-	        		
-        			logger.debug("****  Attribute Node full path: "+((AttributeNode) node).getFullPath());
+        			}        				        		
 	        		if (!parentNode.getChildren().contains(node)) {
 	        			logger.info("No more duplicates");
 	        		}

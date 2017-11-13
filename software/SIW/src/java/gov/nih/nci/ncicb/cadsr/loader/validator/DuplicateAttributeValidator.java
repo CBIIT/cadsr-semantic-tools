@@ -11,8 +11,10 @@ import gov.nih.nci.ncicb.cadsr.loader.event.NewPackageEvent;
 import gov.nih.nci.ncicb.cadsr.loader.event.ProgressEvent;
 import gov.nih.nci.ncicb.cadsr.loader.event.ProgressListener;
 import gov.nih.nci.ncicb.cadsr.loader.event.UMLHandler;
+import gov.nih.nci.ncicb.cadsr.loader.ext.CadsrModule;
 import gov.nih.nci.ncicb.cadsr.loader.parser.ParserException;
 import gov.nih.nci.ncicb.cadsr.loader.parser.XMIParser2;
+import gov.nih.nci.ncicb.cadsr.loader.util.ConceptUtil;
 import gov.nih.nci.ncicb.cadsr.loader.util.InheritedAttributeList;
 import gov.nih.nci.ncicb.cadsr.loader.util.LookupUtil;
 import gov.nih.nci.ncicb.cadsr.loader.util.PropertyAccessor;
@@ -47,6 +49,8 @@ public class DuplicateAttributeValidator implements Validator
   private Logger logger = Logger.getLogger(DuplicateAttributeValidator.class.getName());
   
   private ProgressListener progressListener;
+  
+  private CadsrModule cadsrModule;
   
   private HashSet<String> vdTags = new HashSet<String>(); 
   int dupeCount = 0;
@@ -239,12 +243,17 @@ public class DuplicateAttributeValidator implements Validator
         				  		dupeCount = 0;
         				  	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class        				  		
         					  	compareVDTags(de.getDataElementConcept().getProperty().getLongName(), oc.getLongName());
+        					  	/*if (concatenateConcepts(de).equals(concatenateConcepts(de2)))
+        					  			items.addItem(new ValidationError
+		                                  (PropertyAccessor.getProperty
+		                                    ("de.same.mapping", de.getDataElementConcept().getProperty().getLongName()),de));*/
+        					  	
         					  if (dupeCount > 0) {
 		        				  items.addItem(new ValidationWarning
 		                                  (PropertyAccessor.getProperty
 		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()),de));		        				
         					  }
-        					// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
+        					// SIW-794 Add both the compared data elements to a list, so that they wont be compared again. 
         					  matchedDes.add(de);
         					  matchedDes.add(de2);
         				  		}
@@ -268,16 +277,20 @@ public class DuplicateAttributeValidator implements Validator
         
     }
  }
- // SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class
-  /*logger.info("Warning items: " + items.getWarnings().size());  
+ // SIW-794 checking for the list of warning items
+  logger.info("Warning items: " + items.getWarnings().size());  
   for (ValidationWarning warn : items.getWarnings()) {
 	  logger.info("Warning message: " + warn.getMessage());
-  }*/
+  }
+  logger.info("Error items: " + items.getErrors().size()); 
+  for (ValidationError error : items.getErrors()) {
+	  logger.info("Error message: " + error.getMessage());
+  }  
   return items;
 }
   
   
-//SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class 
+//SIW-794 compare the Value Domains for two different attributes that have the same attribute name 
   private void compareVDTags(String longName, String objectClassName) {
 	  
 	  String filename;
@@ -293,6 +306,21 @@ public class DuplicateAttributeValidator implements Validator
 				e.printStackTrace();
 			}
   }  
+  
+  private String concatenateConcepts (DataElement de) {
+  String conceptConcat = null;
+  if(!StringUtil.isEmpty(de.getDataElementConcept().getProperty().getPublicId())) {
+    List<Concept> concepts = cadsrModule.getConcepts(de.getDataElementConcept().getProperty());
+    if (cadsrModule.isPublic()) {
+  	  Collections.reverse(concepts); //order of concepts returned by the public and private apis is reversed. reverse collection to make them same
+    }
+    conceptConcat = ConceptUtil.preferredNameFromConcepts(concepts);              
+  } else {
+    //conceptConcat = de.getDataElementConcept().getProperty().getPreferredName();             
+  }
+  return conceptConcat;
+  }
+  
   
   private boolean objectClassInList(ObjectClass oc, List<ObjectClass> ocs) {
 	  String ocName = oc.getLongName();

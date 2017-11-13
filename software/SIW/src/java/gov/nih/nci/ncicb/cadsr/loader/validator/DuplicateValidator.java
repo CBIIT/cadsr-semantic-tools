@@ -47,9 +47,6 @@ public class DuplicateValidator implements Validator, CadsrModuleListener
   private Logger logger = Logger.getLogger(DuplicateValidator.class.getName());
   public ValidationItems validate() {
 	  
-	  
-      
-	  
     List<ObjectClass> ocs = elements.getElements(DomainObjectFactory.newObjectClass());
     Map<String, ObjectClass> listed = new HashMap<String, ObjectClass>();
     Map<String, ObjectClass> prefNameList = new HashMap<String, ObjectClass>();

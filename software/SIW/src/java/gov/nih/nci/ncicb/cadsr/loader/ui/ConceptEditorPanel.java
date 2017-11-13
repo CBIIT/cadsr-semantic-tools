@@ -145,26 +145,37 @@ public class ConceptEditorPanel extends JPanel
     } else if (node.getUserObject() instanceof DataElement) {
       DataElement currentDe = 
         (DataElement)node.getUserObject();
+      logger.debug("Node Display: "+node.getDisplay()+" :: Node FullPath: "+node.getFullPath()+" :: Node children: "+node.getChildren());
+      logger.debug("*****  newPrefName :"+newPrefName);
+      
       List<ObjectClass> ocs = ElementsLists.getInstance().
         getElements(DomainObjectFactory.newObjectClass());
       List<DataElement> des = ElementsLists.getInstance().
         getElements(DomainObjectFactory.newDataElement());
+      List<ValueDomain> vds = ElementsLists.getInstance().
+    	getElements(DomainObjectFactory.newValueDomain());
 
+      String currentDeVD = getLocalVD(currentDe);
+      if (currentDeVD == null)
+    	  if (currentDe.getValueDomain()!=null)
+    		  currentDeVD = currentDe.getValueDomain().getPublicId()+":"+currentDe.getValueDomain().getVersion();
+      
+      
       if(des != null && ocs != null) {
         for(DataElement de : des) {
-            String localValueDomain = null;        	
-            if (DEMappingUtil.isMappedToLVD(de) && DEMappingUtil.getLVDValue(de)!=null) {
-            	if (DEMappingUtil.getLVDValue(de).length()>0)
-            			localValueDomain = DEMappingUtil.getLVDValue(de);
-            }        	
+            String deVD = getLocalVD(de);
+            if (deVD == null)
+          	  if (de.getValueDomain()!=null)
+          		deVD = de.getValueDomain().getPublicId()+":"+de.getValueDomain().getVersion();    
+
           if((de.getDataElementConcept().getObjectClass() == currentDe.getDataElementConcept().getObjectClass())
              && (de != currentDe)) 
           		{  //SIW-794 Adding Value domain as criteria - both from caDSR & Local
-	            	if((newPrefName.equals(de.getDataElementConcept().getProperty().getPreferredName())) &&
-	            		((currentDe.getValueDomain().equals(de.getValueDomain())) || (localValueDomain!=null && localValueDomain.equals(de.getValueDomain().getLongName()))))
-	            		
+	            	if((newPrefName.equals(de.getDataElementConcept().getProperty().getPreferredName())) && deVD!=null && currentDeVD!=null && deVD.equals(currentDeVD))	            		
 	            	{
-	            			logger.debug("******   Match! - "+de.getValueDomain().getLongName());
+	            		logger.debug("*****  newPrefName: "+newPrefName+" :: de.getDataElementConcept().getProperty().getPreferredName() - "+de.getDataElementConcept().getProperty().getPreferredName());
+	            		logger.debug("*****  deVD : "+deVD+" :: currentDeVD - "+currentDeVD);
+	            		logger.debug("******   Match! - "+de.getValueDomain().getLongName());
 	            				return de; 
 	            	}
             }
@@ -176,6 +187,16 @@ public class ConceptEditorPanel extends JPanel
     // shouldn't get to here.
     return null;
   }
+  
+  
+private String getLocalVD(DataElement de) {
+	String localValueDomain = null;
+    if (DEMappingUtil.isMappedToLVD(de) && DEMappingUtil.getLVDValue(de)!=null) {
+    	if (DEMappingUtil.getLVDValue(de).length()>0)
+    			localValueDomain = DEMappingUtil.getLVDValue(de);        	
+    }   	
+    return localValueDomain;	
+}  
   
   private void initConcepts() 
   {
@@ -256,7 +277,11 @@ public class ConceptEditorPanel extends JPanel
     boolean update = remove;
     remove = false;
     Concept[] newConcepts = new Concept[concepts.length];
-
+    CadsrDialog cd = BeansAccessor.getCadsrVDDialog();
+    ValueDomain tempVD = (ValueDomain)cd.getAdminComponent();
+    if (tempVD!=null)
+    	logger.debug("Temporary selected VD: "+tempVD.getLongName()+" :: VD Public ID: "+tempVD.getPublicId());
+    
     AdminComponent ac = checkForDuplicateMapping();
     if(ac != null) {
       if(ac instanceof ObjectClass)
