@@ -233,32 +233,13 @@ public class TreeBuilder implements UserPreferencesListener {
             boolean itemIgnore = false;        	  
             ValidationNode vNode = null;
             if (item instanceof ValidationWarning) {
-            	//if (item.getMessage()!=null && item.getMessage().indexOf("attribute is duplicated") > -1) { //Remove after confirmation
-            	if (item.getMessage()!=null && item.equals(PropertyAccessor.getProperty
+            	if (item.getMessage()!=null && item.getMessage().equals(PropertyAccessor.getProperty
 		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()))) {
             		isDuplicate = true;                	          		
             	} 
-            	//Remove after confirmation
-            	/*if (item.getMessage()!=null && item.getMessage().indexOf("has the same concept mapping as Attribute") > -1) {
-            		logger.debug("*****   Item get message is - "+item.getMessage()+" :: But the property accessor message is -- "+PropertyAccessor.getProperty
-                            ("de.same.mapping", de.getDataElementConcept().getProperty().getLongName()));
-            		itemIgnore = true;            		
-            	} else {
-            		isDuplicate = false;
-            	}*/
             	if (!itemIgnore)
             		vNode = new WarningNode(item);  
-            } /*else if (item instanceof ValidationError) {
-            	if (item.getMessage()!=null && item.getMessage().indexOf("has the same concept mapping") > -1) {
-            		logger.debug("*****   Item get message is - "+item.getMessage()+" :: But the property accessor message is -- "+PropertyAccessor.getProperty
-                            ("de.same.mapping", de.getDataElementConcept().getProperty().getLongName()));
-            		itemIgnore = true;            		
-            	} else {
-            		isDuplicate = false;
-            	}
-            	if (!itemIgnore)            	
-            		vNode = new ErrorNode(item);
-            }*/
+            }
             else {
             	vNode = new ErrorNode(item);
             }
@@ -309,22 +290,7 @@ public class TreeBuilder implements UserPreferencesListener {
       Boolean reviewed = reviewTracker.get(inherit.getFullPath());
       if(reviewed != null)
         inherit.setReviewed(reviewed);
-    }
-    
-//     if((inherited.size() > 0) && showInheritedAttributes)
-//       parentNode.addChild(inheritedPackage);
-
-//     if(showInheritedAttributes) {
-//       for(AttributeNode inherit : inherited) {
-//         inheritedPackage.addChild(inherit);
-//         Boolean reviewed = reviewTracker.get(inherit.getFullPath());
-//         if(reviewed != null)
-//           inherit.setReviewed(reviewed);
-//       }
-//     }
-    
-    
-    
+    }        
   }
 
   private void doValueDomains(UMLNode parentNode) {
