@@ -235,12 +235,16 @@ public class TreeBuilder implements UserPreferencesListener {
             if (item instanceof ValidationWarning) {
             	if (item.getMessage()!=null && item.getMessage().equals(PropertyAccessor.getProperty
 		                                    ("de.same.attribute", de.getDataElementConcept().getProperty().getLongName()))) {
-            		isDuplicate = true;                	          		
+            		isDuplicate = false;                	          		
             	} 
             	if (!itemIgnore)
             		vNode = new WarningNode(item);  
             }
             else {
+            	if (item.getMessage()!=null && item.getMessage().indexOf("has the same concept mapping as Attribute") > -1) {
+            		isDuplicate = false;            		
+            	}            	
+            	
             	vNode = new ErrorNode(item);
             }
             if (vNode!=null)
