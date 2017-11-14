@@ -79,7 +79,6 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 	}
 
 	public void newPackage(NewPackageEvent event) {
-		logger.info("Package: " + event.getName());
 
 		// handle this here if the package has GME info. If not, let classes
 		// handle package so we don't add empty package.
@@ -109,7 +108,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 
 	public void newValueDomain(NewValueDomainEvent event) {
 		 StringBuilder builder = new StringBuilder();
-		logger.info("Value Domain: " + event.getName());
+
 		
 		List<Concept> concepts = createConcepts(event);
 
@@ -269,7 +268,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 	}
 
 	public void newValueMeaning(NewValueMeaningEvent event) {
-		logger.info("newValueMeaning event.getName(): " + event.getName());
+
 
 		List<Concept> concepts = createConcepts(event);
 
@@ -348,7 +347,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 	}
 
 	public void newClass(NewClassEvent event) {
-		logger.info("Class: " + event.getName());
+
 
 		List<Concept> concepts = createConcepts(event);
 
@@ -431,8 +430,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 	}
 
 	public void newAttribute(NewAttributeEvent event) {
-		logger.info("Attribute: " + event.getClassName() + "."
-				+ event.getName());
+
 
 		DataElement de = DomainObjectFactory.newDataElement();
 
@@ -464,8 +462,6 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 		DataElementConcept dec = DomainObjectFactory.newDataElementConcept();
 		dec.setLongName(className + ":" + propName);
 		dec.setProperty(prop);
-
-		logger.debug("DEC LONG_NAME: " + dec.getLongName());
 
 		ObjectClass oc = null;
 		List<ObjectClass> ocs = elements.getElements(DomainObjectFactory
@@ -980,7 +976,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 									.newValueDomain();
 							vd.setLongName(localType);
 							newDe.setValueDomain(vd);
-							logger.debug("***** 982 setMappedto LVD true - VD LONG_NAME for " + newDe.getPublicId()+ ":"+ newDe.getLongName() +": " + vd.getLongName());
+
 						} else {
 							// check existing vd mapping
 							IdVersionPair vdIdVersionPair = event

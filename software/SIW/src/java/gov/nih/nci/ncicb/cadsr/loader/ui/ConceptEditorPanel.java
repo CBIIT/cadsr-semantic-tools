@@ -8,6 +8,7 @@ import gov.nih.nci.ncicb.cadsr.loader.ui.tree.*;
 import gov.nih.nci.ncicb.cadsr.loader.ui.util.UIUtil;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
 import gov.nih.nci.ncicb.cadsr.loader.validator.DuplicateValidator;
+import gov.nih.nci.ncicb.xmiinout.domain.UMLClass;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -63,8 +64,6 @@ public class ConceptEditorPanel extends JPanel
   private static boolean editable = false;
   private boolean verify, inheritanceUpdate;
   
-  private ValueDomain currentVd;
-
   static {
     UserSelections selections = UserSelections.getInstance();
     editable = selections.getProperty("MODE").equals(RunMode.Curator);
@@ -145,38 +144,30 @@ public class ConceptEditorPanel extends JPanel
     } else if (node.getUserObject() instanceof DataElement) {
       DataElement currentDe = 
         (DataElement)node.getUserObject();
-      logger.debug("Node Display: "+node.getDisplay()+" :: Node FullPath: "+node.getFullPath()+" :: Node children: "+node.getChildren());
-      logger.debug("*****  newPrefName :"+newPrefName);
-      
       List<ObjectClass> ocs = ElementsLists.getInstance().
         getElements(DomainObjectFactory.newObjectClass());
       List<DataElement> des = ElementsLists.getInstance().
         getElements(DomainObjectFactory.newDataElement());
-      List<ValueDomain> vds = ElementsLists.getInstance().
-    	getElements(DomainObjectFactory.newValueDomain());
-
+      
       String currentDeVD = getLocalVD(currentDe);
       if (currentDeVD == null)
     	  if (currentDe.getValueDomain()!=null)
     		  currentDeVD = currentDe.getValueDomain().getPublicId()+":"+currentDe.getValueDomain().getVersion();
-      
       
       if(des != null && ocs != null) {
         for(DataElement de : des) {
             String deVD = getLocalVD(de);
             if (deVD == null)
           	  if (de.getValueDomain()!=null)
-          		deVD = de.getValueDomain().getPublicId()+":"+de.getValueDomain().getVersion();    
+          		deVD = de.getValueDomain().getPublicId()+":"+de.getValueDomain().getVersion();
 
           if((de.getDataElementConcept().getObjectClass() == currentDe.getDataElementConcept().getObjectClass())
              && (de != currentDe)) 
           		{  //SIW-794 Adding Value domain as criteria - both from caDSR & Local
 	            	if((newPrefName.equals(de.getDataElementConcept().getProperty().getPreferredName())) && deVD!=null && currentDeVD!=null && deVD.equals(currentDeVD))	            		
 	            	{
-	            		logger.debug("*****  newPrefName: "+newPrefName+" :: de.getDataElementConcept().getProperty().getPreferredName() - "+de.getDataElementConcept().getProperty().getPreferredName());
-	            		logger.debug("*****  deVD : "+deVD+" :: currentDeVD - "+currentDeVD);
 	            		logger.debug("******   Match! - "+de.getValueDomain().getLongName());
-	            				return de; 
+	            		return de; 
 	            	}
             }
         }
@@ -277,27 +268,6 @@ private String getLocalVD(DataElement de) {
     boolean update = remove;
     remove = false;
     Concept[] newConcepts = new Concept[concepts.length];
-    CadsrDialog cd = BeansAccessor.getCadsrVDDialog();
-    ValueDomain tempVD = (ValueDomain)cd.getAdminComponent();
-    if (tempVD!=null)
-    	logger.debug("Temporary selected VD: "+tempVD.getLongName()+" :: VD Public ID: "+tempVD.getPublicId());
-    
-    AdminComponent ac = checkForDuplicateMapping();
-    if(ac != null) {
-      if(ac instanceof ObjectClass)
-      JOptionPane.showMessageDialog 
-        (null,
-         "Duplicate Mapping with " + LookupUtil.lookupFullName((ObjectClass)ac),
-         "Same Concept List",
-         JOptionPane.ERROR_MESSAGE);
-      if(ac instanceof DataElement)
-      JOptionPane.showMessageDialog 
-        (null,
-         "Duplicate Mapping with " + LookupUtil.lookupFullName((DataElement)ac),
-         "Same Concept List",
-         JOptionPane.ERROR_MESSAGE);
-      //throw new ApplyException("Same Concept List");
-    }
     
     for(int i = 0; i<concepts.length; i++) {
       newConcepts[i] = concepts[i];
@@ -381,7 +351,7 @@ private String getLocalVD(DataElement de) {
       
       concepts = newConcepts;
     } 
-
+    
     orderChanged = false;
     
     firePropertyChangeEvent(
@@ -395,7 +365,7 @@ private String getLocalVD(DataElement de) {
     // update the element that we just changed:
     fireElementChangeEvent(new ElementChangeEvent(node));
 
-    // Also update all the elements that use this concept
+    // Also update all the elements that use this concept        
   }
     
     
@@ -626,6 +596,23 @@ private String getLocalVD(DataElement de) {
     apply(false);
     if(node.getUserObject() instanceof DataElement)
         vdPanel.applyPressed();
+    AdminComponent ac = checkForDuplicateMapping();
+    if(ac != null) {
+      if(ac instanceof ObjectClass)
+      JOptionPane.showMessageDialog 
+        (null,
+         "Duplicate Mapping with " + LookupUtil.lookupFullName((ObjectClass)ac),
+         "Same Concept List",
+         JOptionPane.ERROR_MESSAGE);
+      if(ac instanceof DataElement)
+      JOptionPane.showMessageDialog 
+        (null,
+         "Duplicate Mapping with " + LookupUtil.lookupFullName((DataElement)ac),
+         "Same Concept List",
+         JOptionPane.ERROR_MESSAGE);
+      //throw new ApplyException("Same Concept List");
+    }
+    
   }
   
   public void addInheritancePressed() {
