@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class VDPanel extends JPanel implements MouseListener, ActionListener {
+  private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(VDPanel.class.getName());
   private JButton searchVdButton = new JButton("Search Value Domain");
   
   private JLabel vdLongNameTitleLabel = new JLabel("Long Name: "),
@@ -198,10 +199,12 @@ public class VDPanel extends JPanel implements MouseListener, ActionListener {
     String datatype = null;
     if(de != null) {
       List<AttributeDatatypePair> attTypesPairs = elements.getElements(new AttributeDatatypePair("", ""));
+      logger.debug("attTypesPairs: " + attTypesPairs);
       String attributeName = LookupUtil.lookupFullName(de);
       for(AttributeDatatypePair pair : attTypesPairs) {
         if(pair.getAttributeName().equals(attributeName)) {
           datatype = pair.getDatatype();
+          logger.debug("---found datatype: " + datatype + " for attributeName: " + attributeName);
         }
       }
     }

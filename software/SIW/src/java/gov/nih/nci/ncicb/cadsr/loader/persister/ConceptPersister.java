@@ -47,7 +47,9 @@ import java.util.*;
 public class ConceptPersister implements Persister {
 
   private static Logger logger = Logger.getLogger(ConceptPersister.class.getName());
-
+  //SIW-407 adding default Definition type see table SBREXT.DEFINITION_TYPES_LOV_EXT 
+  public static final String DEFAULT_ALT_DEFINITION_TYPE = "UML Value Definition";
+  
   private EvsModule evsModule = new EvsModule();
 
   private UMLDefaults defaults = UMLDefaults.getInstance();
@@ -113,7 +115,7 @@ public class ConceptPersister implements Persister {
               
               
               
-            } else if(
+            } else if(//FIXME see SIW-407 description
             		((evsConcept.getPreferredDefinition() == null || evsConcept.getPreferredDefinition().equals("")) && !c.getPreferredDefinition().equals(PropertyAccessor.getProperty("default.evs.definition"))) 
                     || 
                     (evsConcept.getPreferredDefinition() != null && !evsConcept.getPreferredDefinition().equals("") && !evsConcept.getPreferredDefinition().equals(c.getPreferredDefinition()))) {
@@ -193,14 +195,15 @@ public class ConceptPersister implements Persister {
 
           if(newSource != null && !newSource.equalsIgnoreCase(c.getDefinitionSource())) { // Add alt def.
 
-            logger.debug("Concept " + c.getPreferredName() + " had different definition source. ");
+            logger.debug("Concept had different definition source. newSource: " + newSource + ' ' + toStringConcept(c));
             Definition def = DomainObjectFactory.newDefinition();
-            def.setType(newSource);
+            def.setType(newSource);//SIW-407 This value can be not in the allowed LoV from SBREXT.DEFINITION_TYPES_LOV_EXT
             def.setDefinition(newDef);
             def.setAudit(defaults.getAudit());
             def.setContext(defaults.getContext());
-            adminComponentDAO.addDefinition(c, def);
-            logger.info(PropertyAccessor.getProperty("added.altDef", new String[]{c.getPreferredName(), newDef, "Concept"}));
+            
+            //SIW-407 If we cannot use user provided Definition type
+            addConceptAltDefinition(c, def);
           } else {
             // Do nothing, this is the common case where the concept existed and had the same def source.
           }
@@ -210,7 +213,29 @@ public class ConceptPersister implements Persister {
       replaceConcepts(conceptsToReplace, cons);
     }
   }
-  
+  //SIW-407 re-factoring and changing
+  private void addConceptAltDefinition (Concept c, Definition def) {
+      try {
+      	adminComponentDAO.addDefinition(c, def);//Trying to use user provided Definition type
+      	logger.info(PropertyAccessor.getProperty("added.altDef", new String[]{c.getPreferredName(), def.getDefinition(), "Concept"}));
+      }
+      catch (Exception e) {
+      	try {
+          	String conceptAltDefError = "Error adding Alternate Definition: " + toStringDefinition(def) + " to Concept: " + toStringConcept(c) + '\n' + e;
+          	logger.error(conceptAltDefError);
+          	logger.debug("...Adding Alternate Definition with default type: " + DEFAULT_ALT_DEFINITION_TYPE);
+          	def.setType(DEFAULT_ALT_DEFINITION_TYPE);//If we cannot use user provided Definition type we can try default type
+          	adminComponentDAO.addDefinition(c, def);
+          	logger.info(PropertyAccessor.getProperty("added.altDef", new String[]{c.getPreferredName(), def.getDefinition(), "Concept"}));
+          	logger.warn("Consider manually changing new Concept Alternate Definition type from default: " + toStringDefinition(def) + "; Concept: " + toStringConcept(c));
+      	}
+      	catch (Exception ex) {//Skipping creating Alt Definition when we have an error
+          	String conceptAltDefError = "Error adding Alternate Definition: " + toStringDefinition(def) + " to Concept: " + toStringConcept(c) + '\n' + e;
+          	logger.error(conceptAltDefError);
+          	logger.warn("!!! Alternate Definition is not created. Consider manually creating Alternate Definition for Concept: " + toStringConcept(c));	            	
+      	}
+     }
+  }
   private List<Concept> replaceConcepts(HashMap<Concept, Concept> conceptsToReplace, List<Concept> conList) {
 	  if (conceptsToReplace != null && conceptsToReplace.size() > 0 && conList != null) {
 		  for (Concept con: conceptsToReplace.keySet()) {
@@ -277,5 +302,21 @@ public class ConceptPersister implements Persister {
     conceptDAO = DAOAccessor.getConceptDAO();
     adminComponentDAO = DAOAccessor.getAdminComponentDAO();
   }
-  
+  protected static String toStringConcept(Concept concept) {
+	  return "[Concept: evsSource=" + concept.getEvsSource() 
+	  + ", definitionSource=" + concept.getDefinitionSource() 
+	  +	  ", publicId=" + concept.getPublicId()
+	  + ", preferredName=" + concept.getPreferredName() 
+	  + ", longName=" + concept.getLongName() 
+	  + ", version=" + concept.getVersion() 
+	  + ", preferredDefinition=" + concept.getPreferredDefinition()
+	  + ", workflowStatus=" + concept.getWorkflowStatus()
+	  + ", origin=" + concept.getOrigin() + "]";
+  }
+  protected static String toStringDefinition(Definition def) {
+	  String context = (def.getContext() != null) ? def.getContext().getName() : null;
+	  return "[Definition: definition=" + def.getDefinition() 
+	  + ", type=" + def.getType()
+	  + ", context=" + context + "]";
+  }
 }
