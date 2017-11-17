@@ -110,44 +110,41 @@ public class ConceptPersister implements Persister {
                            ("cannot.create.concept.in.evs.different.name", c.getPreferredName())); 
               throw new PersisterException
                 (PropertyAccessor.getProperty
-                 ("cannot.create.concept.in.evs.different.name", c.getPreferredName()));
-              
-              
-              
-              
-            } else if(//FIXME see SIW-407 description
+                 ("cannot.create.concept.in.evs.different.name", c.getPreferredName()));  
+            } 
+            
+            if(//SIW-407 description not to give an error if Pref Def is different
             		((evsConcept.getPreferredDefinition() == null || evsConcept.getPreferredDefinition().equals("")) && !c.getPreferredDefinition().equals(PropertyAccessor.getProperty("default.evs.definition"))) 
                     || 
                     (evsConcept.getPreferredDefinition() != null && !evsConcept.getPreferredDefinition().equals("") && !evsConcept.getPreferredDefinition().equals(c.getPreferredDefinition()))) {
               
-              logger.error(PropertyAccessor.getProperty
+              logger.warn(PropertyAccessor.getProperty
                            ("cannot.create.concept.in.evs.different.definition", c.getPreferredName())); 
-              throw new PersisterException
-                (PropertyAccessor.getProperty
-                 ("cannot.create.concept.in.evs.different.definition", c.getPreferredName()));
-            } else 
-              // create 
-              {
-                c.setVersion(new Float(1.0f));
-                c.setContext(defaults.getMainContext());
-                c.setWorkflowStatus(AdminComponent.WF_STATUS_RELEASED);
-                c.setAudit(defaults.getAudit());
-                c.setOrigin(defaults.getOrigin());
-                c.setEvsSource(PropertyAccessor.getProperty("default.evsSource"));
-                c.setLifecycle(defaults.getLifecycle());
-                c.setDefinitionSource(evsConcept.getDefinitionSource());
-                StringBuilder builder = new StringBuilder();
-      		    for (char currentChar : c.getPreferredDefinition().toCharArray()) {
-      		    	Character replacementChar = charReplacementMap.get(currentChar);
-      		        builder.append(replacementChar != null ? replacementChar : currentChar);
-      		    }
-      		   c.setPreferredDefinition(builder.toString());
+//              throw new PersisterException
+//                (PropertyAccessor.getProperty
+//                 ("cannot.create.concept.in.evs.different.definition", c.getPreferredName()));
+            } 
+            //SIW-407 
+            // create
+            c.setVersion(new Float(1.0f));
+            c.setContext(defaults.getMainContext());
+            c.setWorkflowStatus(AdminComponent.WF_STATUS_RELEASED);
+            c.setAudit(defaults.getAudit());
+            c.setOrigin(defaults.getOrigin());
+            c.setEvsSource(PropertyAccessor.getProperty("default.evsSource"));
+            c.setLifecycle(defaults.getLifecycle());
+            c.setDefinitionSource(evsConcept.getDefinitionSource());
+            StringBuilder builder = new StringBuilder();
+  		    for (char currentChar : c.getPreferredDefinition().toCharArray()) {
+  		    	Character replacementChar = charReplacementMap.get(currentChar);
+  		        builder.append(replacementChar != null ? replacementChar : currentChar);
+  		    }
+  		    c.setPreferredDefinition(builder.toString());
 
-                
-                c.setId(conceptDAO.create(c));
-                logger.info(PropertyAccessor.getProperty("created.concept"));
-                LogUtil.logAc(c, logger);
-              }
+            c.setId(conceptDAO.create(c));
+            logger.info(PropertyAccessor.getProperty("created.concept"));
+            LogUtil.logAc(c, logger);
+          
           }
         } else { // concept exist: See if we need to add alternate def.
           logger.info(PropertyAccessor.getProperty("existed.concept", c.getPreferredName()));
@@ -227,12 +224,12 @@ public class ConceptPersister implements Persister {
           	def.setType(DEFAULT_ALT_DEFINITION_TYPE);//If we cannot use user provided Definition type we can try default type
           	adminComponentDAO.addDefinition(c, def);
           	logger.info(PropertyAccessor.getProperty("added.altDef", new String[]{c.getPreferredName(), def.getDefinition(), "Concept"}));
-          	logger.warn("Consider manually changing new Concept Alternate Definition type from default: " + toStringDefinition(def) + "; Concept: " + toStringConcept(c));
+          	logger.warn("WARNING: Consider manually changing new Concept Alternate Definition type from default type: " + toStringDefinition(def) + "; Concept: " + toStringConcept(c));
       	}
       	catch (Exception ex) {//Skipping creating Alt Definition when we have an error
           	String conceptAltDefError = "Error adding Alternate Definition: " + toStringDefinition(def) + " to Concept: " + toStringConcept(c) + '\n' + e;
           	logger.error(conceptAltDefError);
-          	logger.warn("!!! Alternate Definition is not created. Consider manually creating Alternate Definition for Concept: " + toStringConcept(c));	            	
+          	logger.warn("WARNING: Concept Alternate Definition is not created. Consider manually creating Alternate Definition for Concept: " + toStringConcept(c));	            	
       	}
      }
   }
