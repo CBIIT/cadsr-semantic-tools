@@ -27,6 +27,7 @@ import gov.nih.nci.ncicb.cadsr.loader.ElementsLists;
 
 import org.apache.log4j.Logger;
 import gov.nih.nci.ncicb.cadsr.loader.util.PropertyAccessor;
+import gov.nih.nci.ncicb.cadsr.loader.util.StringUtil;
 import gov.nih.nci.ncicb.cadsr.loader.defaults.UMLDefaults;
 
 import gov.nih.nci.ncicb.cadsr.loader.event.ProgressEvent;
@@ -118,8 +119,8 @@ public class ConceptPersister implements Persister {
                     || 
                     (evsConcept.getPreferredDefinition() != null && !evsConcept.getPreferredDefinition().equals("") && !evsConcept.getPreferredDefinition().equals(c.getPreferredDefinition()))) {
               
-              logger.warn(PropertyAccessor.getProperty
-                           ("cannot.create.concept.in.evs.different.definition", c.getPreferredName())); 
+              logger.warn("WARNING: " + PropertyAccessor.getProperty
+                           ("cannot.create.concept.in.evs.different.definition", c.getPreferredName()) + ", concept: " + toStringConcept(c)); 
 //              throw new PersisterException
 //                (PropertyAccessor.getProperty
 //                 ("cannot.create.concept.in.evs.different.definition", c.getPreferredName()));
@@ -133,9 +134,29 @@ public class ConceptPersister implements Persister {
             c.setOrigin(defaults.getOrigin());
             c.setEvsSource(PropertyAccessor.getProperty("default.evsSource"));
             c.setLifecycle(defaults.getLifecycle());
-            c.setDefinitionSource(evsConcept.getDefinitionSource());
+            String evsDefSource = evsConcept.getDefinitionSource();
+            String siwDefSource = c.getDefinitionSource();//SIW-407 we want to use Definition Source given in XMI file
+            if (StringUtil.isEmpty(siwDefSource)) {
+            	siwDefSource = evsDefSource;
+            	logger.info("WARNING: Concept Definition Source received in XMI is empty, using EVS Definition Source: " + evsDefSource 
+            		+ ", concept: " + toStringConcept(c));
+            }
+            else if (! evsDefSource.equals(siwDefSource)) {
+            	logger.warn("WARNING: EVS Definition Source: " + evsDefSource + " is different than new Concept Definition Source received in XMI: " + siwDefSource 
+            		+ ", concept: " + toStringConcept(c));
+            }
+            c.setDefinitionSource(siwDefSource);
+
+            String evsPrefDef = evsConcept.getPreferredDefinition();
+            String siwPrefDef = c.getPreferredDefinition();//SIW-407 we want to use Preferred Definition given in XMI file
+            if (StringUtil.isEmpty(siwPrefDef)) {
+            	logger.info("WARNING: Preferred Definition received in XMI is empty, using EVS Preferred Definition : " + evsPrefDef 
+                		+ ", concept: " + toStringConcept(c));
+            	siwPrefDef = evsPrefDef;
+            }
+            
             StringBuilder builder = new StringBuilder();
-  		    for (char currentChar : c.getPreferredDefinition().toCharArray()) {
+  		    for (char currentChar : siwPrefDef.toCharArray()) {
   		    	Character replacementChar = charReplacementMap.get(currentChar);
   		        builder.append(replacementChar != null ? replacementChar : currentChar);
   		    }
