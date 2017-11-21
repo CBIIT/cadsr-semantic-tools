@@ -34,6 +34,10 @@ public class NewAttributeEvent extends NewConceptualEvent {
   private Float typeVersion;
 
   private String gmeXmlLocRef;
+  
+  private String cdId;
+  private Float cdVersion;  
+  
 
   /**
    * Describe localType here.
@@ -121,6 +125,22 @@ public class NewAttributeEvent extends NewConceptualEvent {
   public void setGmeXmlLocRef(String newGmeXmlLocRef) {
     this.gmeXmlLocRef = newGmeXmlLocRef;
   }
+
+public String getcdId() {
+  return cdId;
+}
+
+public void setcdId(String cdId) {
+  this.cdId = cdId;
+}
+
+public Float getcdVersion() {
+  return cdVersion;
+}
+
+public void setcdVersion(Float cdVersion) {
+  this.cdVersion = cdVersion;
+}
 
   
 

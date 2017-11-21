@@ -95,6 +95,10 @@ public class XMIParser2 implements Parser {
   //SIW-627
   public static final String TV_VM_ID = "CADSR_ValueMeaningPublicID";
   public static final String TV_VM_VERSION = "CADSR_ValueMeaningVersion";
+  
+  //SIW-796
+  public static final String TV_DEC_CD_ID = "CADSR_DEC_ConceptualDomainID";
+  public static final String TV_DEC_CD_VERSION = "CADSR_DEC_ConceptualDomainVersion";
 
   public static final String TV_INHERITED_DE_ID = "CADSR_Inherited.{1}.DE_ID";
   public static final String TV_INHERITED_DE_VERSION = "CADSR_Inherited.{1}.DE_VERSION";
@@ -277,31 +281,31 @@ public class XMIParser2 implements Parser {
   }
 
   private RunMode getRunModeFromUserSelections() {
-	  
-	  RunMode runMode = (RunMode)(UserSelections.getInstance().getProperty("MODE"));
+    
+    RunMode runMode = (RunMode)(UserSelections.getInstance().getProperty("MODE"));
       if(runMode == null) {
-    	  runMode = RunMode.Reviewer;
+        runMode = RunMode.Reviewer;
       }
       
       return runMode;
   }
 
   private URI getURI(String filename) throws ParserException{
-	  try {
-		String s = filename.replaceAll("\\ ", "%20");
-		  
-		  if(!s.startsWith("/")) //Some file systems use absolute URIs that do not start with '/'
-		    s = "/" + s;    
-		  java.net.URI uri = new java.net.URI("file://" + s);
-		  
-		  return uri;
-	} catch (URISyntaxException e) {
-		throw new ParserException(e);
-	}
+    try {
+    String s = filename.replaceAll("\\ ", "%20");
+      
+      if(!s.startsWith("/")) //Some file systems use absolute URIs that do not start with '/'
+        s = "/" + s;    
+      java.net.URI uri = new java.net.URI("file://" + s);
+      
+      return uri;
+  } catch (URISyntaxException e) {
+    throw new ParserException(e);
+  }
   }
 
   private XmiInOutHandler createXmiHandler(String filename) {
-	// find extension
+  // find extension
       String ext = null;
       if(filename.indexOf(".") > 0)
         ext = filename.substring(filename.lastIndexOf(".") + 1);
@@ -309,14 +313,14 @@ public class XMIParser2 implements Parser {
       if(ext != null && ext.equals("uml")) 
         handlerType = HandlerEnum.ArgoUMLDefault;
       else
-    	  handlerType = HandlerEnum.EADefault;
+        handlerType = HandlerEnum.EADefault;
 
       XmiInOutHandler handler = XmiHandlerFactory.getXmiHandler(handlerType);
       return handler;
 }
 
   private void setFilterClassAndPackages() {
-	  try {
+    try {
         filterClassAndPackages = (Boolean)UserSelections.getInstance().getProperty("FILTER_CLASS_AND_PACKAGES");
       } catch (NullPointerException e) {
         logger.info("no filter specified");
@@ -324,7 +328,7 @@ public class XMIParser2 implements Parser {
   }
   
   private void setReviewAndInheritedReviewtags(RunMode runMode) {
-	  if(runMode.equals(RunMode.Curator) || (runMode.equals(RunMode.GenerateReport))) {
+    if(runMode.equals(RunMode.Curator) || (runMode.equals(RunMode.GenerateReport))) {
         reviewTag = TV_CURATOR_REVIEWED;
         inheritedReviewTag = TV_INHERITED_CURATOR_REVIEWED;
       } else {
@@ -334,36 +338,36 @@ public class XMIParser2 implements Parser {
   }
   
   private void setFilterPackages() {
-	  FilterPackage p = new FilterPackage("");
+    FilterPackage p = new FilterPackage("");
       filterPackages = ElementsLists.getInstance().getElements(p);
   }
   
   private void setFilterClasses() {
-	  FilterClass c = new FilterClass("", "");
+    FilterClass c = new FilterClass("", "");
       filterClasses = ElementsLists.getInstance().getElements(c);
   }
   
   private XmiInOutHandler getXmiHandler() {
-	  XmiInOutHandler handler = (XmiInOutHandler)UserSelections.getInstance().getProperty("XMI_HANDLER");
-	  
-	  return handler;
+    XmiInOutHandler handler = (XmiInOutHandler)UserSelections.getInstance().getProperty("XMI_HANDLER");
+    
+    return handler;
   }
   
   private XmiInOutHandler switchHandlerType() {
-	  if(handlerType != null && handlerType.equals(HandlerEnum.EADefault)) {
-		  handlerType = HandlerEnum.ArgoUMLDefault;
-	  }
-	  else {
-		  handlerType = HandlerEnum.EADefault;
-	  } 
-	  XmiInOutHandler handler = XmiHandlerFactory.getXmiHandler(handlerType);
-	  
-	  return handler;
+    if(handlerType != null && handlerType.equals(HandlerEnum.EADefault)) {
+      handlerType = HandlerEnum.ArgoUMLDefault;
+    }
+    else {
+      handlerType = HandlerEnum.EADefault;
+    } 
+    XmiInOutHandler handler = XmiHandlerFactory.getXmiHandler(handlerType);
+    
+    return handler;
   }  
   
   private void setFileType() {
-	  
-	  if(handlerType == HandlerEnum.ArgoUMLDefault) {
+    
+    if(handlerType == HandlerEnum.ArgoUMLDefault) {
           userSelections.setProperty("FILE_TYPE", "ARGO");
         } else if(handlerType == HandlerEnum.EADefault){
           userSelections.setProperty("FILE_TYPE", "EA");
@@ -371,36 +375,36 @@ public class XMIParser2 implements Parser {
   }
   
   private void saveHandlerToMemory(XmiInOutHandler handler) {
-	// save in memory for fast-save
+  // save in memory for fast-save
       userSelections.setProperty("XMI_HANDLER", handler);
   }
   
   private void setMarkIgnored() {
-	  UserSelections.getInstance().setProperty("MARKED_IGNORED", (Object)markedAsIgnored);
+    UserSelections.getInstance().setProperty("MARKED_IGNORED", (Object)markedAsIgnored);
   }  
 
   private void setTotalNoOfElements(XmiInOutHandler handler) {
-	  UMLModel model = handler.getModel();
+    UMLModel model = handler.getModel();
       totalNumberOfElements = countNumberOfElements(model);
   }
   
   private void doPackages(UMLModel model) throws ParserException{
-	  for(UMLPackage pkg : model.getPackages()) {
+    for(UMLPackage pkg : model.getPackages()) {
         doPackage(pkg);
       }
   }
   
   private void doAssociations(UMLModel model) throws ParserException{
-	  for(UMLAssociation assoc : model.getAssociations()) {
+    for(UMLAssociation assoc : model.getAssociations()) {
         doAssociation(assoc);
       }
   }
   
   private void doGeneralizations(UMLModel model) throws ParserException{
-		for (UMLGeneralization g : model.getGeneralizations()) {
-	    doGeneralization(g);
-	  }
-	}
+    for (UMLGeneralization g : model.getGeneralizations()) {
+      doGeneralization(g);
+    }
+  }
   
   private void doGeneralization(UMLGeneralization g) {
     UMLGeneralizable gener = g.getSupertype();
@@ -898,6 +902,28 @@ public class XMIParser2 implements Parser {
         logger.warn("vd version is not a number, ignoring: " + tv.getValue());     
       } // end of try-catch
     }
+    
+    tv = att.getTaggedValue(TV_DEC_CD_ID);
+    if(tv != null) {
+      event.setcdId(tv.getValue().trim());
+      logger.debug("Conceptual Domain ID in XMI Parser attribute event from XMI: "+tv.getValue().trim());      
+    } else {
+      event.setcdId("2222502"); 
+    }
+    logger.debug("Conceptual Domain ID in XMI Parser attribute event: "+event.getcdId());
+
+    tv = att.getTaggedValue(TV_DEC_CD_VERSION);
+    if(tv != null) {
+      try {
+        event.setcdVersion(new Float(tv.getValue()));
+        logger.debug("Conceptual Domain Version in XMI Parser attribute event: "+event.getcdVersion());            
+      } catch (NumberFormatException e){
+        logger.warn("vd conceptual domain version is not a number, ignoring: " + tv.getValue());     
+      } // end of try-catch
+    }    else {
+      event.setcdVersion(new Float("1"));
+    }
+    logger.debug("Conceptual Domain Version in XMI Parser attribute event: "+event.getcdVersion());    
 
     tv = att.getTaggedValue(TV_GME_XML_LOC_REFERENCE);
     if(tv != null) {
@@ -950,12 +976,12 @@ public class XMIParser2 implements Parser {
     }
     
     if (tvVersion != null) {
-    	try {
-    		event.setPersistenceVersion(new Float(tvVersion.getValue()));
-    	}
-    	catch (NumberFormatException e) {
-    		logger.error("ValueMeaningVerion is not numeric", e);
-    	}
+      try {
+        event.setPersistenceVersion(new Float(tvVersion.getValue()));
+      }
+      catch (NumberFormatException e) {
+        logger.error("ValueMeaningVerion is not numeric", e);
+      }
     }
 
     setConceptInfo(att, event, TV_TYPE_VM);
