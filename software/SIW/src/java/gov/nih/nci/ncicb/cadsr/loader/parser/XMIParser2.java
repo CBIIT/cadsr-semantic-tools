@@ -905,25 +905,21 @@ public class XMIParser2 implements Parser {
     
     tv = att.getTaggedValue(TV_DEC_CD_ID);
     if(tv != null) {
-      event.setcdId(tv.getValue().trim());
-      logger.debug("Conceptual Domain ID in XMI Parser attribute event from XMI: "+tv.getValue().trim());      
+      event.setcdId(tv.getValue().trim());    
     } else {
-      event.setcdId("2222502"); 
+      //event.setcdId("2222502"); 
     }
-    logger.debug("Conceptual Domain ID in XMI Parser attribute event: "+event.getcdId());
 
     tv = att.getTaggedValue(TV_DEC_CD_VERSION);
     if(tv != null) {
       try {
-        event.setcdVersion(new Float(tv.getValue()));
-        logger.debug("Conceptual Domain Version in XMI Parser attribute event: "+event.getcdVersion());            
+        event.setcdVersion(new Float(tv.getValue()));           
       } catch (NumberFormatException e){
         logger.warn("vd conceptual domain version is not a number, ignoring: " + tv.getValue());     
       } // end of try-catch
     }    else {
-      event.setcdVersion(new Float("1"));
-    }
-    logger.debug("Conceptual Domain Version in XMI Parser attribute event: "+event.getcdVersion());    
+      //event.setcdVersion(new Float("1"));
+    }   
 
     tv = att.getTaggedValue(TV_GME_XML_LOC_REFERENCE);
     if(tv != null) {

@@ -98,17 +98,12 @@ public class ConceptEditorPanel extends JPanel
         DataElement de = 
                 (DataElement)node.getUserObject();
         de.getDataElementConcept().getPublicId();
-          if (de.getDataElementConcept()!=null) {
+          if (de.getDataElementConcept().getConceptualDomain()!=null) {
             conceptualDomainId = de.getDataElementConcept().getConceptualDomain().getPublicId();
             conceptualDomainVersion = de.getDataElementConcept().getConceptualDomain().getVersion().toString();
             conceptualDomainLongName = de.getDataElementConcept().getConceptualDomain().getLongName();
           }
-    logger.debug("******* Conceptual Domain ID from  DEC: " + conceptualDomainId);      
-      /*if (conceptualDomainId == null) {
-        if (vd.getConceptualDomain()!=null) { 
-            conceptualDomainId = vd.getConceptualDomain().getPublicId();
-          }
-      }*/             
+          logger.debug("******* Conceptual Domain from  DEC: " + conceptualDomainId + ":" + conceptualDomainVersion + ":" + conceptualDomainLongName );      
       }
   }
 

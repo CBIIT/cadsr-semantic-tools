@@ -463,30 +463,29 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 		dec.setLongName(className + ":" + propName);
 		dec.setProperty(prop);		
 		logger.debug("DEC long name - Before updating from XMI: "+dec.getPublicId()+" and Long Name: "+dec.getLongName());
-				
-		ConceptualDomain cd = DomainObjectFactory.newConceptualDomain();
-		Map<String, Object> queryFields = new HashMap<String, Object>();
-		queryFields.put(CadsrModule.PUBLIC_ID, event.getcdId());
-		queryFields.put(CadsrModule.VERSION, event.getcdVersion());		
-		try {
-			List<ConceptualDomain> result = null;
-			result = new ArrayList<ConceptualDomain>(cadsrModule.findConceptualDomain(queryFields));
-			if (result.size()>0) {			
-					cd = result.get(0);
-					logger.debug("********   Result CD Long name: "+cd.getLongName()+ " and the public ID " +cd.getPublicId());
-				}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (cd==null) {
-			cd.setPublicId(event.getcdId());
-			cd.setVersion(event.getcdVersion()); 
-				if (cd.getPublicId().equals("2008550")) {
-					cd.setLongName("Disease response");
-				}			
-		}
-		dec.setConceptualDomain(cd);		
-		logger.debug("Conceptual Domain Version while Setting from XMI: "+dec.getConceptualDomain().getPublicId()+" and Version: "+dec.getConceptualDomain().getVersion());    
+		
+		if (event.getcdId()!=null && event.getcdVersion()!=null)
+		{
+			ConceptualDomain cd = DomainObjectFactory.newConceptualDomain();
+			Map<String, Object> queryFields = new HashMap<String, Object>();
+			queryFields.put(CadsrModule.PUBLIC_ID, event.getcdId());
+			queryFields.put(CadsrModule.VERSION, event.getcdVersion());		
+			try {
+				List<ConceptualDomain> result = null;
+				result = new ArrayList<ConceptualDomain>(cadsrModule.findConceptualDomain(queryFields));
+				if (result.size()>0) {			
+						cd = result.get(0);
+					} else {
+						cd.setPublicId("----- INV CD ----");
+						cd.setLongName("Invalid Conceptual Domain");
+					}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			dec.setConceptualDomain(cd);		
+		} else {
+			logger.debug("Missing CD ID/Version for DEC - "+event.getcdId()+":"+event.getcdVersion()!=null);
+		}    
 
 		ObjectClass oc = null;
 		List<ObjectClass> ocs = elements.getElements(DomainObjectFactory
