@@ -45,6 +45,8 @@ public class ConceptEditorPanel extends JPanel
   private ConceptEditorPanel _this = this;
   private UMLNode node;
 
+  private CadsrDialog cadsrCDDialog;
+  
   private Concept[] concepts;
   private ConceptUI[] conceptUIs;
   
@@ -620,19 +622,17 @@ private String getLocalVD(DataElement de) {
     conceptualDomainIdLabel.setVisible(true);
     conceptualDomainLongNameLabel.setVisible(true);        
     
-    // SIW-796 Search button for VD CD
+    // SIW-796 Search button for CD - Vikram - Not working at the moment
     
-   /*cdSearchButton.addActionListener(new ActionListener() {
+   cdSearchButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             cadsrCDDialog.setAlwaysOnTop(true);
             cadsrCDDialog.setVisible(true);
             ConceptualDomain cd = (ConceptualDomain)cadsrCDDialog.getAdminComponent();
             if(cd == null) return;
-            tempVD.setConceptualDomain(cd);
-            //initValues();
-            setCdSearchedValues();
-            //firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
-          }});*/    
+            setCdSearchedValues(cd);
+            firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
+          }});    
     
     // SIW-796 Adding new labels and value components for the Value Domain Conceptual Domain    
     if (conceptualDomainId!=null ) {
@@ -644,11 +644,7 @@ private String getLocalVD(DataElement de) {
       conceptualDomainLongNameValueLabel.setText(conceptualDomainLongName);
     } else {
       conceptualDomainLongNameValueLabel.setText("UML Default CD"); 
-    }            
-    
-    //conceptualDomainIdValueLabel.setText("2222502"+"v"+"1.0");
-    //conceptualDomainLongNameValueLabel.setText("UML Default CD");
-    
+    }                    
     UserSelections selections = UserSelections.getInstance();
     if(node.getUserObject() instanceof DataElement
       && !selections.getProperty("MODE").equals(RunMode.Curator))
@@ -665,17 +661,20 @@ private String getLocalVD(DataElement de) {
   
   
   // SIW-796 Setting selected Value Domain Conceptual Domain values from the search
-  /*private void setCdSearchedValues(){
-    conceptualDomainIdLabel.setText(ConventionUtil.publicIdVersion(tempVD.getConceptualDomain()));
+  private void setCdSearchedValues(ConceptualDomain cd){
+    conceptualDomainIdLabel.setText(cd.getPublicId());
 
-      if(tempVD.getConceptualDomain().getLongName() != null
-          && !tempVD.getConceptualDomain().getLongName().equals(""))
-        conceptualDomainLongNameValueLabel.setText(tempVD.getConceptualDomain().getLongName());
+      if(cd.getLongName() != null
+          && !cd.getLongName().equals(""))
+        conceptualDomainLongNameValueLabel.setText(cd.getLongName());
       else
         conceptualDomainLongNameValueLabel.setText("Unable to lookup CD Long Name");
-  }  */  
+  }  
   
-
+  public void setCadsrCDDialog(CadsrDialog cadsrCDDialog) {
+      this.cadsrCDDialog = cadsrCDDialog;
+    }
+  
   
   private void updateHeaderLabels()
   {
