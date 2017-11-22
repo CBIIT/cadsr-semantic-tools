@@ -100,6 +100,11 @@ public class BeansAccessor {
 	  return (CadsrDialog)getFactory().getBean("cadsrVMDialog");
   }
 
+  //SIW-796
+  public static CadsrDialog getCadsrCDDialog() {
+	  return (CadsrDialog)getFactory().getBean("cadsrCDDialog");
+  }    
+  
   public static DEReuseDialog getDEReuseDialog() {
     return (DEReuseDialog)getFactory().getBean("deReuseDialog");
   }

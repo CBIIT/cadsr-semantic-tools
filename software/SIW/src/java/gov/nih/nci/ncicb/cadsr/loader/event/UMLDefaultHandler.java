@@ -461,8 +461,7 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 
 		DataElementConcept dec = DomainObjectFactory.newDataElementConcept();
 		dec.setLongName(className + ":" + propName);
-		dec.setProperty(prop);		
-		logger.debug("DEC long name - Before updating from XMI: "+dec.getPublicId()+" and Long Name: "+dec.getLongName());
+		dec.setProperty(prop);
 		
 		if (event.getcdId()!=null && event.getcdVersion()!=null)
 		{
