@@ -276,7 +276,14 @@ public class XMIWriter2 implements ElementWriter {
                 att.addTaggedValue(XMIParser2.TV_VALUE_DOMAIN, LookupUtil.lookupFullName(de.getValueDomain()));
               }
             }
-
+            logger.debug("******** DEC print before CD ");
+            if (dec.getConceptualDomain()!=null) {
+            	logger.debug(" Conceptual Domain from UI - "+dec.getConceptualDomain().getPublicId()+":: Version: "+dec.getConceptualDomain().getVersion().toString());
+                att.removeTaggedValue(XMIParser2.TV_CD_ID);
+                att.removeTaggedValue(XMIParser2.TV_CD_VERSION);            	
+            	att.addTaggedValue(XMIParser2.TV_CD_ID, dec.getConceptualDomain().getPublicId());
+            	att.addTaggedValue(XMIParser2.TV_CD_VERSION, dec.getConceptualDomain().getVersion().toString());           	
+            }
             addConceptTvs(att, conceptCodes, XMIParser2.TV_TYPE_PROPERTY);
           }
         } else { // in case of inherited attribute

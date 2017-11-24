@@ -49,6 +49,7 @@ public class ConceptEditorPanel extends JPanel
   private ConceptUI[] conceptUIs;
   
   private JPanel gridPanel;
+  private ConceptualDomain cdUi;
    
   private JLabel conceptLabel = new JLabel();
   private JLabel nameLabel = new JLabel();
@@ -100,7 +101,9 @@ public class ConceptEditorPanel extends JPanel
         de.getDataElementConcept().getPublicId();
           if (de.getDataElementConcept().getConceptualDomain()!=null) {
             conceptualDomainId = de.getDataElementConcept().getConceptualDomain().getPublicId();
-            conceptualDomainVersion = de.getDataElementConcept().getConceptualDomain().getVersion().toString();
+            if (de.getDataElementConcept().getConceptualDomain().getVersion()!=null) {
+            	conceptualDomainVersion = de.getDataElementConcept().getConceptualDomain().getVersion().toString();	
+            }            
             conceptualDomainLongName = de.getDataElementConcept().getConceptualDomain().getLongName();
           }      
       }
@@ -115,22 +118,6 @@ public class ConceptEditorPanel extends JPanel
       if (vdPanel != null) { vdPanel.addPropertyChangeListener(l); }
   }
   }
- 
-  
-// SIW 796 Adding CD to the main panel  
-/*  public void addConceptualDomain() {
-      mainPanel = new JPanel(new GridBagLayout());
-      UIUtil.insertInBag(mainPanel, vdConceptualDomainIdLabel, 0, 0);
-      UIUtil.insertInBag(mainPanel, vdConceptualDomainIdValueLabel, 1, 0);      
-      UIUtil.insertInBag(mainPanel, vdConceptualDomainLongNameLabel, 0, 1);
-      UIUtil.insertInBag(mainPanel, vdConceptualDomainLongNameValueLabel, 1, 1);
-      vdConceptualDomainIdLabel.setVisible(true);
-      vdConceptualDomainIdValueLabel.setVisible(true);
-      vdConceptualDomainLongNameLabel.setVisible(true);
-      vdConceptualDomainLongNameValueLabel.setVisible(true);      
-      setMainPanel();
-    }*/    
-  
 
   private void firePropertyChangeEvent(PropertyChangeEvent evt) {
     for(PropertyChangeListener l : propChangeListeners) 
@@ -337,6 +324,8 @@ private String getLocalVD(DataElement de) {
         update = true;
       }
     }
+    
+    
     
     update = orderChanged | update | inheritanceUpdate;
     inheritanceUpdate = false;
@@ -609,7 +598,7 @@ private String getLocalVD(DataElement de) {
     
     conceptualDomainPanel.setBorder(BorderFactory.createTitledBorder("Conceptual Domain"));
     
-    // SIW-796 Adding new labels and value components for the Value Domain Conceptual Domain
+    // SIW-796 Adding new labels and value components for the Conceptual Domain
     UIUtil.insertInBag(conceptualDomainPanel, conceptualDomainIdLabel, 0, 1);
     UIUtil.insertInBag(conceptualDomainPanel, conceptualDomainIdValueLabel, 1, 1);
     UIUtil.insertInBag(conceptualDomainPanel, conceptualDomainLongNameLabel, 0, 2);
@@ -619,8 +608,7 @@ private String getLocalVD(DataElement de) {
     conceptualDomainIdLabel.setVisible(true);
     conceptualDomainLongNameLabel.setVisible(true);        
     
-    // SIW-796 Search button for CD
-    
+    // SIW-796 Search button for CD    
    cdSearchButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
         	CadsrDialog cadsrCDDialog = BeansAccessor.getCadsrCDDialog();        	
@@ -628,11 +616,11 @@ private String getLocalVD(DataElement de) {
             cadsrCDDialog.setVisible(true);
             ConceptualDomain cd = (ConceptualDomain)cadsrCDDialog.getAdminComponent();
             if(cd == null) return;
-            setCdSearchedValues(cd);
+            setCdSearchedValues(cd, node);
             firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
           }});    
     
-    // SIW-796 Adding new labels and value components for the Value Domain Conceptual Domain    
+    // SIW-796 Adding new labels and value components for the Conceptual Domain    
     if (conceptualDomainId!=null ) {
         conceptualDomainIdValueLabel.setText(conceptualDomainId+"v"+conceptualDomainVersion);     
     } else {
@@ -641,25 +629,19 @@ private String getLocalVD(DataElement de) {
     if (conceptualDomainLongName!=null) {
       conceptualDomainLongNameValueLabel.setText(conceptualDomainLongName);
     } else {
-      conceptualDomainLongNameValueLabel.setText("UML Default CD"); 
+      conceptualDomainLongNameValueLabel.setText("UML DEFAULT CD"); 
     }                    
     UserSelections selections = UserSelections.getInstance();
     if(node.getUserObject() instanceof DataElement
       && !selections.getProperty("MODE").equals(RunMode.Curator))
       UIUtil.insertInBag(gridPanel, vdPanel, 0, concepts.length + 1);
-    updateHeaderLabels();
-    
-    UIUtil.insertInBag(gridPanel, conceptualDomainPanel, 0, concepts.length + 2);
-    
-    this.add(gridPanel, BorderLayout.CENTER);
-    
-    
-    
-  }
+    updateHeaderLabels();    
+    UIUtil.insertInBag(gridPanel, conceptualDomainPanel, 0, concepts.length + 2);    
+    this.add(gridPanel, BorderLayout.CENTER);            
+  }  
   
-  
-  // SIW-796 Setting selected Value Domain Conceptual Domain values from the search
-  private void setCdSearchedValues(ConceptualDomain cd){
+  // SIW-796 Setting selected Conceptual Domain values from the search
+  private void setCdSearchedValues(ConceptualDomain cd, UMLNode node){
 	  conceptualDomainIdValueLabel.setText(cd.getPublicId()+"v"+cd.getVersion().toString());
 
       if(cd.getLongName() != null
@@ -667,6 +649,16 @@ private String getLocalVD(DataElement de) {
         conceptualDomainLongNameValueLabel.setText(cd.getLongName());
       else
         conceptualDomainLongNameValueLabel.setText("Unable to lookup CD Long Name");
+      
+      if (node.getUserObject() instanceof DataElement) {
+    	  DataElement de = (DataElement)node.getUserObject();
+    	  //logger.debug("Current CD after replace - "+de.getDataElementConcept().getConceptualDomain().getPublicId());    	  
+    	  if (de.getDataElementConcept().getConceptualDomain() != cd)
+				de.getDataElementConcept().setConceptualDomain(cd);
+				logger.debug("CD from UI - "+cd.getPublicId());
+				logger.debug("Current CD after replace - "+de.getDataElementConcept().getConceptualDomain().getPublicId());
+    	  }
+      
   }  
   
   private void updateHeaderLabels()

@@ -34,6 +34,7 @@ import gov.nih.nci.ncicb.cadsr.loader.ChangeTracker;
 
 import gov.nih.nci.ncicb.cadsr.loader.ReviewTrackerType;
 import gov.nih.nci.ncicb.cadsr.loader.validator.ValidationError;
+import gov.nih.nci.ncicb.cadsr.loader.validator.ValidationWarning;
 import gov.nih.nci.ncicb.cadsr.loader.validator.ValidationItems;
 
 /**
@@ -462,10 +463,24 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 		DataElementConcept dec = DomainObjectFactory.newDataElementConcept();
 		dec.setLongName(className + ":" + propName);
 		dec.setProperty(prop);
-		
-		if (event.getcdId()!=null && event.getcdVersion()!=null)
+		Boolean isValidCdId = true;
+		if (event.getcdId()!="" && event.getcdId()!=null) {
+	      try {
+	    	  new Float(event.getcdId());
+	        } catch (NumberFormatException e) {
+	          logger.warn("Conceptual Domain ID is not a number: " + event.getcdId());
+	          isValidCdId = false;
+				ValidationItems.getInstance().addItem(new ValidationWarning(
+						//PropertyAccessor.getProperty("de.doesnt.exist", event.getcdId())
+						"The Conceptual Domain ID / Version is not a number."
+						,de)
+                        );
+						
+	        } // end of try-catch		
+	      }
+		ConceptualDomain cd = DomainObjectFactory.newConceptualDomain();		
+		if (event.getcdId()!=null && event.getcdVersion()!=null && isValidCdId)
 		{
-			ConceptualDomain cd = DomainObjectFactory.newConceptualDomain();
 			Map<String, Object> queryFields = new HashMap<String, Object>();
 			queryFields.put(CadsrModule.PUBLIC_ID, event.getcdId());
 			queryFields.put(CadsrModule.VERSION, event.getcdVersion());		
@@ -475,15 +490,20 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 				if (result.size()>0) {			
 						cd = result.get(0);
 					} else {
-						cd.setPublicId("----- INV CD ----");
-						cd.setLongName("Invalid Conceptual Domain");
+						//cd.setPublicId("----- INV CD ----");
+						//cd.setVersion("1.0");
+						//cd.setLongName("Invalid Conceptual Domain");
+						ValidationItems.getInstance().addItem(new ValidationWarning(
+								//PropertyAccessor.getProperty("de.doesnt.exist", className + ":" + propName),
+								"Attribute refers to a Conceptual Domain ID / Version that doesn't exist in caDSR."								
+								,de));
 					}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			dec.setConceptualDomain(cd);		
 		} else {
-			logger.debug("Missing CD ID/Version for DEC - "+event.getcdId()+":"+event.getcdVersion()!=null);
+			logger.debug("Invalid Conceptual Domain ID/Version for DEC - "+event.getcdId()+":"+event.getcdVersion()!=null);
 		}    
 
 		ObjectClass oc = null;
