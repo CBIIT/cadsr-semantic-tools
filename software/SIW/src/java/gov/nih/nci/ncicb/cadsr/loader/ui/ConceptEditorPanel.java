@@ -65,6 +65,8 @@ public class ConceptEditorPanel extends JPanel
     
   private static EvsDialog evsDialog;
   private VDPanel vdPanel;
+  
+  private CadsrDialog cadsrCDDialog;
 
   private JPanel[] conceptPanels;
     
@@ -611,7 +613,7 @@ private String getLocalVD(DataElement de) {
     // SIW-796 Search button for CD    
    cdSearchButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
-        	CadsrDialog cadsrCDDialog = BeansAccessor.getCadsrCDDialog();        	
+        	cadsrCDDialog = BeansAccessor.getCadsrCDDialog();        	
             cadsrCDDialog.setAlwaysOnTop(true);
             cadsrCDDialog.setVisible(true);
             ConceptualDomain cd = (ConceptualDomain)cadsrCDDialog.getAdminComponent();
@@ -651,12 +653,9 @@ private String getLocalVD(DataElement de) {
         conceptualDomainLongNameValueLabel.setText("Unable to lookup CD Long Name");
       
       if (node.getUserObject() instanceof DataElement) {
-    	  DataElement de = (DataElement)node.getUserObject();
-    	  //logger.debug("Current CD after replace - "+de.getDataElementConcept().getConceptualDomain().getPublicId());    	  
+    	  DataElement de = (DataElement)node.getUserObject();    	  
     	  if (de.getDataElementConcept().getConceptualDomain() != cd)
 				de.getDataElementConcept().setConceptualDomain(cd);
-				logger.debug("CD from UI - "+cd.getPublicId());
-				logger.debug("Current CD after replace - "+de.getDataElementConcept().getConceptualDomain().getPublicId());
     	  }
       
   }  

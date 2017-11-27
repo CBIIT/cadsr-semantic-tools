@@ -245,6 +245,8 @@ public class XMIWriter2 implements ElementWriter {
                tv.getName().startsWith("PropertyQualifier"))
               att.removeTaggedValue(tv.getName());
           }
+          att.removeTaggedValue(XMIParser2.TV_CD_ID);
+          att.removeTaggedValue(XMIParser2.TV_CD_VERSION);            	            
           
           // Map to Existing DE
           if(!StringUtil.isEmpty(de.getPublicId()) && de.getVersion() != null) {
@@ -264,6 +266,7 @@ public class XMIWriter2 implements ElementWriter {
             att.removeTaggedValue(XMIParser2.TV_VALUE_DOMAIN);
             att.removeTaggedValue(XMIParser2.TV_VD_ID);
             att.removeTaggedValue(XMIParser2.TV_VD_VERSION);
+
             
             if(!StringUtil.isEmpty(de.getValueDomain().getPublicId()) && de.getValueDomain().getVersion() != null) {
               att.addTaggedValue(XMIParser2.TV_VD_ID,
@@ -276,11 +279,7 @@ public class XMIWriter2 implements ElementWriter {
                 att.addTaggedValue(XMIParser2.TV_VALUE_DOMAIN, LookupUtil.lookupFullName(de.getValueDomain()));
               }
             }
-            logger.debug("******** DEC print before CD ");
             if (dec.getConceptualDomain()!=null) {
-            	logger.debug(" Conceptual Domain from UI - "+dec.getConceptualDomain().getPublicId()+":: Version: "+dec.getConceptualDomain().getVersion().toString());
-                att.removeTaggedValue(XMIParser2.TV_CD_ID);
-                att.removeTaggedValue(XMIParser2.TV_CD_VERSION);            	
             	att.addTaggedValue(XMIParser2.TV_CD_ID, dec.getConceptualDomain().getPublicId());
             	att.addTaggedValue(XMIParser2.TV_CD_VERSION, dec.getConceptualDomain().getVersion().toString());           	
             }
