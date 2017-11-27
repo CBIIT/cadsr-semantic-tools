@@ -7,8 +7,6 @@ import gov.nih.nci.ncicb.cadsr.loader.event.ElementChangeListener;
 import gov.nih.nci.ncicb.cadsr.loader.ui.tree.*;
 import gov.nih.nci.ncicb.cadsr.loader.ui.util.UIUtil;
 import gov.nih.nci.ncicb.cadsr.loader.util.*;
-import gov.nih.nci.ncicb.cadsr.loader.validator.DuplicateValidator;
-import gov.nih.nci.ncicb.xmiinout.domain.UMLClass;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -35,7 +33,9 @@ public class ConceptEditorPanel extends JPanel
   implements KeyListener,
   UserPreferencesListener, Editable
 {
-
+  public static final String SEARCH_ACTION_COMMAND = "Search";
+  public static final String CD_DEFAULT_VALUE = buildCDDomainIdValueLabel("2222502", "1.0");
+	
   private List<PropertyChangeListener> propChangeListeners 
     = new ArrayList<PropertyChangeListener>();
     
@@ -613,20 +613,35 @@ private String getLocalVD(DataElement de) {
     // SIW-796 Search button for CD    
    cdSearchButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
-        	cadsrCDDialog = BeansAccessor.getCadsrCDDialog();        	
-            cadsrCDDialog.setAlwaysOnTop(true);
-            cadsrCDDialog.setVisible(true);
-            ConceptualDomain cd = (ConceptualDomain)cadsrCDDialog.getAdminComponent();
-            if(cd == null) return;
-            setCdSearchedValues(cd, node);
-            firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
+        	if (SEARCH_ACTION_COMMAND.equals(evt.getActionCommand())) {
+        		Object objSource = evt.getSource();
+        		if ((objSource != null) && (objSource instanceof JButton)) {
+        			JButton jbSource = (JButton) objSource;
+        			if (SEARCH_ACTION_COMMAND.equals(jbSource.getText())) {
+		        	cadsrCDDialog = BeansAccessor.getCadsrCDDialog();	        
+			        //We need to wait until all events are over before working with the dialog - NA
+			        SwingUtilities.invokeLater(new Runnable() {
+			            public void run() {
+				            cadsrCDDialog.setAlwaysOnTop(true);
+			            	cadsrCDDialog.setVisible(true);
+				            ConceptualDomain cd = (ConceptualDomain)cadsrCDDialog.getAdminComponent();
+					        if(cd == null) return;
+					        setCdSearchedValues(cd, node);
+					        firePropertyChangeEvent(new PropertyChangeEvent(this, ApplyButtonPanel.SAVE, null, true));
+			            }
+			        });//invokeLater ended
+	        		}
+        		}
+        	}//actionPerformed ended
           }});    
     
     // SIW-796 Adding new labels and value components for the Conceptual Domain    
-    if (conceptualDomainId!=null ) {
-        conceptualDomainIdValueLabel.setText(conceptualDomainId+"v"+conceptualDomainVersion);     
+    if (conceptualDomainId != null ) {
+    	String cdLabelText = buildCDDomainIdValueLabel(conceptualDomainId, conceptualDomainVersion);
+    	logger.debug("CD value: " + cdLabelText);
+        conceptualDomainIdValueLabel.setText(cdLabelText);     
     } else {
-        conceptualDomainIdValueLabel.setText("2222502"+"v"+"1.0");
+        conceptualDomainIdValueLabel.setText(CD_DEFAULT_VALUE);
     }
     if (conceptualDomainLongName!=null) {
       conceptualDomainLongNameValueLabel.setText(conceptualDomainLongName);
@@ -641,13 +656,14 @@ private String getLocalVD(DataElement de) {
     UIUtil.insertInBag(gridPanel, conceptualDomainPanel, 0, concepts.length + 2);    
     this.add(gridPanel, BorderLayout.CENTER);            
   }  
-  
+  protected static String buildCDDomainIdValueLabel(String conceptualDomainId, Object conceptualDomainVersion) {
+	  return conceptualDomainId+"v"+conceptualDomainVersion;
+  }
   // SIW-796 Setting selected Conceptual Domain values from the search
   private void setCdSearchedValues(ConceptualDomain cd, UMLNode node){
-	  conceptualDomainIdValueLabel.setText(cd.getPublicId()+"v"+cd.getVersion().toString());
+	  conceptualDomainIdValueLabel.setText(buildCDDomainIdValueLabel(cd.getPublicId(), cd.getVersion()));
 
-      if(cd.getLongName() != null
-          && !cd.getLongName().equals(""))
+      if(! StringUtil.isEmpty(cd.getLongName()))
         conceptualDomainLongNameValueLabel.setText(cd.getLongName());
       else
         conceptualDomainLongNameValueLabel.setText("Unable to lookup CD Long Name");
