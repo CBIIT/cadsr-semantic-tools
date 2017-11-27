@@ -915,7 +915,7 @@ public class XMIParser2 implements Parser {
       try {
         event.setcdVersion(new Float(tv.getValue()));           
       } catch (NumberFormatException e){
-        logger.warn("vd conceptual domain version is not a number, ignoring: " + tv.getValue());     
+        logger.warn("conceptual domain version is not a number, ignoring: " + tv.getValue());     
       } // end of try-catch
     }    else {
       //event.setcdVersion(new Float("1"));
