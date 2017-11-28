@@ -136,7 +136,7 @@ public class DECPersister implements Persister {
 	if (l.size() == 0) {
 		logger.debug("***** one or more decs ");
           if(dec.getConceptualDomain() == null)
-        	  
+        	  dec.setConceptualDomain(cd);
             //dec.setConceptualDomain(defaults.getConceptualDomain());
           dec.setContext(defaults.getContext());
           dec.setLongName(
