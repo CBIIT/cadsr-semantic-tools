@@ -128,11 +128,16 @@ public class DECPersister implements Persister {
 
 	// does this dec exist?
 	List l = dataElementConceptDAO.find(newDec, eager);
+	ConceptualDomain cd = DomainObjectFactory.newConceptualDomain();	
+	cd.setPublicId("2222502");
+	cd.setVersion(new Float("1.0"));
+	cd.setLongName("UML DEFAULT CD");
 	logger.debug("***** decs size : " + l.size());
 	if (l.size() == 0) {
 		logger.debug("***** one or more decs ");
           if(dec.getConceptualDomain() == null)
-            dec.setConceptualDomain(defaults.getConceptualDomain());
+        	  
+            //dec.setConceptualDomain(defaults.getConceptualDomain());
           dec.setContext(defaults.getContext());
           dec.setLongName(
             dec.getObjectClass().getLongName()
