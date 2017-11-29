@@ -650,10 +650,12 @@ private String getLocalVD(DataElement de) {
     }                    
     UserSelections selections = UserSelections.getInstance();
     if(node.getUserObject() instanceof DataElement
-      && !selections.getProperty("MODE").equals(RunMode.Curator))
+      && !selections.getProperty("MODE").equals(RunMode.Curator)){
       UIUtil.insertInBag(gridPanel, vdPanel, 0, concepts.length + 1);
-    updateHeaderLabels();    
-    UIUtil.insertInBag(gridPanel, conceptualDomainPanel, 0, concepts.length + 2);    
+      UIUtil.insertInBag(gridPanel, conceptualDomainPanel, 0, concepts.length + 2);      
+      } 
+    
+    updateHeaderLabels();        
     this.add(gridPanel, BorderLayout.CENTER);            
   }  
   protected static String buildCDDomainIdValueLabel(String conceptualDomainId, Object conceptualDomainVersion) {
