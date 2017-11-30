@@ -60,7 +60,6 @@ public class DECPersister implements Persister {
   public void persist() {
     DataElementConcept dec = DomainObjectFactory.newDataElementConcept();
     List<DataElementConcept> decs = elements.getElements(dec);
-    logger.debug("***** Inside DEC Persist ");
     int count = 0;
     sendProgressEvent(count++, decs.size(), "DECs");
 
@@ -127,13 +126,15 @@ public class DECPersister implements Persister {
         eager.add("definitions");
 
 	// does this dec exist?
-	List l = dataElementConceptDAO.find(newDec, eager);
-	logger.debug("***** decs size : " + l.size());
+	List l = dataElementConceptDAO.find(newDec, eager);	
 	if (l.size() == 0) {
-		logger.debug("***** one or more decs ");
-          if(dec.getConceptualDomain() == null)
-            dec.setConceptualDomain(defaults.getConceptualDomain());
-          logger.debug("***** Default DEC CD ID - "+defaults.getConceptualDomain().getPublicId());
+          if(dec.getConceptualDomain() == null) {
+			dec.setConceptualDomain(defaults.getConceptualDomain());
+		  } else {
+          if (dec.getConceptualDomain().getPublicId() == null) {
+			dec.setConceptualDomain(defaults.getConceptualDomain());
+		  }
+		}		  
           dec.setContext(defaults.getContext());
           dec.setLongName(
             dec.getObjectClass().getLongName()
@@ -168,7 +169,6 @@ public class DECPersister implements Persister {
 		        builder.append(replacementChar != null ? replacementChar : currentChar);
 		    }
 		   dec.setPreferredDefinition(builder.toString());
-		   logger.debug("***** preferred name "+dec.getPreferredName()+" public ID "+dec.getPublicId());
 		   newDec = dataElementConceptDAO.create(dec);
 	  logger.info(PropertyAccessor.getProperty("created.dec"));
 
@@ -180,7 +180,6 @@ public class DECPersister implements Persister {
            * If context is different, add Used_by alt_name
            */
           dec.setId(newDec.getId());
-          logger.debug("***** Selected DEC CD ID - "+newDec.getConceptualDomain().getPublicId());
           if(!newDec.getContext().getId().equals(defaults.getContext().getId())) {
             AlternateName _an = DomainObjectFactory.newAlternateName();
             _an.setName(defaults.getContext().getName());
@@ -219,7 +218,6 @@ public class DECPersister implements Persister {
 
       }
     }
-    logger.debug("***** End DEC persist");
 
   }
 

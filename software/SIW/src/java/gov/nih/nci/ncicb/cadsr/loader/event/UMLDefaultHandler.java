@@ -490,9 +490,6 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 				if (result.size()>0) {			
 						cd = result.get(0);
 					} else {
-						//cd.setPublicId("----- INV CD ----");
-						//cd.setVersion("1.0");
-						//cd.setLongName("Invalid Conceptual Domain");
 						ValidationItems.getInstance().addItem(new ValidationWarning(
 								//PropertyAccessor.getProperty("de.doesnt.exist", className + ":" + propName),
 								"Attribute refers to a Conceptual Domain ID / Version that doesn't exist in caDSR."								
