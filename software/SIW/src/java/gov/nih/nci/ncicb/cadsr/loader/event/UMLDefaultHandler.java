@@ -464,17 +464,14 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 		dec.setLongName(className + ":" + propName);
 		dec.setProperty(prop);
 		Boolean isValidCdId = true;
-		if (event.getcdId()!="" && event.getcdId()!=null) {
+		if (!StringUtil.isEmpty(event.getcdId()) && event.getcdId()!=null) {
 	      try {
 	    	  new Float(event.getcdId());
 	        } catch (NumberFormatException e) {
-	          logger.warn("Conceptual Domain ID is not a number: " + event.getcdId());
 	          isValidCdId = false;
 				ValidationItems.getInstance().addItem(new ValidationWarning(
-						//PropertyAccessor.getProperty("de.doesnt.exist", event.getcdId())
-						"The Conceptual Domain ID / Version is not a number."
-						,de)
-                        );
+						PropertyAccessor.getProperty("de.cd.id.not.a.number", event.getcdId())
+						,de));
 						
 	        } // end of try-catch		
 	      }
@@ -491,16 +488,13 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 						cd = result.get(0);
 					} else {
 						ValidationItems.getInstance().addItem(new ValidationWarning(
-								//PropertyAccessor.getProperty("de.doesnt.exist", className + ":" + propName),
-								"Attribute refers to a Conceptual Domain ID / Version that doesn't exist in caDSR."								
+								PropertyAccessor.getProperty("de.cd.match.incorrect", event.getcdId()+"v"+event.getcdVersion())
 								,de));
 					}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			dec.setConceptualDomain(cd);		
-		} else {
-			logger.debug("Invalid Conceptual Domain ID/Version for DEC - "+event.getcdId()+":"+event.getcdVersion()!=null);
 		}    
 
 		ObjectClass oc = null;
