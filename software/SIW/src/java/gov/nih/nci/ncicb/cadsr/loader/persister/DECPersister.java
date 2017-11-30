@@ -128,16 +128,12 @@ public class DECPersister implements Persister {
 
 	// does this dec exist?
 	List l = dataElementConceptDAO.find(newDec, eager);
-	ConceptualDomain cd = DomainObjectFactory.newConceptualDomain();	
-	cd.setPublicId("2222502");
-	cd.setVersion(new Float("1.0"));
-	cd.setLongName("UML DEFAULT CD");
 	logger.debug("***** decs size : " + l.size());
 	if (l.size() == 0) {
 		logger.debug("***** one or more decs ");
           if(dec.getConceptualDomain() == null)
-        	  dec.setConceptualDomain(cd);
-            //dec.setConceptualDomain(defaults.getConceptualDomain());
+            dec.setConceptualDomain(defaults.getConceptualDomain());
+          logger.debug("***** Default DEC CD ID - "+defaults.getConceptualDomain().getPublicId());
           dec.setContext(defaults.getContext());
           dec.setLongName(
             dec.getObjectClass().getLongName()
@@ -184,7 +180,7 @@ public class DECPersister implements Persister {
            * If context is different, add Used_by alt_name
            */
           dec.setId(newDec.getId());
-
+          logger.debug("***** Selected DEC CD ID - "+newDec.getConceptualDomain().getPublicId());
           if(!newDec.getContext().getId().equals(defaults.getContext().getId())) {
             AlternateName _an = DomainObjectFactory.newAlternateName();
             _an.setName(defaults.getContext().getName());
