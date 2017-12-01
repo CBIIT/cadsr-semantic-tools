@@ -170,7 +170,7 @@ public class DECPersister implements Persister {
 		    }
 		   dec.setPreferredDefinition(builder.toString());
 		   newDec = dataElementConceptDAO.create(dec);
-	  logger.info(PropertyAccessor.getProperty("created.dec"));
+	  logger.info(PropertyAccessor.getProperty("created.dec") + toStringDataElementConcept(newDec));
 
 	} else {		
 	  newDec = (DataElementConcept) l.get(0);
@@ -261,6 +261,15 @@ public class DECPersister implements Persister {
  private void initDAOs()  {
     dataElementConceptDAO = DAOAccessor.getDataElementConceptDAO();
   }
-
+ public static final String toStringDataElementConcept(DataElementConcept dec) {
+	  String context = (dec.getContext() != null) ? dec.getContext().getName() : null;
+	  return "[DataElementConcept: idseq=" + dec.getId()
+	  + ", PublicId=" + dec.getPublicId()
+	  + ", LongName=" + dec.getLongName()
+	  + ", PreferredName=" + dec.getPreferredName()
+	  + ", Origin=" + dec.getOrigin()
+	  + ", PreferredDefinition=" + dec.getPreferredDefinition()
+	  + ", context=" + context + "]";
+ }
 
 }
