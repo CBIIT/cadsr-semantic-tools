@@ -174,7 +174,7 @@ public class DECPersister implements Persister {
 
 	} else {		
 	  newDec = (DataElementConcept) l.get(0);
-	  logger.info(PropertyAccessor.getProperty("existed.dec"));
+	  logger.info(PropertyAccessor.getProperty("existed.dec") + toStringDataElementConcept(newDec));
 
           /* if DEC alreay exists, check context
            * If context is different, add Used_by alt_name
@@ -262,14 +262,17 @@ public class DECPersister implements Persister {
     dataElementConceptDAO = DAOAccessor.getDataElementConceptDAO();
   }
  public static final String toStringDataElementConcept(DataElementConcept dec) {
-	  String context = (dec.getContext() != null) ? dec.getContext().getName() : null;
-	  return "[DataElementConcept: idseq=" + dec.getId()
-	  + ", PublicId=" + dec.getPublicId()
-	  + ", LongName=" + dec.getLongName()
-	  + ", PreferredName=" + dec.getPreferredName()
-	  + ", Origin=" + dec.getOrigin()
-	  + ", PreferredDefinition=" + dec.getPreferredDefinition()
-	  + ", context=" + context + "]";
+	  if (dec != null) {
+		  String context = (dec.getContext() != null) ? dec.getContext().getName() : null;
+		  return "[DataElementConcept: idseq=" + dec.getId()
+		  + ", PublicId=" + dec.getPublicId()
+		  + ", LongName=" + dec.getLongName()
+		  + ", PreferredName=" + dec.getPreferredName()
+		  + ", Origin=" + dec.getOrigin()
+		  + ", PreferredDefinition=" + dec.getPreferredDefinition()
+		  + ", context=" + context + "]";
+	  }
+	  else return null;
  }
 
 }

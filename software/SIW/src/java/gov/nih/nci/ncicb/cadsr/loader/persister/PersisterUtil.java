@@ -57,9 +57,11 @@ public class PersisterUtil {
     AlternateName queryAN = DomainObjectFactory.newAlternateName();
     queryAN.setName(altName.getName());
     queryAN.setType(altName.getType());
+    
+    logger.debug("In addAlternateName altName parameter: " + toStringAlternateName(altName));
 
     AlternateName foundAN = adminComponentDAO.getAlternateName(ac, queryAN);
-    
+    logger.debug("addAlternateName using foundAN: " + toStringAlternateName(foundAN));
     
     // for now, only classify with one CS_CSI
     String packageName = null;
@@ -70,11 +72,13 @@ public class PersisterUtil {
         break;
       }
     }
+    logger.info("=====current package name: " + packageName);
     
     ClassSchemeClassSchemeItem packageCsCsi = null;
-    if(packageName != null) 
+    if(packageName != null) {
       packageCsCsi = (ClassSchemeClassSchemeItem)defaults.getPackageCsCsis().get(packageName);
-    
+    }
+    logger.debug("packageCsCsi found: " + (packageCsCsi != null));
     
     if(foundAN != null) {
       logger.info(PropertyAccessor.getProperty(
@@ -113,7 +117,11 @@ public class PersisterUtil {
       newAltName.setAudit(defaults.getAudit());
       newAltName.setName(altName.getName());
       newAltName.setType(altName.getType());
+      if (altName.getLanguage() != null)
+    	  newAltName.setLanguage(altName.getLanguage());
+      logger.debug("...Start Adding AlternateName: " + toStringAlternateName(newAltName));
       altName.setId(adminComponentDAO.addAlternateName(ac, newAltName));
+      logger.debug("...Done Adding AlternateName: " + toStringAlternateName(altName));
       logger.info(PropertyAccessor.getProperty(
                     "added.altName", 
                     new String[] {
@@ -146,8 +154,12 @@ public class PersisterUtil {
     AlternateName queryAN = DomainObjectFactory.newAlternateName();
     queryAN.setName(newName);
     queryAN.setType(type);
+    
+    logger.debug("In addAlternateName newName: " + newName);
 
     AlternateName foundAN = adminComponentDAO.getAlternateName(ac, queryAN);
+    logger.debug("addAlternateName using foundAN: " + toStringAlternateName(foundAN));
+    
     
     ClassSchemeClassSchemeItem packageCsCsi = (ClassSchemeClassSchemeItem)defaults.getPackageCsCsis().get(packageName);
 
@@ -157,13 +169,16 @@ public class PersisterUtil {
       
       if(packageName == null)
         return;
-        
+      
+      logger.info(".....current package name: " + packageName);
+      
       ClassSchemeClassSchemeItem foundCsCsi = alternateNameDAO.getClassSchemeClassSchemeItem(foundAN, packageCsCsi);
 
       ClassSchemeClassSchemeItem foundParentCsCsi = null;
       if(packageCsCsi.getParent() != null)
         foundParentCsCsi = alternateNameDAO.getClassSchemeClassSchemeItem(foundAN, packageCsCsi);
       
+      logger.debug("packageCsCsi found: " + (packageCsCsi != null));
 
       if(foundCsCsi == null) {
         classSchemeClassSchemeItemDAO.addCsCsi(foundAN, packageCsCsi);
@@ -189,7 +204,9 @@ public class PersisterUtil {
       altName.setAudit(defaults.getAudit());
       altName.setName(newName);
       altName.setType(type);
+      logger.debug("...Start Adding AlternateName: " + toStringAlternateName(altName));
       altName.setId(adminComponentDAO.addAlternateName(ac, altName));
+      logger.debug("...Done Adding AlternateName: " + toStringAlternateName(altName));
       logger.info(PropertyAccessor.getProperty(
                     "added.altName", 
                     new String[] {
@@ -221,7 +238,7 @@ public class PersisterUtil {
     addAlternateDefinition(ac, newDef.getDefinition(), newDef.getType());
   }
 
-  void addAlternateDefinition(AdminComponent ac, String newDef, String type) {
+void addAlternateDefinition(AdminComponent ac, String newDef, String type) {
 
     Definition queryDef = DomainObjectFactory.newDefinition();
     queryDef.setDefinition(newDef);
@@ -602,5 +619,16 @@ public class PersisterUtil {
 //    classificationSchemeItemDAO = DAOAccessor.getClassificationSchemeItemDAO();
     classSchemeClassSchemeItemDAO = DAOAccessor.getClassSchemeClassSchemeItemDAO();
 //    conceptDAO = DAOAccessor.getConceptDAO();
+  }
+  public static final String toStringAlternateName(AlternateName altName) {
+	  if (altName != null) {
+		  String context = (altName.getContext() != null) ? altName.getContext().getName() : null;
+		  return "[AlternateName: idseq=" + altName.getId()
+		  + ", Language=" + altName.getLanguage()
+		  + ", Name=" + altName.getName()
+		  + ", Type=" + altName.getType()
+		  + ", context=" + context + "]";
+	  }
+	  else return null;
   }
 }

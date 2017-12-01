@@ -136,23 +136,45 @@ public class ValueDomainPersister extends UMLPersister {
 	it.set(newVd);
 
         List<PermissibleValue> allPvs = valueDomainDAO.getPermissibleValues(newVd.getId());
+        logger.debug("PV in VD amount: " + ((allPvs != null) ? allPvs.size() : 0));
 
         // add CS_CSI to each VM
         // cs_csi of the package this VD was in. 
         for(AdminComponentClassSchemeClassSchemeItem acCsCsi : vd.getAcCsCsis()) {
+      	  logger.debug("...processing acCsCsi: " + toStringCsCsi(acCsCsi));
           for(PermissibleValue pv : allPvs) {
+        	  logger.debug(".....processing PV: " + toStringPV(pv));
             // This pv may not have been included in the XMI
             // check
             PermissibleValue originalPv = isPvIncluded(pv, thesePvs);
             if(originalPv != null) {
               String packName = acCsCsi.getCsCsi().getCsi().getLongName();
               persisterUtil.addPackageClassification(pv.getValueMeaning(), packName);
-              for(AlternateName altName : originalPv.getValueMeaning().getAlternateNames())
-                persisterUtil.addAlternateName(pv.getValueMeaning(), altName.getName(), altName.getType(), packName);
+              for(AlternateName altName : originalPv.getValueMeaning().getAlternateNames()) {
+            	  try {
+            		  persisterUtil.addAlternateName(pv.getValueMeaning(), altName.getName(), altName.getType(), packName);
+            	  }
+            	  catch (Exception e) {
+            		  logger.warn("WARNING: AlternateName is not created, review creating data: " );
+            		  String strData = "[altName.getName(): " + altName.getName() + 
+            				  ", altName.getType(): " + altName.getType() + ", packName: " + packName + "]";
+            		  logger.warn(strData);
+            		  e.printStackTrace();
+            	  }
+              }
               
-              for(Definition altDef : originalPv.getValueMeaning().getDefinitions())
-                persisterUtil.addAlternateDefinition(pv.getValueMeaning(), altDef.getDefinition(), altDef.getType(), packName);
-
+              for(Definition altDef : originalPv.getValueMeaning().getDefinitions()) {
+            	  try {
+            		  persisterUtil.addAlternateDefinition(pv.getValueMeaning(), altDef.getDefinition(), altDef.getType(), packName);
+            	  }
+            	  catch (Exception e) {
+            		  logger.warn("WARNING: AlternateDefinition is not created, review creating data: " );
+            		  String strData = "[altDef.getDefinition(): " + altDef.getDefinition() + 
+            				  ", altDef.getType(): " + altDef.getType() + ", packName: " + packName + "]";
+            		  logger.warn(strData);
+            		  e.printStackTrace();
+            	  }
+              }
             }            
           }
         }
@@ -162,6 +184,7 @@ public class ValueDomainPersister extends UMLPersister {
       }
     }
   }
+
 
   private PermissibleValue isPvIncluded(PermissibleValue pv, List<PermissibleValue> pvs) 
   { 
@@ -196,5 +219,21 @@ public class ValueDomainPersister extends UMLPersister {
   private void initDAOs()  {
     valueDomainDAO = DAOAccessor.getValueDomainDAO();
   }
-  
+  public static final String toStringPV(PermissibleValue pv) {
+	  if (pv != null) {
+		  return "[PermissibleValue: idseq=" + pv.getId()
+		  + ", Value=" + pv.getValue()
+		  + "]";
+	  }
+	  else return null;
+  }
+  private String toStringCsCsi(AdminComponentClassSchemeClassSchemeItem acCsCsi) {
+	  if (acCsCsi != null) {
+		  return "[AdminComponentClassSchemeClassSchemeItem: idseq=" + acCsCsi.getId()
+		  + ", AcID=" + acCsCsi.getAcId()
+		  + "]";
+	  }
+	  else return null;
+}
+
 }
