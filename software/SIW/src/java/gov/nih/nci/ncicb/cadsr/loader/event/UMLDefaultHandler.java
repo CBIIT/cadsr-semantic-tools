@@ -483,9 +483,21 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 			queryFields.put(CadsrModule.VERSION, event.getcdVersion());		
 			try {
 				List<ConceptualDomain> result = null;
+				Boolean isCDPresent = false; 
 				result = new ArrayList<ConceptualDomain>(cadsrModule.findConceptualDomain(queryFields));
-				if (result.size()>0) {			
-						cd = result.get(0);
+				if (result.size()>0) {
+					for (ConceptualDomain cdFromList : result) {
+						if (cdFromList.getPublicId().equals(event.getcdId()) && cdFromList.getVersion().equals(event.getcdVersion())) {							
+							cd = cdFromList;
+							isCDPresent = true;
+							break;
+						}	
+					}
+						if (!isCDPresent) {
+							ValidationItems.getInstance().addItem(new ValidationWarning(
+									PropertyAccessor.getProperty("de.cd.match.incorrect", event.getcdId()+"v"+event.getcdVersion())
+									,de));						
+						}
 					} else {
 						ValidationItems.getInstance().addItem(new ValidationWarning(
 								PropertyAccessor.getProperty("de.cd.match.incorrect", event.getcdId()+"v"+event.getcdVersion())

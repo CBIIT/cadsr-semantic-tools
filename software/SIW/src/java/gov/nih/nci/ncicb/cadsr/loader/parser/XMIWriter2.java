@@ -280,8 +280,12 @@ public class XMIWriter2 implements ElementWriter {
               }
             }
             if (dec.getConceptualDomain()!=null) {
-            	att.addTaggedValue(XMIParser2.TV_DEC_CD_ID, dec.getConceptualDomain().getPublicId());
-            	att.addTaggedValue(XMIParser2.TV_DEC_CD_VERSION, dec.getConceptualDomain().getVersion().toString());           	
+            	if (!StringUtil.isEmpty(dec.getConceptualDomain().getPublicId()) && dec.getConceptualDomain().getPublicId()!=null) {
+            			att.addTaggedValue(XMIParser2.TV_DEC_CD_ID, dec.getConceptualDomain().getPublicId());
+            		}
+            	if (dec.getConceptualDomain().getVersion()!=null) {
+            		att.addTaggedValue(XMIParser2.TV_DEC_CD_VERSION, dec.getConceptualDomain().getVersion().toString());           	
+            	}
             }
             addConceptTvs(att, conceptCodes, XMIParser2.TV_TYPE_PROPERTY);
           }
