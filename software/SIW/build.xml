@@ -382,7 +382,6 @@
 		<updatemanifest jarfile="${lib.dir}/ojdbc6.jar" />
 		<updatemanifest jarfile="${lib.dir}/openide-util.jar" />
 		<updatemanifest jarfile="${lib.dir}/org.apache.commons.dbcp.jar" />
-		<updatemanifest jarfile="${lib.dir}/org.springframework.transaction-3.0.5.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/org.springframework.web-3.0.5.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/org.springframework.web.servlet-3.0.5.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/org.springframework.web.struts-3.0.5.RELEASE.jar" />
