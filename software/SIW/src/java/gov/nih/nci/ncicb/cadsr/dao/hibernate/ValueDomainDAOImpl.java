@@ -31,8 +31,10 @@ import gov.nih.nci.ncicb.cadsr.domain.ValueMeaning;
 import gov.nih.nci.ncicb.cadsr.domain.bean.ConceptDerivationRuleBean;
 import gov.nih.nci.ncicb.cadsr.domain.bean.ValueDomainPermissibleValueBean;
 import gov.nih.nci.ncicb.cadsr.domain.bean.ValueMeaningBean;
+import org.apache.log4j.Logger;
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDomainDAO {
+	private static Logger logger = Logger.getLogger(ValueDomainDAOImpl.class.getName());
 	public List findByNameLike(String name) {
 		return getHibernateTemplate().findByNamedQuery("vd.findByNameLike", name);
 	}
@@ -179,11 +181,13 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	protected void saveOrFindPermissibleValue(final ValueDomain vd, ValueMeaning vm, PermissibleValue pv, Session session) {
         Criteria criteria = session.createCriteria(pv.getClass());
         if (StringUtils.isNotBlank(vm.getPublicId())) {
+        	logger.debug("VM with given Public ID: " + vm);
         	Float versionNumber = (vm.getVersion() != null) ? vm.getVersion() : 1f;
         	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning")
         		.add(Expression.eq("publicId", vm.getPublicId())).add(Expression.eq("version", versionNumber));
         }
         else {
+        	logger.info("!!! VM without Public ID searched by longName: " + vm);
         	criteria.add(Expression.eq("value", pv.getValue())).createCriteria("valueMeaning").add(Expression.eq("longName", vm.getLongName()));
         }
         List l = criteria.list();
@@ -407,16 +411,18 @@ public class ValueDomainDAOImpl extends HibernateDaoSupport implements ValueDoma
 	              {
 	            	  //SIW-627 code re-factoring
 	            	  vm = saveValueMeaningWithoutConcept(vd, vm, session);
+	            	  logger.debug("...Saved VM without Concept: " + vm);
 	              }
 	              else {
 	            	  //SIW-627 code re-factoring
 	            	  vm = saveValueMeaningWithConceptCodes(vm, conSb.toString(), session);
+	            	  logger.debug("...Saved VM with Concept: " + vm);
 	              }
               }//end of not receivedVmId
 
               buildPermissibleValue(vd, vm, pv);
               
-              //SIW-627 code re-factoring
+              //SIW-627 code re-factoring VM shall always have publicID here
               saveOrFindPermissibleValue(vd, vm, pv, session);
             } 
             catch (NonUniqueResultException ex) {

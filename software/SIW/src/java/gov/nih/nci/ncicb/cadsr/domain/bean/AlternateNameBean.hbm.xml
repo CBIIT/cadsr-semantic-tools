@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="gov.nih.nci.ncicb.cadsr.domain.bean.AlternateNameBean"
+        table="DESIGNATIONS"
+    >
+
+        <id
+            name="id"
+            column="DESIG_IDSEQ"
+            type="java.lang.String"
+        >
+            <generator class="gov.nih.nci.ncicb.cadsr.hibernate.AcIdGenerator">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-AlternateNameBean.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <many-to-one
+            name="context"
+            class="gov.nih.nci.ncicb.cadsr.domain.bean.ContextBean"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="CONTE_IDSEQ"
+            lazy="false"
+        />
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="NAME"
+            length="30"
+        />
+
+        <property
+            name="type"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="DETL_NAME"
+            length="20"
+        />
+
+        <property
+            name="language"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="LAE_NAME"
+        />
+
+        <bag
+            name="attCsCsis"
+            table="AC_ATT_CSCSI_EXT"
+            inverse="true"
+            cascade="save-update"
+            where="ATL_NAME = 'DESIGNATION'"
+        >
+
+            <key
+                column="ATT_IDSEQ"
+            >
+            </key>
+
+            <one-to-many
+                  class="gov.nih.nci.ncicb.cadsr.domain.bean.AttributeClassSchemeClassSchemeItemBean"
+            />
+
+      </bag>
+
+        <property
+            name="acId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="AC_IDSEQ"
+            length="36"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-AlternateNameBean.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+        <component
+            name="audit"
+            class="gov.nih.nci.ncicb.cadsr.domain.bean.AuditBean"
+        >
+        <property
+            name="creationDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="DATE_CREATED"
+            not-null="false"
+        />
+
+        <property
+            name="modifiedBy"
+            type="string"
+            update="true"
+            insert="true"
+            column="MODIFIED_BY"
+        />
+
+        <property
+            name="createdBy"
+            type="string"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+        />
+
+        <property
+            name="modificationDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="DATE_MODIFIED"
+            not-null="false"
+        />
+
+        </component>
+
+    </class>
+
+</hibernate-mapping>
