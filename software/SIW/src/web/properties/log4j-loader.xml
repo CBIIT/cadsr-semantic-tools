@@ -54,7 +54,11 @@
 	<level value="INFO"/>
     <appender-ref ref="console" /> 
   </logger>
-  <logger name="org.apache.commons.httpclient">
+  <logger name="httpclient.wire.header">
+	<level value="INFO"/>
+    <appender-ref ref="console" /> 
+  </logger> 
+  <logger name="httpclient.wire.content">
 	<level value="INFO"/>
     <appender-ref ref="console" /> 
   </logger>
