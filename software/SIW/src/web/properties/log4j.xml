@@ -7,7 +7,7 @@
     <param name="Target" value="System.out"/> 
     <layout class="org.apache.log4j.PatternLayout"> 
       <param name="ConversionPattern" value="%p %C{1}.%M(%L) | %m%n"/> 
-    </layout> 
+    </layout>
   </appender> 
 
   <logger name="org.apache.commons">
@@ -46,7 +46,11 @@
 	<level value="INFO"/>
     <appender-ref ref="console" /> 
   </logger>
-  <logger name="org.apache.commons.httpclient">
+  <logger name="httpclient.wire.header">
+	<level value="INFO"/>
+    <appender-ref ref="console" /> 
+  </logger> 
+  <logger name="httpclient.wire.content">
 	<level value="INFO"/>
     <appender-ref ref="console" /> 
   </logger>

@@ -450,7 +450,6 @@
 				<include name="ojdbc6.jar" />
 				<include name="openide-util.jar" />
 				<include name="org.apache.commons.dbcp.jar" />
-				<include name="org.springframework.transaction-3.0.5.RELEASE.jar" />
 				<include name="org.springframework.web-3.0.5.RELEASE.jar" />
 				<include name="org.springframework.web.servlet-3.0.5.RELEASE.jar" />
 				<include name="org.springframework.web.struts-3.0.5.RELEASE.jar" />
