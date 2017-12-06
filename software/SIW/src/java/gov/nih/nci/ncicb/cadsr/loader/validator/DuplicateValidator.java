@@ -87,7 +87,7 @@ public class DuplicateValidator implements Validator, CadsrModuleListener
       } 
     }
     
-    
+    InheritedAttributeList inheritedAttrs = InheritedAttributeList.getInstance();
     List<DataElement> des = elements.getElements(DomainObjectFactory.newDataElement());
     if(des != null && ocs != null) {
       for(ObjectClass oc : ocs) {
@@ -126,7 +126,8 @@ public class DuplicateValidator implements Validator, CadsrModuleListener
               item.setIncludeInInherited(true);
               items.addItem(item);
             } else {
-              if(!StringUtil.isEmpty(conceptConcat))
+            	// Fix for inherited attributes duplicate concept mapping error - SIW 796
+              if(!StringUtil.isEmpty(conceptConcat) && !inheritedAttrs.isInherited(de))
                 deList.put(conceptConcat, de);
             }
           }
