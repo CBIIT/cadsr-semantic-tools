@@ -277,15 +277,6 @@ public class DuplicateAttributeValidator implements Validator
         
     }
  }
- // SIW-794 checking for the list of warning items
-  logger.info("Warning items: " + items.getWarnings().size());  
-  for (ValidationWarning warn : items.getWarnings()) {
-	  logger.info("Warning message: " + warn.getMessage());
-  }
-  logger.info("Error items: " + items.getErrors().size()); 
-  for (ValidationError error : items.getErrors()) {
-	  logger.info("Error message: " + error.getMessage());
-  }  
   return items;
 }
   
@@ -441,8 +432,6 @@ public class DuplicateAttributeValidator implements Validator
 	                (PropertyAccessor.getProperty("class.name.spaces" , event.getName()),null));
 	        return;
 	    }
-
-	    logger.debug("CLASS PACKAGE: " + LookupUtil.getPackageName(clazz.getPackage()));
 
 	    /*if(isClassBanned(className)) {
 	      logger.info(PropertyAccessor.getProperty("class.filtered", className));

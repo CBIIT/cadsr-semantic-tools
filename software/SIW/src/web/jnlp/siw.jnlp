@@ -70,7 +70,6 @@
 	<jar href="lib/slf4j-api-1.5.6.jar" />
 	<jar href="lib/slf4j-simple-1.5.6.jar" />
 	<jar href="lib/org.apache.commons.dbcp.jar" />
-	<jar href="lib/org.springframework.transaction-3.0.5.RELEASE.jar" />
 	<jar href="lib/org.springframework.web-3.0.5.RELEASE.jar" />
 	<jar href="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar" />
 	<jar href="lib/org.springframework.web.struts-3.0.5.RELEASE.jar" />

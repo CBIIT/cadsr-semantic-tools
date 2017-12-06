@@ -195,7 +195,6 @@ public class ConceptEditorPanel extends JPanel
               {  //SIW-794 Adding Value domain as criteria - both from caDSR & Local
                 if((newPrefName.equals(de.getDataElementConcept().getProperty().getPreferredName())) && deVD!=null && currentDeVD!=null && deVD.equals(currentDeVD))                  
                 {
-                  logger.debug("******   Match! - "+de.getValueDomain().getLongName());
                   return de; 
                 }
             }
@@ -638,7 +637,6 @@ private String getLocalVD(DataElement de) {
     // SIW-796 Adding new labels and value components for the Conceptual Domain    
     if (conceptualDomainId != null ) {
     	String cdLabelText = buildCDDomainIdValueLabel(conceptualDomainId, conceptualDomainVersion);
-    	logger.debug("CD value: " + cdLabelText);
         conceptualDomainIdValueLabel.setText(cdLabelText);     
     } else {
         conceptualDomainIdValueLabel.setText(CD_DEFAULT_VALUE);
