@@ -755,7 +755,6 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 			de.setVersion(existingDe.getVersion());
 			de.setLatestVersionIndicator(existingDe.getLatestVersionIndicator());
 			de.setValueDomain(existingDe.getValueDomain());
-
 			return;
 		}
 
@@ -769,6 +768,8 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 				.setVersion(
 						existingDe.getDataElementConcept().getProperty()
 								.getVersion());
+		de.getDataElementConcept().setConceptualDomain(
+				existingDe.getDataElementConcept().getConceptualDomain());
 
 		de.setLongName(existingDe.getLongName());
 		de.setContext(existingDe.getContext());
@@ -980,6 +981,12 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 							.newDataElementConcept();
 					newDec.setProperty(dec.getProperty());
 					newDec.setObjectClass(childOc);
+					if (dec.getConceptualDomain()!=null) {
+						if (dec.getConceptualDomain().getPublicId()!=null) {
+							logger.debug("DEC CD - "+dec.getConceptualDomain().getPublicId());
+						}
+					}
+					newDec.setConceptualDomain(dec.getConceptualDomain());
 
 					// for(Definition def : dec.getDefinitions()) {
 					// newDec.addDefinition(def);
@@ -1051,6 +1058,12 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 						}
 					}
 
+					if (dec.getConceptualDomain()!=null) {
+						if (dec.getConceptualDomain().getPublicId()!=null) {
+							logger.debug("DEC CD - "+dec.getConceptualDomain().getPublicId());
+						}
+					}					
+					
 					Boolean isReviewed = event.getReview(propName);
 					if (isReviewed != null)
 						reviewTracker.put(event.getChildClassName() + "."
