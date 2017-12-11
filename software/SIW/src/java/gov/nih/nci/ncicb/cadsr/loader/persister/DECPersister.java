@@ -128,13 +128,14 @@ public class DECPersister implements Persister {
 	// does this dec exist?
 	List l = dataElementConceptDAO.find(newDec, eager);	
 	if (l.size() == 0) {
-          if(dec.getConceptualDomain() == null) {
+          if(dec.getConceptualDomain() == null) {        	  
 			dec.setConceptualDomain(defaults.getConceptualDomain());
 		  } else {
           if (dec.getConceptualDomain().getPublicId() == null) {
 			dec.setConceptualDomain(defaults.getConceptualDomain());
 		  }
-		}		  
+		}
+
           dec.setContext(defaults.getContext());
           dec.setLongName(
             dec.getObjectClass().getLongName()
