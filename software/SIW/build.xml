@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="UML Loader / SIW" default="nci-deploy" basedir=".">
-	<property file="dev.properties" />
+<project name="UML Loader / SIW" default="dist" basedir=".">
+	<property name="app.name" value="SIW 4.2.0" />
 	<property file="build.properties" />
-	<property file="jnlp.properties" />
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="manifest.dir" value="${basedir}/src/web" />
 	<property name="test.src.dir" value="${basedir}/test/src" />
@@ -16,7 +15,11 @@
 	<property name="jnlp.dir" value="${basedir}/src/web/jnlp" />
 	<property name="target.env" value="${tier}" />
 	<property name="sqlsuite.dir" value="${basedir}/src/test/sqlsuite" />
-
+	<property name="publicAPI.tier" value="https://cadsrapi-${tier}.nci.nih.gov/cadsrapi4/services/cadsrapi41Service" />
+	<property name="freestyle.tier" value="https://freestyle-${tier}.nci.nih.gov" />
+	<property name="datatypeMapping.tier" value="https://cadsrsiw-${tier}.nci.nih.gov/datatype-mapping.xml" />
+	<property name="db.driver" value="jdbc:oracle:thin:@" />
+	<property name="db.db.loader" value="UMLLDR" />
 	<property file="${config.dir}/db.properties" prefix="db" />
 	<path id="proj.class.path">
 		<pathelement location="${class.dir}" />
@@ -53,10 +56,12 @@
 		</fileset>
 	</path>
 
-	<property name="PROP.FILE" location="${target.env}.properties" />
-	<property file="${PROP.FILE}" />
+	<!--removed SCP for 4.2.
+	property name="PROP.FILE" location="${target.env}.properties" />
+	<property file="${PROP.FILE}" / -->
 
-	<condition property="check.props">
+	<!--removed SCP for 4.2.0
+	condition property="check.props">
 		<and>
 			<isset property="TOOL.ROOT.DIR" />
 			<isset property="TOOL.LOG.DIR" />
@@ -67,9 +72,9 @@
 			<isset property="SCP.PORT" />
 			<isset property="SCP.PASSPHRASE" />
 		</and>
-	</condition>
+	</condition-->
 
-	<property name="scpPath.dir" location="${SCP.PATH}/siw" />
+	<!--property name="scpPath.dir" location="${SCP.PATH}/siw" /-->
 
 	<!--
   <taskdef name="jalopy"
@@ -82,30 +87,8 @@
   </taskdef>
 -->
 
-	<target name="nci-deploy" depends="clean, prepare, compile, package, dist" />
-
-	<target name="remote-deploy" depends="dist, sign, remote-delete">
-		<echo>Deploying binaries to remote file system "${SCP.USER}@${SCP.HOST}:${scpPath.dir}"</echo>
-		<scp todir="${SCP.USER}@${SCP.HOST}:${TOOL.ROOT.DIR}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true">
-			<fileset dir="${dist.dir}">
-				<include name="siw.jnlp" />
-				<include name="siw-logo3_2.gif" />
-				<include name="datatype-mapping.xml" />
-				<include name="lib/*.jar" />
-			</fileset>
-		</scp>
-	</target>
-
-	<!-- - - - - - - - - - - - - - - - - - 
-          target: remote-delete                      
-         - - - - - - - - - - - - - - - - - -->
-	<target name="remote-delete">
-		<sshexec password="${SCP.PASSPHRASE}" host="${SCP.HOST}" username="${SCP.USER}" keyfile="${SCP.KEYFILE}" trust="yes" command="rm -rf ${TOOL.ROOT.DIR}/**/*.jar">
-		</sshexec>
-	</target>
-
-
 	<target name="sign">
+		<echo>....Build target sign....</echo>
 		<property name="aliasName" value="${keystore.alias}" />
 		<property name="password" value="${keystore.password}" />
 		<property name="keystoreFileName" location="${keystore.location}" />
@@ -151,7 +134,8 @@
 		<attribute name="Application-Name" value="${app.name}" />
 	</manifest>
 
-	<target name="compile" depends="fail1">		
+	<target name="compile" depends="fail1">
+		<echo>....Build target compile....</echo>
 		<mkdir dir="${class.dir}" />
 		<javac destdir="${class.dir}" encoding="UTF-8" debug="on" srcdir="${src.dir}" deprecation="false" fork="yes" includeantruntime="true">
 			<!--
@@ -172,7 +156,8 @@
 		</javac>
 	</target>
 
-	<target name="prepare" depends="compile">		
+	<target name="prepare" depends="compile">
+		<echo>....Build target prepare....</echo>
 		<copy todir="${class.dir}" overwrite="true">
 			<fileset dir="${config.dir}">
 				<include name="*.properties" />
@@ -195,19 +180,13 @@
 		</copy>
 		<copy file="${config.dir}/application-config-client-${target.env}.xml" tofile="${class.dir}/application-config-client.xml" overwrite="true">
 		</copy>
-		<replace file="${class.dir}/beans.xml" propertyFile="deploy.properties">
-			<replacefilter token="--Public API URL Here--" property="publicAPI.${target.env}" />
-			<replacefilter token="--Freestyle URL Here--" property="freestyle.${target.env}" />
-			<replacefilter token="--DatatypeMapping URL Here--" property="datatypeMapping.${target.env}" />
-		</replace>
+		<replace file="${class.dir}/beans.xml" token="@@--Public API URL Here--@@" value="${publicAPI.tier}" />
+		<replace file="${class.dir}/beans.xml" token="@@--Freestyle URL Here--@@" value="${freestyle.tier}" />
+		<replace file="${class.dir}/beans.xml" token="@@--DatatypeMapping URL Here--@@" value="${datatypeMapping.tier}" />
 
-		<replace file="${class.dir}/semantic.properties" propertyFile="deploy.properties">
-			<replacefilter token="--Public API URL Here--" property="publicAPI.${target.env}" />
-		</replace>
+		<replace file="${class.dir}/semantic.properties" token="@@--Public API URL Here--@@" value="${publicAPI.tier}" />
 
-		<replace file="${class.dir}/resources.properties" propertyFile="deploy.properties">
-			<replacefilter token="--Public API URL Here--" property="publicAPI.${target.env}" />
-		</replace>
+		<replace file="${class.dir}/resources.properties" token="@@--Public API URL Here--@@" value="${publicAPI.tier}" />
 
 	</target>
 
@@ -225,7 +204,8 @@
 	<!-- - - - - - - - - - - - - - - - - - 
           target: package                      
          - - - - - - - - - - - - - - - - - -->
-	<target name="package">		
+	<target name="package">
+		<echo>....Build target package....</echo>
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}/lib" />
 		<jar destfile="${dist.dir}/lib/uml-loader.jar" manifest="${basedir}/src/web/MANIFEST.MF">
@@ -242,9 +222,7 @@
 		</copy>
 		<copy file="${images.dir}/siw-logo3_2.gif" tofile="${dist.dir}/siw-logo3_2.gif">
 		</copy>
-		<replace file="${dist.dir}/siw.jnlp" propertyFile="${jnlp.dir}/jnlp.properties">
-			<replacefilter token="@@CODEBASE@@" property="codebase.${target.env}" />
-		</replace>
+		<replace file="${dist.dir}/siw.jnlp" token="@@CODEBASE@@" value="https://cadsrsiw-${tier}.nci.nih.gov" />
 		<macrodef name="updatemanifest">
 			<attribute name="jarfile" />
 			<sequential>
@@ -476,8 +454,10 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="prepare, package, sign" />
-
+	<target name="dist" depends="prepare, package, sign">
+		<echo>....Build target dist....</echo>
+	</target>
+	
 	<target name="dist-for-bulkloader" depends="clean, prepare-for-bulkloader, package" />
 
 	<target name="dist_lib" depends="prepare">
@@ -511,7 +491,8 @@
 </target>
 
 <target name="prepare-password">
-<java classname="gov.nih.nci.ncicb.cadsr.loader.util.AntSecretReplace" classpathref="proj.class.path">
+	<echo>....Build target prepare-password....</echo>
+<java classname="gov.nih.nci.ncicb.cadsr.loader.util.AntSecretReplace" classpathref="proj.class.path" fork="yes">
 	<arg value="${class.dir}/spring-datasources.xml" />
 	<arg value="${class.dir}/spring-datasources.xml" />
 	<arg value="@@DB_PASSWD@@" />
@@ -519,14 +500,13 @@
 </target>
 
 <target name="replace-db-tokens">
-<replace file="${class.dir}/spring-datasources.xml" propertyFile="${config.dir}/db.properties">
-	<replacefilter token="@@DB_URL@@" property="db.url.${target.env}" />
-	<replacefilter token="@@DB_USER@@" property="db.loader.user" />
-</replace>
+	<echo>....Build target replace-db-tokens....</echo>
+	<replace file="${class.dir}/spring-datasources.xml" token="@@DB_URL@@" value="${db.driver}${db.url}" />
+	<replace file="${class.dir}/spring-datasources.xml" token="@@DB_USER@@" value="${db.db.loader}"/>
 </target>
 
 <target name="run" depends="prepare, prepare-password, replace-db-tokens">
-
+	<echo>....Build target run....</echo>
 <copy file="${config.dir}/log4j-loader.xml" tofile="${class.dir}/log4j.xml" overwrite="true">
 </copy>
 
@@ -534,17 +514,18 @@
 	<jvmarg value="-Djava.security.auth.login.config=classes/jaas.config" />
 	<jvmarg value="-Dignore-vd=false" />
 	<jvmarg value="-Ddb.passwd=${db.passwd}" />
-	<jvmarg value="-Ddb.user=${db.db.loader.user}" />
+	<jvmarg value="-Ddb.user=${db.db.loader}" />
 	<arg value="${dir}" />
 	<arg value="${projectName}" />
 	<arg value="${projectVersion}" />
 </java>
 
-<delete file="${class.dir}/spring-datasources.xml" />
+<delete file="${class.dir}/spring-datasources.xml"/>
 
 </target>
 
 <target name="roundtrip" depends="prepare">
+	<echo>....Build target roundtrip....</echo>
 <java classname="gov.nih.nci.ncicb.cadsr.loader.RoundtripAction" classpathref="proj.class.path" fork="yes" maxmemory="512m" input="input.properties">
 	<jvmarg value="-Djava.security.auth.login.config=classes/jaas.config" />
 	<arg value="${in.file}" />
@@ -553,19 +534,12 @@
 </java>
 </target>
 
-<target name="siw" depends="gui,dist" />
-
+<target name="siw" depends="gui,dist">
+	<echo>....Build target siw....</echo>
+</target>
 <target name="gui" depends="prepare">
-<replace file="${class.dir}/spring-datasources.xml" propertyFile="${config.dir}/db.properties">
-	<replacefilter token="@@DB_URL@@" property="db.url.${target.env}" />
-	<replacefilter token="@@DB_USER@@" property="db.siw.user" />
-	<replacefilter token="@@DB_PASSWD@@" property="db.siw.passwd.${target.env}" />
-</replace>
-
+	<echo>....Build target gui....</echo>
 <java classname="gov.nih.nci.ncicb.cadsr.loader.SIW" classpathref="proj.class.path" fork="yes" maxmemory="512m">
-	<!--
-      <jvmarg value="-Djava.security.auth.login.config=classes/jaas.config"/>
-      -->
 	<arg value="${dir}" />
 	<arg value="${projectName}" />
 	<arg value="${projectVersion}" />
@@ -583,7 +557,8 @@
 </target>
 
 <target name="unclassify" depends="prepare, prepare-password, replace-db-tokens" description="Remove the given CS classification from all AC's, and remove CS-specific alt names and definitions">
-<java classname="gov.nih.nci.ncicb.cadsr.loader.Unclassifier" classpathref="proj.class.path" fork="yes" maxmemory="512m">
+	<echo>....Build target unclassify....</echo>
+	<java classname="gov.nih.nci.ncicb.cadsr.loader.Unclassifier" classpathref="proj.class.path" fork="yes" maxmemory="512m">
 	<arg value="${projectName}" />
 	<arg value="${projectVersion}" />
 </java>

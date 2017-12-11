@@ -19,8 +19,8 @@ L-->
     <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
         <property name="url" value="${db.url}" />
-        <property name="username" value="${db.username}" />
-        <property name="password" value="${db.password}" />
+        <property name="username" value="THE_SIW" />
+        <property name="password" value="THE_SIW" />
     </bean>
     
 </beans>

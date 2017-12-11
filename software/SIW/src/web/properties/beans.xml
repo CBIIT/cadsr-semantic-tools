@@ -117,7 +117,7 @@
   <bean name="datatypeMapping"
     class="gov.nih.nci.ncicb.cadsr.loader.util.DatatypeMapping"
     factory-method="getInstance">
-    <property name="mappingURL"><value>--DatatypeMapping URL Here--</value></property>
+    <property name="mappingURL"><value>@@--DatatypeMapping URL Here--@@</value></property>
   </bean>
 
   <bean name="lookupUtil"
@@ -279,10 +279,10 @@
     class="gov.nih.nci.ncicb.cadsr.loader.ext.FreestyleModule" 
     singleton="true">
     <property name="datasourceLocation">
-      <value>--Freestyle URL Here--</value>
+      <value>@@--Freestyle URL Here--@@</value>
     </property>
     <property name="publicApi">
-      <value>--Public API URL Here--</value>
+      <value>@@--Public API URL Here--@@</value>
     </property>
   </bean>
 

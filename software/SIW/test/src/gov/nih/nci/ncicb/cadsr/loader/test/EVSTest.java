@@ -226,7 +226,7 @@ public class EVSTest
 //		String dbserver = "137.187.181.89"; String dbname = "DSRQA";
 		// String username = "root";
 		// String password = "root";
-		int port = 1551;
+		int port = 1521;
 		ConnectionUtil cu = new ConnectionUtil();
 		cu.setUserName(username);
 		cu.setPassword(password);
