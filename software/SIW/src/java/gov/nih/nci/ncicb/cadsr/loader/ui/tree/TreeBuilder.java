@@ -253,10 +253,9 @@ public class TreeBuilder implements UserPreferencesListener {
           
           if(inheritedList.isInherited(de)) {
             node = new InheritedAttributeNode(de);
-            inherited.add((InheritedAttributeNode)node);
-          } else {        	
-        	// SIW-794 Allow there to be more than one UML attribute with the same name in a UML Class        	          	  
-        	if (parentNode.getChildren().contains(node)) {        		
+          }         	
+        	// SIW-794 Check for the node's presence in the parent's children list or the inherited list        	          	  
+        	if (parentNode.getChildren().contains(node) || inherited.contains(node)) {
         		if (!isDuplicate) {        			
         			Integer nodeOrder = altDuplicates.get(node.getFullPath());
         			if (nodeOrder == null) {
@@ -270,15 +269,19 @@ public class TreeBuilder implements UserPreferencesListener {
 	        		if (!parentNode.getChildren().contains(node)) {
 	        			logger.info("No more duplicates");
 	        		}
+	        		if (!inheritedList.isInherited(de))
 	        		parentNode.addChild(node);
+	        			else
+	        				inherited.add((InheritedAttributeNode)node);
         		}        		
         	} else {
-        		parentNode.addChild(node);	
+        		if (!inheritedList.isInherited(de))        		
+        		parentNode.addChild(node);
+        			else
+        				inherited.add((InheritedAttributeNode)node);	
         	}        	        	
-            ((AttributeNode) node).setReviewed(reviewed);
-          }            
-
-
+        	if (!inheritedList.isInherited(de))
+            ((AttributeNode) node).setReviewed(reviewed); 
         }
       } catch (NullPointerException e){
         e.printStackTrace();
