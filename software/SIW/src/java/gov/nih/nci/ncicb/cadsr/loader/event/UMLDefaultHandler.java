@@ -968,7 +968,8 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 		}
 
 		inheritedAttributes.add(childOc, parentOc);
-
+		Map <String, Integer> consumedDEs = new HashMap<String, Integer>();
+		
 		List newElts = new ArrayList();
 		List<DataElement> des = elements.getElements(DomainObjectFactory
 				.newDataElement());
@@ -981,19 +982,10 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 							.newDataElementConcept();
 					newDec.setProperty(dec.getProperty());
 					newDec.setObjectClass(childOc);
-					if (dec.getConceptualDomain()!=null) {
-						if (dec.getConceptualDomain().getPublicId()!=null) {
-							logger.debug("DEC CD - "+dec.getConceptualDomain().getPublicId());
-						}
-					}
 					newDec.setConceptualDomain(dec.getConceptualDomain());
-
-					// for(Definition def : dec.getDefinitions()) {
-					// newDec.addDefinition(def);
-					// }
-
 					String propName = newDec.getProperty().getLongName();
-
+					// Added for handling duplicate names for inherited attributes and their corresponding VDs 
+					propName = StringUtil.alteredName(consumedDEs, propName);
 					String s = event.getChildClassName();
 					int ind = s.lastIndexOf(".");
 					String className = s.substring(ind + 1);
@@ -1057,12 +1049,6 @@ public class UMLDefaultHandler implements UMLHandler, CadsrModuleListener,
 							}
 						}
 					}
-
-					if (dec.getConceptualDomain()!=null) {
-						if (dec.getConceptualDomain().getPublicId()!=null) {
-							logger.debug("DEC CD - "+dec.getConceptualDomain().getPublicId());
-						}
-					}					
 					
 					Boolean isReviewed = event.getReview(propName);
 					if (isReviewed != null)

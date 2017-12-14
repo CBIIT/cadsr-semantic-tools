@@ -440,8 +440,12 @@ public class XMIParser2 implements Parser {
     // find all inherited mappings 
     List<UMLAttribute> allAttributes = findAllInheritedAttributes(subClass);
 
+    Map <String, Integer> consumedAttributes = new HashMap<String, Integer>();
+
     for(UMLAttribute parentAtt : allAttributes) {
       String attName = parentAtt.getName();
+      // Added for handling duplicate names for inherited attributes and their corresponding VDs 
+      attName = StringUtil.alteredName(consumedAttributes, attName);
 
       // get inherited Local VD mapping
       UMLTaggedValue localVDTv = subClass.getTaggedValue(TV_INHERITED_VALUE_DOMAIN.replace("{1}", attName));
@@ -482,7 +486,7 @@ public class XMIParser2 implements Parser {
       if(reviewTv != null) {
         gEvent.addReview(attName, reviewTv.getValue().equals("1")?true:false);
       }
-      
+       
     }
     
     childGeneralizationMap.put(gEvent.getChildClassName(), gEvent);

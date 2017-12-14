@@ -191,6 +191,8 @@ public class XMIWriter2 implements ElementWriter {
       logger.debug("...CDE order number: " + cdeNumber);
       DataElementConcept dec = de.getDataElementConcept();
       String fullPropName = null;
+   // Added for handling duplicate names for inherited attributes and their corresponding VDs       
+      String changedAttributeName = null;
 
       for(AlternateName an : de.getAlternateNames()) {
         if(an.getType().equals(AlternateName.TYPE_FULL_NAME))
@@ -207,6 +209,8 @@ public class XMIWriter2 implements ElementWriter {
       if (pos == null) {
     	  altDuplicates.put(fullPropName, 0);//we add for possible duplicates
     	  changed = changeTracker.get(fullPropName);//check if the first appearance changed
+    	  if (changed)
+    		  changedAttributeName = fullPropName;    	  
     	  att = attributeMap.get(fullPropName);
       }
       else {
@@ -216,6 +220,8 @@ public class XMIWriter2 implements ElementWriter {
     	  String fullNameWIthDup = fullPropName+dupFormattedSuffix;
     	  att = attributeMap.get(fullNameWIthDup);
     	  changed = changeTracker.get(fullNameWIthDup);//check if duplicated name changed based on its position in the attribute list
+    	  if (changed)
+    		  changedAttributeName = fullNameWIthDup;
     	  logger.debug("fullPropName duplicated formatted: " + fullNameWIthDup +", changed? " + changed);
       }
       logger.debug("fullPropName changed: " + changed);
@@ -293,25 +299,25 @@ public class XMIWriter2 implements ElementWriter {
           ObjectClass oc = de.getDataElementConcept().getObjectClass();
           String fullClassName = LookupUtil.lookupFullName(oc);
           
+          
           UMLClass clazz = classMap.get(fullClassName);
 
-          String attributeName = LookupUtil.lookupFullName(de);
-          attributeName = attributeName.substring(attributeName.lastIndexOf(".") + 1);
-
-          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_DE_ID.replace("{1}", attributeName));
-          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_DE_VERSION.replace("{1}", attributeName));
-          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_VD_ID.replace("{1}", attributeName));
-          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_VD_VERSION.replace("{1}", attributeName));
-          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_VALUE_DOMAIN.replace("{1}", attributeName));
+       // Updated for handling duplicate names for inherited attributes and their corresponding VDs 
+          changedAttributeName = changedAttributeName.substring(changedAttributeName.lastIndexOf(".") + 1);
+          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_DE_ID.replace("{1}", changedAttributeName));
+          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_DE_VERSION.replace("{1}", changedAttributeName));
+          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_VD_ID.replace("{1}", changedAttributeName));
+          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_VD_VERSION.replace("{1}", changedAttributeName));
+          clazz.removeTaggedValue(XMIParser2.TV_INHERITED_VALUE_DOMAIN.replace("{1}", changedAttributeName));
           
           if(!StringUtil.isEmpty(de.getPublicId())) {
-            clazz.addTaggedValue(XMIParser2.TV_INHERITED_DE_ID.replace("{1}", attributeName), de.getPublicId());
-            clazz.addTaggedValue(XMIParser2.TV_INHERITED_DE_VERSION.replace("{1}", attributeName), de.getVersion().toString());
+            clazz.addTaggedValue(XMIParser2.TV_INHERITED_DE_ID.replace("{1}", changedAttributeName), de.getPublicId());
+            clazz.addTaggedValue(XMIParser2.TV_INHERITED_DE_VERSION.replace("{1}", changedAttributeName), de.getVersion().toString());
           } else if(!StringUtil.isEmpty(de.getValueDomain().getPublicId())) {
-            clazz.addTaggedValue(XMIParser2.TV_INHERITED_VD_ID.replace("{1}", attributeName), de.getValueDomain().getPublicId());
-            clazz.addTaggedValue(XMIParser2.TV_INHERITED_VD_VERSION.replace("{1}", attributeName), de.getValueDomain().getVersion().toString());
+            clazz.addTaggedValue(XMIParser2.TV_INHERITED_VD_ID.replace("{1}", changedAttributeName), de.getValueDomain().getPublicId());
+            clazz.addTaggedValue(XMIParser2.TV_INHERITED_VD_VERSION.replace("{1}", changedAttributeName), de.getValueDomain().getVersion().toString());
           } else if(DEMappingUtil.isMappedToLVD(de)) {
-              clazz.addTaggedValue(XMIParser2.TV_INHERITED_VALUE_DOMAIN.replace("{1}", attributeName)
+              clazz.addTaggedValue(XMIParser2.TV_INHERITED_VALUE_DOMAIN.replace("{1}", changedAttributeName)
                 , LookupUtil.lookupFullName(de.getValueDomain()));
         
           }

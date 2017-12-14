@@ -19,6 +19,8 @@
  */
 package gov.nih.nci.ncicb.cadsr.loader.util;
 
+import java.util.*;
+
 public class StringUtil {
 	  public static final String dupFormattedString = "-(%d)";
 	  
@@ -41,4 +43,19 @@ public class StringUtil {
   public static boolean isEmpty(String s) {
     return (s == null) || (s.length() == 0); 
   }
+    
+ /**
+   * @return Altered String based on presence  duplicates are present
+   */
+  public static String alteredName(Map<String, Integer> consumed, String name) {
+      Integer index = consumed.get(name);
+      if (index == null) {
+    	  consumed.put(name, 0 );
+      } else {
+    	  consumed.put(name, index.intValue()+1 );
+    	  name = name + buildDupFormatted(index.intValue()+1);    	  
+      }
+	  return name;
+  }
+  
 }

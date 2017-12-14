@@ -265,10 +265,7 @@ public class TreeBuilder implements UserPreferencesListener {
         				int dupeCount = nodeOrder.intValue() + 1;
         				altDuplicates.put(node.getFullPath(), dupeCount);
         				((AttributeNode) node).setFullPath(node.getFullPath() + StringUtil.buildDupFormatted(dupeCount));        				
-        			}        				        		
-	        		if (!parentNode.getChildren().contains(node)) {
-	        			logger.info("No more duplicates");
-	        		}
+        			}
 	        		if (!inheritedList.isInherited(de))
 	        		parentNode.addChild(node);
 	        			else
