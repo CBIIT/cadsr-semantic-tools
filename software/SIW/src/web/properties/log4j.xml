@@ -54,6 +54,14 @@
 	<level value="INFO"/>
     <appender-ref ref="console" /> 
   </logger>
+  <logger name="org.LexGrid.LexBIG.caCore.client.proxy">
+	<level value="ERROR"/>
+    <appender-ref ref="console" /> 
+  </logger>
+  <logger name="org.springframework.remoting.httpinvoker">
+	<level value="INFO"/>
+    <appender-ref ref="console" /> 
+  </logger>
   <root> 
     <priority value ="debug" /> 
     <appender-ref ref="console" /> 

@@ -13,14 +13,10 @@
 	<property name="docs.dir" value="${basedir}/javadoc" />
 	<property name="images.dir" value="${basedir}/src/web/images" />
 	<property name="jnlp.dir" value="${basedir}/src/web/jnlp" />
-	<property name="target.env" value="${tier}" />
+	<!--property name="target.env" value="${tier}" removed in SIW v.4.2.0/ -->
 	<property name="sqlsuite.dir" value="${basedir}/src/test/sqlsuite" />
-	<property name="publicAPI.tier" value="https://cadsrapi-${tier}.nci.nih.gov/cadsrapi4/services/cadsrapi41Service" />
-	<property name="freestyle.tier" value="https://freestyle-${tier}.nci.nih.gov" />
-	<property name="datatypeMapping.tier" value="https://cadsrsiw-${tier}.nci.nih.gov/datatype-mapping.xml" />
 	<property name="db.driver" value="jdbc:oracle:thin:@" />
 	<property name="db.db.loader" value="UMLLDR" />
-	<property file="${config.dir}/db.properties" prefix="db" />
 	<path id="proj.class.path">
 		<pathelement location="${class.dir}" />
 		<fileset dir="${lib.dir}">
@@ -158,13 +154,25 @@
 
 	<target name="prepare" depends="compile">
 		<echo>....Build target prepare....</echo>
+	    <condition property="tier.suffix" value="">
+	        <equals arg1="${tier}" arg2="prod"/>
+	    </condition>
+	    <condition property="tier.suffix" value="-${tier}">
+	    	<not>  
+	    		<isset property="tier.suffix"/>
+	    	</not>
+	    </condition>
+		<!-- property name="tier.suffix" value="-${tier}" / -->
+		<property name="publicAPI.tier" value="https://cadsrapi${tier.suffix}.nci.nih.gov/cadsrapi4/services/cadsrapi41Service" />
+		<property name="freestyle.tier" value="https://freestyle${tier.suffix}.nci.nih.gov" />
+		<property name="datatypeMapping.tier" value="https://cadsrsiw${tier.suffix}.nci.nih.gov/datatype-mapping.xml" />
+		<echo>tier: '${tier}', tier.suffix: '${tier.suffix}'</echo>
 		<copy todir="${class.dir}" overwrite="true">
 			<fileset dir="${config.dir}">
 				<include name="*.properties" />
 				<include name="jaas.config" />
 				<include name="beans.xml" />
 				<include name="loader-spring.xml" />
-				<include name="application-config-client.xml" />
 				<include name="log4j.xml" />
 				<include name="spring-datasources.xml" />
 				<include name="ehcache.xml" />
@@ -178,8 +186,9 @@
 				<include name="*.gif" />
 			</fileset>
 		</copy>
-		<copy file="${config.dir}/application-config-client-${target.env}.xml" tofile="${class.dir}/application-config-client.xml" overwrite="true">
+		<copy file="${config.dir}/application-config-client-65.xml" tofile="${class.dir}/application-config-client.xml" overwrite="true">
 		</copy>
+		<replace file="${class.dir}/application-config-client.xml" token="@@--tier--@@" value="${tier.suffix}" />
 		<replace file="${class.dir}/beans.xml" token="@@--Public API URL Here--@@" value="${publicAPI.tier}" />
 		<replace file="${class.dir}/beans.xml" token="@@--Freestyle URL Here--@@" value="${freestyle.tier}" />
 		<replace file="${class.dir}/beans.xml" token="@@--DatatypeMapping URL Here--@@" value="${datatypeMapping.tier}" />
@@ -218,11 +227,11 @@
 			</fileset>
 		</jar>
 
-		<copy file="${jnlp.dir}/siw.jnlp" tofile="${dist.dir}/siw.jnlp">
+		<copy file="${jnlp.dir}/siw.jnlp" tofile="${dist.dir}/siw.jnlp" overwrite="true">
 		</copy>
 		<copy file="${images.dir}/siw-logo3_2.gif" tofile="${dist.dir}/siw-logo3_2.gif">
 		</copy>
-		<replace file="${dist.dir}/siw.jnlp" token="@@CODEBASE@@" value="https://cadsrsiw-${tier}.nci.nih.gov" />
+		<replace file="${dist.dir}/siw.jnlp" token="@@CODEBASE@@" value="https://cadsrsiw${tier.suffix}.nci.nih.gov" />
 		<macrodef name="updatemanifest">
 			<attribute name="jarfile" />
 			<sequential>
@@ -256,9 +265,9 @@
 		<updatemanifest jarfile="${lib.dir}/cacore/jakarta-regexp-1.4.jar" />
 		<updatemanifest jarfile="${lib.dir}/cacore/jaxrpc.jar" />
 		<updatemanifest jarfile="${lib.dir}/cacore/lexbig.jar" />
-		<updatemanifest jarfile="${lib.dir}/cacore/lexevsapi64-framework.jar" />
+		<updatemanifest jarfile="${lib.dir}/cacore/lexevsapi65-framework.jar" />
 		<updatemanifest jarfile="${lib.dir}/cacore/lexevs-core.jar" />
-		<updatemanifest jarfile="${lib.dir}/cacore/lexevsapi64-beans.jar" />
+		<updatemanifest jarfile="${lib.dir}/cacore/lexevsapi65-beans.jar" />
 		<updatemanifest jarfile="${lib.dir}/cacore/LexEVSSecurity.jar" />
 		<updatemanifest jarfile="${lib.dir}/cacore/lexevs-tree-2.0.6.jar" />		
 		<updatemanifest jarfile="${lib.dir}/cacore/lucene-analyzers-common-5.3.1.jar" />
@@ -294,9 +303,9 @@
 				<include name="jakarta-regexp-1.4.jar" />
 				<include name="jaxrpc.jar" />
 				<include name="lexbig.jar" />
-				<include name="lexevsapi64-framework.jar" />
+				<include name="lexevsapi65-framework.jar" />
 				<include name="lexevs-core.jar" />
-				<include name="lexevsapi64-beans.jar" />
+				<include name="lexevsapi65-beans.jar" />
 				<include name="LexEVSSecurity.jar" />
 				<include name="lexevs-tree-2.0.6.jar" />				
 				<include name="lucene-analyzers-common-5.3.1.jar" />
