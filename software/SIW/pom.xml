@@ -12,9 +12,9 @@
 		<hibernate.version>3.6.0.Final</hibernate.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<log4j.version>1.2.14</log4j.version>
-		<db.url>DBURL</db.url>
-		<db.user>USERNAME</db.user>
-		<db.passwd>PWD</db.passwd>
+		<db.url>@@DBURL TO BE REPLACED@@</db.url>
+		<db.user>@@USERNAME TO BE REPLACED@@</db.user>
+		<db.passwd>@@PWD TO BE REPLACED@@</db.passwd>
 	</properties>
 	<repositories>
 		<repository>
