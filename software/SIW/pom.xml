@@ -12,6 +12,9 @@
 		<hibernate.version>3.6.0.Final</hibernate.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<log4j.version>1.2.14</log4j.version>
+		<db.url>DBURL</db.url>
+		<db.user>USERNAME</db.user>
+		<db.passwd>PWD</db.passwd>
 	</properties>
 	<repositories>
 		<repository>
@@ -70,6 +73,12 @@
 	</repositories>
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
+	<resources>
+        <resource>
+            <directory>src/web/properties</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>		
 		<plugins>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>

@@ -6,9 +6,8 @@
 
   <bean id="dataSource" class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
     <property name="driverType"><value>oracle.jdbc.driver.OracleDriver</value></property>
-    <property name="URL"><value>@@DB_URL@@</value></property>
-    <property name="user"><value>@@DB_USER@@</value></property>
-    <property name="password"><value>@@DB_PASSWD@@</value></property>
+    <property name="URL"><value>jdbc:oracle:thin:@${db.url}</value></property>
+    <property name="user"><value>${db.user}</value></property>
+    <property name="password"><value>${db.passwd}</value></property>
   </bean>
-
 </beans>
