@@ -15,6 +15,7 @@
 		<db.url>@@DBURL TO BE REPLACED@@</db.url>
 		<db.user>@@USERNAME TO BE REPLACED@@</db.user>
 		<db.passwd>@@PWD TO BE REPLACED@@</db.passwd>
+		<tier.name>-${tier}</tier.name>
 	</properties>
 	<repositories>
 		<repository>
