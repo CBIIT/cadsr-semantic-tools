@@ -108,13 +108,6 @@
 										<include>**/*.*</include>
 									</includes>
 								</resource>
-								<resource>
-									<directory>src/web/images</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>**/*.*</include>
-									</includes>
-								</resource>
 							</resources>
 						</configuration>
 					</execution>

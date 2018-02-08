@@ -86,6 +86,10 @@ public class DatatypeMapping {
     
     URL url = null;     
     
+    // To remove the text 'prod' from the url - VS
+    if (systemFilename.indexOf("prod")>-1) {
+    	systemFilename = systemFilename.substring(0,systemFilename.indexOf("prod")-1) +systemFilename.substring(systemFilename.indexOf("."),systemFilename.length());
+    }
     try {
       //        url = Thread.currentThread().getContextClassLoader().getResource(systemFilename);
       

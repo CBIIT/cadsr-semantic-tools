@@ -90,6 +90,8 @@ public class UMLLoader {
 
     Float projectVersion = null;
     try {
+    	System.out.println("DIR: "+args[0]+" :: Project Name: "+args[1]+" :: Project Version: "+args[2]);
+    	
       projectVersion = new Float(args[2]);
     } catch (NumberFormatException ex) {
       System.err.println("Parameter projectVersion must be a number");
