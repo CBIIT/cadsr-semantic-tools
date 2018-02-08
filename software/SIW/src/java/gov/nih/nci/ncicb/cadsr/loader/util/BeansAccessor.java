@@ -138,11 +138,7 @@ public class BeansAccessor {
       if(factory != null) {
         return factory;
       }
-      logger.debug(">>>>>>In BeanFactory.getFactory");
-      //ClassPathXmlApplicationContext cpCtx = new ClassPathXmlApplicationContext(new String[]{"beans.xml"});
       ClassPathXmlApplicationContext cpCtx = new ClassPathXmlApplicationContext(new String[]{"beans.xml", "spring-datasources.xml", "loader-spring.xml"});
-      //ClassPathXmlApplicationContext cpCtx = new ClassPathXmlApplicationContext(new String[]{"beans.xml", "spring-datasources.xml", "loader-spring.xml"});
-
 
 //       GenericApplicationContext genCtx = new GenericApplicationContext();
 //       XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(genCtx);
@@ -150,16 +146,15 @@ public class BeansAccessor {
 //       cpCtx.initBeanDefinitionReader(xmlReader);
 
 //       cpCtx.refresh();
-      logger.debug(">>>>>>In BeanFactory.getFactory: received cpCtx is not null? " + (cpCtx != null));
       
       factory = cpCtx;
+
 
 //       factory = new XmlBeanFactory(new InputStreamResource(Thread.currentThread().getContextClassLoader().getResourceAsStream("beans.xml")));
 
       return factory;
     } catch (Exception e){
-      e.printStackTrace();
-      System.exit(-1);
+      logger.error(e.getMessage());
     } // end of try-catch
     return null;
   }

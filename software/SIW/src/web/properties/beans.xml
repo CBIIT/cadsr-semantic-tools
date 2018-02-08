@@ -117,7 +117,7 @@
   <bean name="datatypeMapping"
     class="gov.nih.nci.ncicb.cadsr.loader.util.DatatypeMapping"
     factory-method="getInstance">
-    <property name="mappingURL"><value>https://cadsrsiw${tier.name}.nci.nih.gov/datatype-mapping.xml</value></property>
+    <property name="mappingURL"><value>@@--DatatypeMapping URL Here--@@</value></property>
   </bean>
 
   <bean name="lookupUtil"
