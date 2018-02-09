@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SIW</groupId>
-	<artifactId>SIW</artifactId>
-	<version>4.2.0</version>
+	<artifactId>uml-loader</artifactId>
+	<version>1.0</version>
 	<name>SIW-MVN</name>
 	<description>Semantic Tools Workbench - Maven</description>
 	<properties>
@@ -16,6 +16,7 @@
 		<db.user>@@USERNAME TO BE REPLACED@@</db.user>
 		<db.passwd>@@PWD TO BE REPLACED@@</db.passwd>
 		<tier.name>-${tier}</tier.name>
+		<codebase>https://cadsrsiw-dev.nci.nih.gov</codebase>
 	</properties>
 	<repositories>
 		<repository>
@@ -74,19 +75,32 @@
 	</repositories>
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
-	<resources>
-        <resource>
-            <directory>src/web/properties</directory>
-            <filtering>true</filtering>
-        </resource>
-    </resources>		
+		<resources>
+			<resource>
+				<directory>src/web/properties</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/web/jnlp</directory>
+				<filtering>true</filtering>
+			</resource>			
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>src/web/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.0.2</version>
 				<executions>
 					<execution>
-						<id>copy-resources</id>
+						<id>bundle-resources</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -103,6 +117,25 @@
 								</resource>
 								<resource>
 									<directory>src/web/images</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>**/*.*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-jnlp</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/web/jnlp</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.*</include>
@@ -151,7 +184,7 @@
 					</execution>
 				</executions>
 				<configuration>
-				<includePluginDependencies>true</includePluginDependencies> 
+					<includePluginDependencies>true</includePluginDependencies>
 					<executable>java</executable>
 					<arguments>
 						<argument>-Djava.security.auth.login.config=classes/jaas.config</argument>
@@ -163,6 +196,25 @@
 						<argument>${projectName}</argument>
 						<argument>${projectVersion}</argument>
 					</arguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>${keystore.location}</keystore>
+					<alias>${keystore.alias}</alias>
+					<storepass>${keystore.password}</storepass>
+					<keypass>${keystore.password}</keypass>
 				</configuration>
 			</plugin>
 		</plugins>
