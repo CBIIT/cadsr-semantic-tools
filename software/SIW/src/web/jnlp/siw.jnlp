@@ -18,7 +18,7 @@
   </security>
   <resources>
 <j2se version="1.5+" max-heap-size="512m"/>
-    <jar href="uml-loader.jar" main="true"/>
+    <jar href="SIW-4.2.0.jar" main="true"/>
 	
 </resources>
   <application-desc main-class="gov.nih.nci.ncicb.cadsr.loader.SIW"/>
