@@ -91,7 +91,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
-						<manifestFile>src/web/MANIFEST.MF</manifestFile>
+						<manifestFile>src/web/properties/MANIFEST.MF</manifestFile>
 					</archive>
 				</configuration>
 			</plugin>
