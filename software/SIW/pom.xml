@@ -125,7 +125,7 @@
 									<includes>
 										<include>**/*.*</include>
 									</includes>
-								</resource>								
+								</resource>
 							</resources>
 						</configuration>
 					</execution>
@@ -204,6 +204,26 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jarsigner-plugin</artifactId>
 				<version>1.4</version>
 				<executions>
@@ -215,6 +235,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<archiveDirectory>${basedir}/target/lib</archiveDirectory>
 					<keystore>${keystore.location}</keystore>
 					<alias>${keystore.alias}</alias>
 					<storepass>${keystore.password}</storepass>
