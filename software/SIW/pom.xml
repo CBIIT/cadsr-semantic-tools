@@ -16,7 +16,6 @@
 		<db.user>@@USERNAME TO BE REPLACED@@</db.user>
 		<db.passwd>@@PWD TO BE REPLACED@@</db.passwd>
 		<tier.name>-${tier}</tier.name>
-		<codebase>https://cadsrsiw-dev.nci.nih.gov/test</codebase>
 	</properties>
 	<repositories>
 		<repository>
@@ -80,9 +79,14 @@
 				<directory>src/web/properties</directory>
 				<filtering>true</filtering>
 			</resource>
-		</resources>
+			<resource>
+                <targetPath>${basedir}/target</targetPath>
+                <filtering>true</filtering>
+                <directory>src/web/jnlp</directory>
+            </resource>			
+		</resources>		
 		<plugins>
-			<plugin>
+		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
@@ -114,32 +118,6 @@
 								</resource>
 								<resource>
 									<directory>src/web/images</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>**/*.*</include>
-									</includes>
-								</resource>
-								<resource>
-									<directory>repo</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>**/*.*</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-jnlp</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/web/jnlp</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.*</include>
