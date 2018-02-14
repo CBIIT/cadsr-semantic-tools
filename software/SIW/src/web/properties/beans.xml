@@ -279,10 +279,10 @@
     class="gov.nih.nci.ncicb.cadsr.loader.ext.FreestyleModule" 
     singleton="true">
     <property name="datasourceLocation">
-      <value>@@--Freestyle URL Here--@@</value>
+      <value>https://freestyle${tier.name}.nci.nih.gov</value>
     </property>
     <property name="publicApi">
-      <value>@@--Public API URL Here--@@</value>
+      <value>https://cadsrapi${tier.name}.nci.nih.gov/cadsrapi4/services/cadsrapi41Service</value>
     </property>
   </bean>
 
