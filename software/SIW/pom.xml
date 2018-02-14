@@ -45,7 +45,7 @@
 			<url>https://ncimvn.nci.nih.gov/nexus/content/repositories/thirdparty/</url>
 			<layout>default</layout>
 		</repository>
- 		<repository>
+		<repository>
 			<id>nci.maven.snapshot</id>
 			<name>NCI Maven Snapshot Repository</name>
 			<url>https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVSSnapshots</url>
@@ -81,13 +81,13 @@
 				<filtering>true</filtering>
 			</resource>
 			<resource>
-                <targetPath>${basedir}/target</targetPath>
-                <filtering>true</filtering>
-                <directory>src/web/jnlp</directory>
-            </resource>			
-		</resources>		
+				<targetPath>${basedir}/target</targetPath>
+				<filtering>true</filtering>
+				<directory>src/web/jnlp</directory>
+			</resource>
+		</resources>
 		<plugins>
-		<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
@@ -125,7 +125,7 @@
 									</includes>
 								</resource>
 							</resources>
-						</configuration>						
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -174,11 +174,9 @@
 						<argument>-Xms512m</argument>
 						<argument>-classpath</argument>
 						<classpath />
-						<argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument>
-						<!--  <argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
-						<argument>${dir}</argument>
-						<argument>${projectName}</argument>
-						<argument>${projectVersion}</argument>   -->
+						<!-- <argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument>  -->
+						<argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument> 
+							<argument>${dir}</argument> <argument>${projectName}</argument> <argument>${projectVersion}</argument>
 					</arguments>
 				</configuration>
 			</plugin>
@@ -216,7 +214,6 @@
 				</executions>
 				<configuration>
 					<archiveDirectory>${basedir}/target/lib</archiveDirectory>
-						<echo>Signing JARs....</echo>					
 					<keystore>${keystore.location}</keystore>
 					<alias>${keystore.alias}</alias>
 					<storepass>${keystore.password}</storepass>
@@ -227,31 +224,31 @@
 	</build>
 	<dependencies>
 		<dependency>
-		    <groupId>org.acegisecurity</groupId>
-		    <artifactId>acegi-security</artifactId>
-		    <version>1.0.4</version>
+			<groupId>org.acegisecurity</groupId>
+			<artifactId>acegi-security</artifactId>
+			<version>1.0.4</version>
 			<exclusions>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-remoting</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-dao</artifactId>
-            </exclusion>                                    
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-support</artifactId>
-            </exclusion>                                                
-         </exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-remoting</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-dao</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-support</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.compass-project</groupId>
@@ -272,6 +269,20 @@
 			<groupId>axis</groupId>
 			<artifactId>axis</artifactId>
 			<version>1.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.axis</groupId>
+					<artifactId>axis-jaxrpc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.axis</groupId>
+					<artifactId>axis-saaj</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>axis</groupId>
+					<artifactId>axis-wsdl4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>cagrid</groupId>
@@ -375,23 +386,23 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.0.ga</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.6-Final</version>
+			<version>3.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>3.1.0.GA</version>
+			<version>3.0.0.GA</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-ehcache</artifactId>
-			<version>3.6.0.Final</version>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>1.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>oro</groupId>
@@ -513,7 +524,7 @@
 			<artifactId>lucene-test-framework</artifactId>
 			<version>${lucene.version}</version>
 		</dependency>
- 		<!-- <dependency>
+		<dependency>
 			<groupId>lexevs</groupId>
 			<artifactId>lexevsapi-beans</artifactId>
 			<version>${lexevs.version}</version>
@@ -528,12 +539,12 @@
 			<artifactId>lexevs-remote-security</artifactId>
 			<version>${lexevs.version}</version>
 		</dependency>
- 		<dependency>
+		<dependency>
 			<groupId>lexevs</groupId>
 			<artifactId>lexevs-remote-client</artifactId>
 			<version>${lexevs.version}</version>
 		</dependency>
- 		<dependency>
+		<dependency>
 			<groupId>lexevs</groupId>
 			<artifactId>lexevs-valuesets</artifactId>
 			<version>${lexevs.version}</version>
@@ -543,40 +554,40 @@
 			<artifactId>lexbig-impl</artifactId>
 			<version>${lexevs.version}</version>
 			<exclusions>
-			  <exclusion>
-                <groupId>lexevs</groupId>
-                <artifactId>lexevs-dao</artifactId>
-            </exclusion>			
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-            </exclusion>                        
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-asm</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-            </exclusion>                                                
-			</exclusions>            			
-		</dependency> -->
+				<exclusion>
+					<groupId>lexevs</groupId>
+					<artifactId>lexevs-dao</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aspects</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-test</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-orm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-asm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-expression</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -598,9 +609,9 @@
 			<version>3.0</version>
 		</dependency>
 		<dependency>
-			<groupId>ojdbc</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>1.0</version>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc7</artifactId>
+			<version>12.1.0.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.andromda.thirdparty.netbeans.mdr</groupId>
@@ -641,8 +652,8 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
-		</dependency>		
-		 <dependency>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
@@ -666,44 +677,16 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
-			<!-- <exclusions>   
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-            </exclusion>                        
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-asm</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-            </exclusion>                                                            
-			</exclusions>  -->            			
+			<!-- <exclusions> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-aspects</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-test</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-jdbc</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-asm</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-expression</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-context-support</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-beans</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-core</artifactId> 
+				</exclusion> <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-tx</artifactId> 
+				</exclusion> </exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -749,144 +732,114 @@
 			<groupId>nih.nci.cadsr</groupId>
 			<artifactId>cadsrapi41-beans</artifactId>
 			<version>1.0</version>
-		</dependency> 
-  		<dependency>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<exclusions>
-            <exclusion>
-                <groupId>org.aopalliance</groupId>
-                <artifactId>com.springsource.org.aopalliance</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.aop</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.beans</artifactId>
-            </exclusion>
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.asm</artifactId>
-            </exclusion>
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.context</artifactId>
-            </exclusion>            
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.core</artifactId>
-            </exclusion>
-        </exclusions>
+				<exclusion>
+					<groupId>org.aopalliance</groupId>
+					<artifactId>com.springsource.org.aopalliance</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.aop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.asm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web.servlet</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 			<exclusions>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.context.support</artifactId>
-            </exclusion>
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.expression</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.aopalliance</groupId>
-                <artifactId>com.springsource.org.aopalliance</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.aop</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.beans</artifactId>
-            </exclusion>
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.asm</artifactId>
-            </exclusion>
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.context</artifactId>
-            </exclusion>            
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.core</artifactId>
-            </exclusion>        
-            </exclusions>                            
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.context.support</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.expression</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.aopalliance</groupId>
+					<artifactId>com.springsource.org.aopalliance</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.aop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.asm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
- 		<dependency>
+		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
 			<version>2.1.0.RELEASE</version>
 			<exclusions>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-            </exclusion>
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-            </exclusion>                         
-			  <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-            </exclusion> 
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-            </exclusion>
-            </exclusions>                       			
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-tx</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-infrastructure</artifactId>
 			<version>2.1.0.RELEASE</version>
 			<exclusions>
-			<exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-            </exclusion> 
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
 			</exclusions>
-		</dependency>
- 		<dependency>
-			<groupId>lexevs</groupId>
-			<artifactId>lexbig</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>lexevs</groupId>
-			<artifactId>lexevs-core</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>lexevs</groupId>
-			<artifactId>lexevs-tree</artifactId>
-			<version>2.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>lexevs</groupId>
-			<artifactId>lexevsapi65-beans</artifactId>
-			<version>6.5</version>
-		</dependency>
-		<dependency>
-			<groupId>lexevs</groupId>
-			<artifactId>lexevsapi65-framework</artifactId>
-			<version>6.5</version>
-		</dependency>
-		<dependency>
-			<groupId>lexevs</groupId>
-			<artifactId>LexEVSSecurity</artifactId>
-			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>
