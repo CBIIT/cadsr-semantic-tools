@@ -932,11 +932,11 @@
 			<artifactId>openide-util</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>1.1nci</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

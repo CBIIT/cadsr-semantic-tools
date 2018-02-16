@@ -29,7 +29,6 @@
 	<jar href="lib/sdk-system-web-4.5.jar" />
 	<jar href="lib/sdk-system-ws-4.5.jar" />
 	<jar href="lib/acegi-security-1.0.4.jar" />
-	<jar href="lib/activation-1.1nci.jar" />
 	<jar href="lib/antlr-2.7.6.jar" />
 	<jar href="lib/aopalliance-1.0.jar" />
 	<jar href="lib/asm-1.5.3.jar" />
