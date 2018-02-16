@@ -5,7 +5,7 @@
   href="https://cadsrsiw${tier.name}.nci.nih.gov/test/siw.jnlp"
   codebase="https://cadsrsiw${tier.name}.nci.nih.gov/test/"
   >
-  
+  <update check="timeout" policy="always"/>
   <information>
     <title>Semantic Integration Workbench 4.2.0</title>
     <description>The SIW streamlines the process of annotating Domain Model with Evs Concepts, then loading those models to caDSR</description>
