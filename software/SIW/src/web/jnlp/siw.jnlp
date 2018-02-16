@@ -29,7 +29,7 @@
 	<jar href="lib/sdk-system-web-4.5.jar" />
 	<jar href="lib/sdk-system-ws-4.5.jar" />
 	<jar href="lib/acegi-security-1.0.4.jar" />
-	<jar href="lib/activation-1.1.jar" />
+	<jar href="lib/activation-1.1nci.jar" />
 	<jar href="lib/antlr-2.7.6.jar" />
 	<jar href="lib/aopalliance-1.0.jar" />
 	<jar href="lib/asm-1.5.3.jar" />
@@ -64,9 +64,9 @@
 	<jar href="lib/ojdbc7-12.1.0.2.0.jar" />
 	<jar href="lib/poi-3.2-FINAL.jar" />
 	<jar href="lib/slf4j-api-1.5.6.jar" />
-	<jar href="lib/slf4j-log4j12-1.5.6.jar" />
-	<jar href="lib/org.springframework.web-3.0.5.RELEASE.jar" />
-	<jar href="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar" />
+	<jar href="lib/slf4j-simple-1.5.6.jar" />
+	<jar href="lib/org.springframework.web-3.1.0.RELEASE.jar" />
+	<jar href="lib/org.springframework.web.servlet-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-aop-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-asm-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-aspects-3.1.0.RELEASE.jar" />
@@ -93,10 +93,7 @@
 	<jar href="lib/lexbig-interfaces-6.5.0.FINAL.jar" />
 	<jar href="lib/lexbig-model-6.5.0.FINAL.jar" />
 	<jar href="lib/lexevs-dao-6.5.0.FINAL.jar" />
-	<jar href="lib/lexevs-rdf-6.5.0.FINAL.jar" />
-	<jar href="lib/lexgrid-converter-6.5.0.FINAL.jar" />
 	<jar href="lib/lexgrid-model-6.5.0.FINAL.jar" />
-	<jar href="lib/lexgrid-resourcereader-6.5.0.FINAL.jar" />
 	<jar href="lib/lexgrid-util-6.5.0.FINAL.jar" />				
 	<jar href="lib/caGrid-CQL-cql.1.0-1.2.jar" />
 	<jar href="lib/commons-cli-1.2.jar" />

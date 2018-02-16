@@ -174,11 +174,11 @@
 						<argument>-Xms512m</argument>
 						<argument>-classpath</argument>
 						<classpath />
-						<!-- <argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument> -->
-						<argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
+						<argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument>
+						<!-- <argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
 						<argument>${dir}</argument>
 						<argument>${projectName}</argument>
-						<argument>${projectVersion}</argument>
+						<argument>${projectVersion}</argument>  -->
 					</arguments>
 				</configuration>
 			</plugin>
@@ -291,6 +291,11 @@
 			<artifactId>caGrid-CQL-cql.1.0</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.1_3</version>
+		</dependency>					
 		<dependency>
 			<groupId>sdk</groupId>
 			<artifactId>sdk-system-client</artifactId>
@@ -513,7 +518,7 @@
 		<dependency>
 			<groupId>jdom</groupId>
 			<artifactId>jdom</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.andromda.thirdparty.jmi</groupId>
@@ -937,6 +942,12 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.6</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		    <version>1.5.6</version>
+		    <scope>test</scope>
+		</dependency>		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
