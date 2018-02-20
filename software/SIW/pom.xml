@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SIW</groupId>
 	<artifactId>SIW</artifactId>
-	<version>4.2.0</version>
+	<version>4.2.1</version>
 	<name>SIW-MVN</name>
 	<description>Semantic Tools Workbench - Maven</description>
 	<properties>

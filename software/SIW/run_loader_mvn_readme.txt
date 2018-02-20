@@ -19,7 +19,7 @@
 		 The Loader will ask if you want to continue loading despite the errors, type 'y' in the dialog to continue loading and 'N' to stop loading. 
 		 [Typed options have to be the exact case as shown in the dialog]
 		 
-		 At then end of loading, should see log like this
+		 At the end of loading, should see log like this
 		 [java] INFO CadsrLoader.run(179) | refreshing database views
 		 [java] INFO CadsrLoader.run(201) | refreshed databased views
            
