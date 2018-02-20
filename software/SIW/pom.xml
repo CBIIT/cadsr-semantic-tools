@@ -174,11 +174,11 @@
 						<argument>-Xms512m</argument>
 						<argument>-classpath</argument>
 						<classpath />
-						<argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument>
-						<!-- <argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
+						<!--  <argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument>  -->
+						<argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
 						<argument>${dir}</argument>
 						<argument>${projectName}</argument>
-						<argument>${projectVersion}</argument>  -->
+						<argument>${projectVersion}</argument>
 					</arguments>
 				</configuration>
 			</plugin>
