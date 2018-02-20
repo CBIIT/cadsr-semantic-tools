@@ -174,7 +174,7 @@
 						<argument>-Xms512m</argument>
 						<argument>-classpath</argument>
 						<classpath />
-						<!--  <argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument>  -->
+						<!-- <argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument> -->
 						<argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
 						<argument>${dir}</argument>
 						<argument>${projectName}</argument>
@@ -295,14 +295,14 @@
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 			<version>2.1_3</version>
-		</dependency>					
+		</dependency>
 		<dependency>
-			<groupId>sdk</groupId>
+			<groupId>sdk-system-client</groupId>
 			<artifactId>sdk-system-client</artifactId>
 			<version>4.5</version>
 		</dependency>
 		<dependency>
-			<groupId>sdk</groupId>
+			<groupId>sdk-security</groupId>
 			<artifactId>sdk-security</artifactId>
 			<version>4.5</version>
 		</dependency>
@@ -387,8 +387,8 @@
 				<exclusion>
 					<groupId>javax.servlet</groupId>
 					<artifactId>servlet-api</artifactId>
-				</exclusion>								
-			</exclusions>				
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
@@ -418,8 +418,8 @@
 				<exclusion>
 					<groupId>isorelax</groupId>
 					<artifactId>isorelax</artifactId>
-				</exclusion>												
-			</exclusions>							
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.dbunit</groupId>
@@ -435,7 +435,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
 			<version>3.2.0.ga</version>
-			<exclusions>	
+			<exclusions>
 				<exclusion>
 					<groupId>asm</groupId>
 					<artifactId>asm-attrs</artifactId>
@@ -447,8 +447,8 @@
 				<exclusion>
 					<groupId>asm</groupId>
 					<artifactId>asm</artifactId>
-				</exclusion>												
-			</exclusions>			
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -479,7 +479,7 @@
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.1</version>
-			<exclusions>	
+			<exclusions>
 				<exclusion>
 					<groupId>javax.xml.stream</groupId>
 					<artifactId>stax-api</artifactId>
@@ -544,7 +544,7 @@
 			<groupId>com.esotericsoftware.kryo</groupId>
 			<artifactId>kryo</artifactId>
 			<version>2.21</version>
-			<exclusions>	
+			<exclusions>
 				<exclusion>
 					<groupId>com.esotericsoftware.reflectasm</groupId>
 					<artifactId>reflectasm</artifactId>
@@ -556,8 +556,8 @@
 				<exclusion>
 					<groupId>org.objenesis</groupId>
 					<artifactId>objenesis</artifactId>
-				</exclusion>				
-			</exclusions>			
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.javakaffee</groupId>
@@ -575,12 +575,12 @@
 				<exclusion>
 					<groupId>com.esotericsoftware</groupId>
 					<artifactId>minlog</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>com.google.protobuf</groupId>
 					<artifactId>protobuf-java</artifactId>
-				</exclusion>								
-			</exclusions>						
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -611,7 +611,7 @@
 					<groupId>org.apache.lucene</groupId>
 					<artifactId>lucene-grouping</artifactId>
 				</exclusion>
-			</exclusions>			
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -644,8 +644,8 @@
 				<exclusion>
 					<groupId>org.apache.ant</groupId>
 					<artifactId>ant</artifactId>
-				</exclusion>								
-			</exclusions>						
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>lexevs</groupId>
@@ -687,7 +687,7 @@
 				<exclusion>
 					<groupId>org.codehaus.castor</groupId>
 					<artifactId>castor-codegen</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>org.codehaus.castor</groupId>
 					<artifactId>castor-codegen-anttask</artifactId>
@@ -695,11 +695,11 @@
 				<exclusion>
 					<groupId>org.codehaus.castor</groupId>
 					<artifactId>castor-xml-schema</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>org.codehaus.castor</groupId>
 					<artifactId>castor-xml</artifactId>
-				</exclusion>												
+				</exclusion>
 				<exclusion>
 					<groupId>apache</groupId>
 					<artifactId>ddlUtils</artifactId>
@@ -739,11 +739,11 @@
 				<exclusion>
 					<groupId>cglib</groupId>
 					<artifactId>cglib</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>org.aspectj</groupId>
 					<artifactId>aspectjrt</artifactId>
-				</exclusion>												
+				</exclusion>
 				<exclusion>
 					<groupId>org.aspectj</groupId>
 					<artifactId>aspectjweaver</artifactId>
@@ -783,11 +783,11 @@
 				<exclusion>
 					<groupId>org.hsqldb</groupId>
 					<artifactId>hsqldb</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>org.apache.ibatis</groupId>
 					<artifactId>ibatis-sqlmap</artifactId>
-				</exclusion>												
+				</exclusion>
 				<exclusion>
 					<groupId>commons-io</groupId>
 					<artifactId>commons-io</artifactId>
@@ -818,11 +818,11 @@
 				<exclusion>
 					<groupId>lexevs</groupId>
 					<artifactId>lexgrid-converter</artifactId>
-				</exclusion>	
+				</exclusion>
 				<exclusion>
 					<groupId>lexevs</groupId>
 					<artifactId>lexevs-dao</artifactId>
-				</exclusion>   							
+				</exclusion>
 				<exclusion>
 					<groupId>lexevs</groupId>
 					<artifactId>lexevs-rdf</artifactId>
@@ -846,7 +846,7 @@
 				<exclusion>
 					<groupId>lexevs</groupId>
 					<artifactId>spring-expression</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-aspects</artifactId>
@@ -882,12 +882,12 @@
 				<exclusion>
 					<groupId>com.hp.hpl.jena</groupId>
 					<artifactId>sdb</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>com.hp.hpl.jena</groupId>
 					<artifactId>arq</artifactId>
-				</exclusion>												
-				
+				</exclusion>
+
 				<exclusion>
 					<groupId>com.healthmarketscience.sqlbuilder</groupId>
 					<artifactId>sqlbuilder</artifactId>
@@ -895,11 +895,11 @@
 				<exclusion>
 					<groupId>com.healthmarketscience.common</groupId>
 					<artifactId>common-util</artifactId>
-				</exclusion>				
+				</exclusion>
 				<exclusion>
 					<groupId>org.json</groupId>
 					<artifactId>json</artifactId>
-				</exclusion>				
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -932,22 +932,19 @@
 			<artifactId>openide-util</artifactId>
 			<version>1.0</version>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1nci</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>activation</groupId> <artifactId>activation</artifactId> 
+			<version>1.1nci</version> </dependency> -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.6</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-simple</artifactId>
-		    <version>1.5.6</version>
-		    <scope>test</scope>
-		</dependency>		
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.5.6</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
