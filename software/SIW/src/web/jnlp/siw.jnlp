@@ -7,7 +7,7 @@
   >
   <update check="timeout" policy="always"/>
   <information>
-    <title>Semantic Integration Workbench 4.2.0</title>
+    <title>Semantic Integration Workbench 4.2.1</title>
     <description>The SIW streamlines the process of annotating Domain Model with Evs Concepts, then loading those models to caDSR</description>
     <offline-allowed/>
     <vendor>NCI</vendor>
@@ -18,7 +18,7 @@
   </security>
   <resources>
     <j2se version="1.5+" max-heap-size="512m"/>
-    <jar href="SIW-4.2.0.jar" main="true"/>
+    <jar href="SIW-4.2.1.jar" main="true"/>
     <jar href="lib/cadsrapi41-beans-1.0.jar" />
 	<jar href="lib/castor-1.0.2.jar" />
 	<jar href="lib/cglib-2.1_3.jar" />

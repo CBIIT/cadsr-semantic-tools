@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Maven-Version: Apache Maven 3.3.9
-Application-Name: SIW 4.2.0
+Application-Name: SIW 4.2.1
 Permissions: all-permissions
 Codebase: *
 Created-By: Apache Maven 3.3.9
