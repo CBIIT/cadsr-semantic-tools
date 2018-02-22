@@ -253,11 +253,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.compass-project</groupId>
-			<artifactId>compass</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
 			<version>2.7.6</version>
@@ -579,71 +574,6 @@
 				<exclusion>
 					<groupId>com.google.protobuf</groupId>
 					<artifactId>protobuf-java</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-phonetic</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-codecs</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-join</artifactId>
-			<version>${lucene.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.lucene</groupId>
-					<artifactId>lucene-grouping</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-queries</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-queryparser</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-sandbox</artifactId>
-			<version>${lucene.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-test-framework</artifactId>
-			<version>${lucene.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.carrotsearch.randomizedtesting</groupId>
-					<artifactId>junit4-ant</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.carrotsearch.randomizedtesting</groupId>
-					<artifactId>randomizedtesting-runner</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.ant</groupId>
-					<artifactId>ant</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
