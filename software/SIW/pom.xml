@@ -12,7 +12,6 @@
 		<hibernate.version>3.6.0.Final</hibernate.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<log4j.version>1.2.14</log4j.version>
-		<lucene.version>5.3.1</lucene.version>
 		<db.url>@@DBURL TO BE REPLACED@@</db.url>
 		<db.user>@@USERNAME TO BE REPLACED@@</db.user>
 		<db.passwd>@@PWD TO BE REPLACED@@</db.passwd>
@@ -282,14 +281,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>cagrid</groupId>
-			<artifactId>caGrid-CQL-cql.1.0</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>2.1_3</version>
+			<version>2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>sdk-system-client</groupId>
@@ -745,7 +739,19 @@
 				<exclusion>
 					<groupId>org.springframework.batch</groupId>
 					<artifactId>spring-batch-infrastructure</artifactId>
-				</exclusion>				
+				</exclusion>
+				<exclusion>
+					<groupId>com.thoughtworks.xstream</groupId>
+					<artifactId>xstream</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xpp3</groupId>
+					<artifactId>xpp3_min</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.codehaus.jettison</groupId>
+					<artifactId>jettison</artifactId>
+				</exclusion>																
 			</exclusions>
 		</dependency>
 		<dependency>
