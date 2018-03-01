@@ -7,7 +7,7 @@
   >
   
   <information>
-    <title>Semantic Integration Workbench 4.2.0</title>
+    <title>Semantic Integration Workbench 4.2.1</title>
     <description>The SIW streamlines the process of annotating Domain Model with Evs Concepts, then loading those models to caDSR</description>
     <offline-allowed/>
     <vendor>NCI</vendor>
@@ -71,13 +71,9 @@
 	<jar href="lib/slf4j-simple-1.5.6.jar" />
 	<jar href="lib/org.apache.commons.dbcp.jar" />
 	<jar href="lib/org.springframework.web-3.0.5.RELEASE.jar" />
-	<jar href="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar" />
-	<jar href="lib/org.springframework.web.struts-3.0.5.RELEASE.jar" />
 	<jar href="lib/spring-aop-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-asm-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-aspects-3.1.0.RELEASE.jar" />
-	<jar href="lib/spring-batch-core-2.1.0.RELEASE.jar" />
-	<jar href="lib/spring-batch-infrastructure-2.1.0.RELEASE.jar" />
 	<jar href="lib/spring-beans-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-context-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-context-support-3.1.0.RELEASE.jar" />

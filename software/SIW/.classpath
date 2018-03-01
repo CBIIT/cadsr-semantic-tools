@@ -63,8 +63,6 @@
 	<classpathentry kind="lib" path="lib/spring-aop-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-asm-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-aspects-3.1.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/spring-batch-core-2.1.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-beans-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-support-3.1.0.RELEASE.jar"/>
@@ -75,8 +73,6 @@
 	<classpathentry kind="lib" path="lib/spring-oxm-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-test-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-tx-3.1.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/org.springframework.web.struts-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/org.springframework.web-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/org.apache.commons.dbcp.jar"/>
 	<classpathentry kind="lib" path="lib/cacore/lexbig.jar"/>
@@ -105,5 +101,5 @@
 	<classpathentry kind="lib" path="lib/cacore/lucene-test-framework-5.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/cacore/lexevsapi65-beans.jar"/>
 	<classpathentry kind="lib" path="lib/cacore/lexevsapi65-framework.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>

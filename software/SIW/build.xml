@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="UML Loader / SIW" default="dist" basedir=".">
-	<property name="app.name" value="SIW 4.2.0" />
+	<property name="app.name" value="SIW 4.2.1" />
 	<property file="build.properties" />
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="manifest.dir" value="${basedir}/src/web" />
@@ -370,13 +370,9 @@
 		<updatemanifest jarfile="${lib.dir}/openide-util.jar" />
 		<updatemanifest jarfile="${lib.dir}/org.apache.commons.dbcp.jar" />
 		<updatemanifest jarfile="${lib.dir}/org.springframework.web-3.0.5.RELEASE.jar" />
-		<updatemanifest jarfile="${lib.dir}/org.springframework.web.servlet-3.0.5.RELEASE.jar" />
-		<updatemanifest jarfile="${lib.dir}/org.springframework.web.struts-3.0.5.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/spring-aop-3.1.0.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/spring-asm-3.1.0.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/spring-aspects-3.1.0.RELEASE.jar" />
-		<updatemanifest jarfile="${lib.dir}/spring-batch-core-2.1.0.RELEASE.jar" />
-		<updatemanifest jarfile="${lib.dir}/spring-batch-infrastructure-2.1.0.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/spring-beans-3.1.0.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/spring-context-3.1.0.RELEASE.jar" />
 		<updatemanifest jarfile="${lib.dir}/spring-context-support-3.1.0.RELEASE.jar" />
