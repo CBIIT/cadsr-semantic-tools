@@ -64,7 +64,6 @@
 	<jar href="lib/poi-3.2-FINAL.jar" />
 	<jar href="lib/slf4j-api-1.5.6.jar" />
 	<jar href="lib/slf4j-simple-1.5.6.jar" />
-	<jar href="lib/org.springframework.web-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-aop-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-asm-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-aspects-3.1.0.RELEASE.jar" />
@@ -78,6 +77,7 @@
 	<jar href="lib/spring-oxm-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-test-3.1.0.RELEASE.jar" />
 	<jar href="lib/spring-tx-3.1.0.RELEASE.jar" />
+	<jar href="lib/spring-web-3.1.0.RELEASE.jar" />	
 	<jar href="lib/xmiinout-1.0.jar" />
 	<jar href="lib/lexevsapi-beans-6.5.0.FINAL.jar" />
 	<jar href="lib/lexevsapi-framework-6.5.0.FINAL.jar" />
