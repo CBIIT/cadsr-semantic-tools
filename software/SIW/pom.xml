@@ -76,6 +76,13 @@
 		<sourceDirectory>src/java</sourceDirectory>
 		<resources>
 			<resource>
+				<directory>src/java</directory>
+				<filtering>false</filtering>				
+				<includes>
+					<include>**/*.xml</include>
+				</includes>				
+			</resource>		
+			<resource>
 				<directory>src/web/properties</directory>
 				<filtering>true</filtering>
 			</resource>
