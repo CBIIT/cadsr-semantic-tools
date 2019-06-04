@@ -60,13 +60,8 @@ public class ConceptPersister implements Persister {
 
   private PersisterUtil persisterUtil;
 
-  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
-		{
-			put('Ü', 'Y');
-			put('’', '\'');
-			put('´', '\'');
-		}
-	};
+  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {};
+  
   public ConceptPersister() {
     initDAOs();
   }

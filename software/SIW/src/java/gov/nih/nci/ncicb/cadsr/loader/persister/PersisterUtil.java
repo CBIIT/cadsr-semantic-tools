@@ -42,13 +42,7 @@ public class PersisterUtil {
    initDAOs();
   }
   
-  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {
-		{
-			put('Ü', 'Y');
-			put('’', '\'');
-			put('´', '\'');
-		}
-	};
+  Map<Character, Character> charReplacementMap = new HashMap<Character, Character>() {};
 
   /* 
    */
