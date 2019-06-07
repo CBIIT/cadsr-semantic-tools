@@ -12,10 +12,10 @@ import java.beans.PropertyChangeListener;
 
 public class AddButtonPanel extends JPanel implements PropertyChangeListener, MouseListener, ActionListener
 {
-	// TODO uncomment to enable concept inheritance feature
-  //private DropDownButton addButton;
+	// TODO uncomment to enable concept inheritance feature - VS: Uncommented June 6 2019
+	private DropDownButton addButton;
 	
-	private JButton addButton;
+	//private JButton addButton; - VS: Commented June 6 2019
 
   static final String ADD = "Add",
     ADD_INHERITANCE = "Add Inheritance";
@@ -25,13 +25,13 @@ public class AddButtonPanel extends JPanel implements PropertyChangeListener, Mo
   public AddButtonPanel(ConceptEditorPanel p) {
     conceptEditorPanel = p;
 
- // TODO uncomment to enable concept inheritance feature
-    //addButton = new DropDownButton(ADD);
+ // TODO uncomment to enable concept inheritance feature -   VS: Uncommented June 6 2019
+    addButton = new DropDownButton(ADD);
     
-    addButton = new JButton(ADD);
+    //addButton = new JButton(ADD);  - VS: Commented June 6 2019
 
- // TODO uncomment to enable concept inheritance feature
-/*    JLabel addLabel = new JLabel(ADD),
+ // TODO uncomment to enable concept inheritance feature - VS: Uncommented June 6 2019
+    JLabel addLabel = new JLabel(ADD),
       addInheritanceLabel = new JLabel(ADD_INHERITANCE);
     
     addButton.addComponent(addLabel);
@@ -39,7 +39,7 @@ public class AddButtonPanel extends JPanel implements PropertyChangeListener, Mo
 
     addLabel.addMouseListener(this);
     addInheritanceLabel.addMouseListener(this);
-*/
+
     addButton.addActionListener(this);
     
     this.add(addButton);
