@@ -167,11 +167,10 @@
 				<version>1.2.1</version>
 				<executions>
 					<execution>
+					<id>default-cli</id>
 						<goals>
 							<goal>java</goal>
 						</goals>
-					</execution>
-				</executions>
 				<configuration>
 					<includePluginDependencies>true</includePluginDependencies>
 					<executable>java</executable>
@@ -180,14 +179,42 @@
 						<argument>-Xms512m</argument>
 						<argument>-classpath</argument>
 						<classpath />
-						<!-- <argument>gov.nih.nci.ncicb.cadsr.loader.SIW</argument> -->
 						<argument>gov.nih.nci.ncicb.cadsr.loader.UMLLoader</argument>
 						<argument>${dir}</argument>
 						<argument>${projectName}</argument>
 						<argument>${projectVersion}</argument>
 					</arguments>
-				</configuration>
+				</configuration>						
+					</execution>
+					<execution>
+					<id>unclassify</id>
+				<configuration>
+					<includePluginDependencies>true</includePluginDependencies>
+					<executable>java</executable>
+						<mainClass>gov.nih.nci.ncicb.cadsr.loader.Unclassifier</mainClass>
+				</configuration>						
+					</execution>					
+				</executions>
 			</plugin>
+			<!-- <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+					<id>unclassify</id>
+				<configuration>
+					<includePluginDependencies>true</includePluginDependencies>
+					<executable>java</executable>
+						<mainClass>gov.nih.nci.ncicb.cadsr.loader.Unclassifier</mainClass>					
+					<arguments>
+						<argument>${projectName}</argument>
+						<argument>${projectVersion}</argument>
+					</arguments>
+				</configuration>						
+					</execution>
+				</executions> 
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>

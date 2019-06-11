@@ -1,0 +1,66 @@
+Read Me - Unclassify
+
+Java Source package: gov.nih.nci.ncicb.cadsr.loader
+Class Name: Unclassifier
+
+Unclassifier is a script for unclassifying all
+AC's, alt names and definitions from a previous model load.
+
+1. Navigate to cadsr-semantic-tools/software/SIW/ directory location and run the 'unclassify' feature by executing the script using the following syntax.
+
+./unclassify.sh <CSName> <CSVersion>
+
+2. You should see output similar to the one below. The results will show how many definitions, Alt names and Classifications have been deleted.
+
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building SIW-MVN 4.2.2
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] >>> exec-maven-plugin:1.2.1:java (unclassify) > validate @ SIW >>>
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:copy-resources (bundle-resources) @ SIW ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 14 resources
+[INFO] Copying 27 resources
+[INFO] 
+[INFO] <<< exec-maven-plugin:1.2.1:java (unclassify) < validate @ SIW <<<
+[WARNING] The artifact freemarker:freemarker:jar:2.3.9 has been relocated to org.freemarker:freemarker:jar:2.3.9
+[WARNING] The artifact javax.xml:jaxb-api:jar:2.1 has been relocated to javax.xml.bind:jaxb-api:jar:2.1
+[WARNING] The artifact javax.xml:jaxrpc:jar:1.1 has been relocated to javax.xml:jaxrpc-api:jar:1.1
+[WARNING] The artifact jdom:jdom:jar:1.1 has been relocated to org.jdom:jdom:jar:1.1
+[WARNING] The artifact jta:jta:jar:1.0.1b has been relocated to javax.transaction:jta:jar:1.0.1B
+[INFO] 
+[INFO] --- exec-maven-plugin:1.2.1:java (unclassify) @ SIW ---
+DEBUG BeansAccessor.getFactory(141) | >>>>>>In BeanFactory.getFactory
+DEBUG DAOAccessor.init(56) | Loading DataElementDAO bean
+DEBUG DAOAccessor.init(60) | Loading AlternateNameDAO bean
+DEBUG DAOAccessor.init(64) | Loading AdminComponentDAO bean
+DEBUG DAOAccessor.init(68) | Loading DataElementConceptDAO bean
+DEBUG DAOAccessor.init(73) | Loading VDDAO bean
+DEBUG DAOAccessor.init(77) | Loading PropertyDAO bean
+DEBUG DAOAccessor.init(81) | Loading ObjectClassDAO bean
+DEBUG DAOAccessor.init(85) | Loading ObjectClassRelationshipDAO bean
+DEBUG DAOAccessor.init(89) | Loading CSDAO bean
+DEBUG DAOAccessor.init(93) | Loading CSIDAO bean
+DEBUG DAOAccessor.init(97) | Loading CSIDAO bean
+DEBUG DAOAccessor.init(101) | Loading ConceptDAO bean
+DEBUG DAOAccessor.init(105) | Loading ContextDAO bean
+DEBUG DAOAccessor.init(109) | Loading CDDAO bean
+DEBUG DAOAccessor.init(113) | Loading RepresentationDAO bean
+DEBUG DAOAccessor.init(117) | Loading LoaderDAO bean
+DEBUG BeansAccessor.getFactory(153) | >>>>>>In BeanFactory.getFactory: received cpCtx is not null? true
+DEBUG Unclassifier.run(114) | Starting unclassification of --ModelTest--1.0
+DEBUG Unclassifier.run(119) | Checking for CS
+DEBUG Unclassifier.run(125) |   1 CS found
+DEBUG Unclassifier.run(127) | Deleting definitions
+DEBUG Unclassifier.run(132) |   0 deleted
+DEBUG Unclassifier.run(134) | Deleting alt names
+DEBUG Unclassifier.run(139) |   0 deleted
+DEBUG Unclassifier.run(141) | Deleting attribute classifications
+DEBUG Unclassifier.run(146) |   0 deleted
+DEBUG Unclassifier.run(148) | Deleting AC classifications
+DEBUG Unclassifier.run(153) |   0 deleted
+DEBUG Unclassifier.run(161) | Unclassification complete
+
