@@ -3,14 +3,16 @@ Read Me - Unclassify
 Java Source package: gov.nih.nci.ncicb.cadsr.loader
 Class Name: Unclassifier
 
-Unclassifier is a script for unclassifying all
-AC's, alt names and definitions from a previous model load.
+Unclassifier is a JAVA program for unclassifying all AC's, alt names and definitions from a previous model load.
+This is done by invoking SQL statements that delete the associations created by a previous model load.
 
 1. Navigate to cadsr-semantic-tools/software/SIW/ directory location and run the 'unclassify' feature by executing the script using the following syntax.
 
 ./unclassify.sh <CSName> <CSVersion>
 
 2. You should see output similar to the one below. The results will show how many definitions, Alt names and Classifications have been deleted.
+
+ --  Sample output for execution --
 
 [INFO] Scanning for projects...
 [INFO]                                                                         
