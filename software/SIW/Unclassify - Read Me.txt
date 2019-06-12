@@ -8,7 +8,7 @@ This is done by invoking SQL statements that delete the associations created by 
 
 1. Navigate to cadsr-semantic-tools/software/SIW/ directory location and run the 'unclassify' feature by executing the script using the following syntax.
 
-./unclassify.sh <CSName> <CSVersion>
+./unclassify.sh <CSName> <CSVersion> <DB URL> <DB USER> <DB PWD>
 
 2. You should see output similar to the one below. The results will show how many definitions, Alt names and Classifications have been deleted.
 
@@ -53,16 +53,17 @@ DEBUG DAOAccessor.init(109) | Loading CDDAO bean
 DEBUG DAOAccessor.init(113) | Loading RepresentationDAO bean
 DEBUG DAOAccessor.init(117) | Loading LoaderDAO bean
 DEBUG BeansAccessor.getFactory(153) | >>>>>>In BeanFactory.getFactory: received cpCtx is not null? true
-DEBUG Unclassifier.run(114) | Starting unclassification of --ModelTest--1.0
+DEBUG Unclassifier.run(114) | Starting unclassification of --<Sample CS Name>--<Sample CS version>
 DEBUG Unclassifier.run(119) | Checking for CS
 DEBUG Unclassifier.run(125) |   1 CS found
 DEBUG Unclassifier.run(127) | Deleting definitions
-DEBUG Unclassifier.run(132) |   0 deleted
+DEBUG Unclassifier.run(132) |   7 deleted
 DEBUG Unclassifier.run(134) | Deleting alt names
-DEBUG Unclassifier.run(139) |   0 deleted
+DEBUG Unclassifier.run(139) |   17 deleted
 DEBUG Unclassifier.run(141) | Deleting attribute classifications
-DEBUG Unclassifier.run(146) |   0 deleted
+DEBUG Unclassifier.run(146) |   24 deleted
 DEBUG Unclassifier.run(148) | Deleting AC classifications
-DEBUG Unclassifier.run(153) |   0 deleted
+DEBUG Unclassifier.run(153) |   10 deleted
 DEBUG Unclassifier.run(161) | Unclassification complete
+
 
