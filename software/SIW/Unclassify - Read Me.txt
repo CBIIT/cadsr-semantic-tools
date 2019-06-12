@@ -8,7 +8,7 @@ This is done by invoking SQL statements that delete the associations created by 
 
 1. Navigate to cadsr-semantic-tools/software/SIW/ directory location and run the 'unclassify' feature by executing the script using the following syntax.
 
-./unclassify.sh <CSName> <CSVersion> <DB URL> <DB USER> <DB PWD>
+./unclassify.sh <CSName> <CSVersion> <TIER> <DB URL> <DB USER> <DB PWD>
 
 2. You should see output similar to the one below. The results will show how many definitions, Alt names and Classifications have been deleted.
 

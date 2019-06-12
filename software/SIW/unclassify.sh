@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-if [[ -z $1 || -z $2 || -z $3 || -z $4 || -z $5 ]]; then
+if [[ -z $1 || -z $2 || -z $3 || -z $4 || -z $5 || -z $6 ]]; then
 	echo "Script usage: "
-	echo "./unclassify.sh <CSName> <CSVersion> <DB URL> <DB USER> <DB PWD>"
+	echo "./unclassify.sh <CSName> <CSVersion> <TIER> <DB URL> <DB USER> <DB PWD>"
 	exit 1;
 else 	 
-	mvn exec:java@unclassify -Dexec.args="$1 $2" -Ddb.url=$3 -Ddb.user=$4 -Ddb.passwd=$5
+	mvn exec:java@unclassify -Dexec.args="$1 $2" -Dtier=$3 -Ddb.url=$4 -Ddb.user=$5 -Ddb.passwd=$6
 fi
