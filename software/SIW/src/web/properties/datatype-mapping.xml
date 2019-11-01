@@ -166,7 +166,7 @@
   <alias name="pq"/>
 </alias-list>
 
-<alias-list name="HL7.AD" complex="true">
+<alias-list name="HL7.ADv3" complex="true">
   <alias name="ad"/>
 </alias-list>
 
@@ -290,7 +290,7 @@
   <alias-list name="BRIDG.SET.TEL.v2.1">
     <alias name="set&lt;tel&gt;" />
   </alias-list>
-  <alias-list name="ISO21090.ST.v1.0">
+  <alias-list name="HL7.STv3">
     <alias name="st" />
   </alias-list>
 
