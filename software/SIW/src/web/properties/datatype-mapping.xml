@@ -221,9 +221,6 @@
   <alias-list name="ISO21090.IVL.INT.v1.0">
     <alias name="ivl&lt;int&gt;" />
   </alias-list>
-  <alias-list name="ISO21090.AD.v1.0">
-    <alias name="ad" />
-  </alias-list>
   <alias-list name="ISO21090.RTO.INT:PQ.v1.0">
     <alias name="rto&lt;int:pq&gt;" />
   </alias-list>
