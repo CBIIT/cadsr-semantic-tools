@@ -8,8 +8,12 @@
 5.       Update the build.properties file by changing dir, projectName & projectVersion.
 		 dir= {SIW_root_folder}/data
 6.       Put the model xmi file into {SIW_root_folder}/data. 
-7.		 Navigate to {SIW_root_folder} and run the following command to launch UML loader
+7.		 Navigate to {SIW_root_folder} and run one of the two following commands to launch UML loader, depending on the database that you're connecting to. 
+			
+		 Oracle 11g:	 	
+		 mvn install exec:exec -Ddb.url=<DB Hostname>:<Port>:<SID> -Ddb.passwd=<Password> -Ddb.user=<Username>
 
+		 Oracle 12c:
 		 mvn install exec:exec -Ddb.url=<DB Hostname>:<Port>/<ServiceName> -Ddb.passwd=<Password> -Ddb.user=<Username>
 
 8.		 Type the account name that you created through Admin Tool as first step in both fields in the dialog that pops up. 
