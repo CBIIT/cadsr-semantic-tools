@@ -15,6 +15,21 @@
 
 		 Oracle 12c:
 		 mvn install exec:exec -Ddb.url=<DB Hostname>:<Port>/<ServiceName> -Ddb.passwd=<Password> -Ddb.user=<Username>
+		 
+		 Workaround:
+		 The following workaround was recommended to a recent issue that a user had encountered. An error occurred while executing
+		 the above mvn command after setting up a new environment on a new Virtual Machine (Windows 10). 
+		 
+		 a. Add the below properties to the build.properties file in separate new lines under the property “tier” (Substitute the actual values inside the brackets as applicable).
+ 
+			db.url=<Substitute with respective tier's Connection url>
+			db.passwd=<Substitute with respective tier's password for umlldr>
+			db.user=umlldr
+ 
+		b.  Execute the following command to run the loader instead of the full command.
+ 
+			mvn install exec:exec
+		 		 
 
 8.		 Type the account name that you created through Admin Tool as first step in both fields in the dialog that pops up. 
 		 The Loader will ask if you want to continue loading despite the errors, type 'y' in the dialog to continue loading and 'N' to stop loading. 
