@@ -212,11 +212,11 @@ public class CadsrPrivateApiModule implements CadsrModule
   }
     
   public boolean matchDEToPropertyConcepts(gov.nih.nci.ncicb.cadsr.domain.DataElement de, String[] conceptCodes) throws Exception {
-    
+    logger.debug("******** In private API - caDSR Module");
     Map<String, Object> queryFields = new HashMap<String, Object>();
     queryFields.put(CadsrModule.PUBLIC_ID, de.getPublicId());
     queryFields.put(CadsrModule.VERSION, de.getVersion());
-
+    logger.debug("******** Printing properties comparison for "+de.getPublicId() + "v" + de.getVersion());
     List<DataElement> results = new ArrayList<DataElement>(findDataElement(queryFields));
     
     if(results.size() == 0) {
@@ -229,15 +229,21 @@ public class CadsrPrivateApiModule implements CadsrModule
     
     // following DAO method reads concepts in reverse order
     String[] revCodes = new String[conceptCodes.length];
-    for(int i = 0; i<conceptCodes.length; i++)
+    for(int i = 0; i<conceptCodes.length; i++) {
       revCodes[i] = conceptCodes[revCodes.length - i - 1];
-
+      logger.debug("******** Concept code: "+revCodes[i]);
+    }
+    
     List<Property> resultProps = DAOAccessor.getPropertyDAO().findByConceptCodes(revCodes, resultProp.getContext());
     for(Property _prop : resultProps) {
+    	logger.debug("******** Properties Prop vs resultProp: "+_prop.getPublicId()+"v"+_prop.getVersion()+" :: "+resultProp.getPublicId()+"v"+resultProp.getVersion());    	
       if(_prop.getVersion().equals(resultProp.getVersion()) && 
-         _prop.getPublicId().equals(resultProp.getPublicId()))
-        return true;
+         _prop.getPublicId().equals(resultProp.getPublicId())) {
+    	  logger.debug("******** Matched Property vs resultProps");
+    	  return true;
+        }
     }
+    logger.debug("******** None of them matched - Property vs resultProps");
     return false;
   }
   

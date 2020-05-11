@@ -45,9 +45,8 @@ public class InheritanceValidator implements Validator, CadsrModuleListener {
    * returns a list of Validation errors.
    */
   public ValidationItems validate() {
-    
+    logger.debug("*******************  BEGIN  Inheritance Validator BEGIN **************");
     Collection<DataElement> inheritedDEs = inheritedList.getAllInherited();
-
     for(DataElement inheritedDE : inheritedDEs) {
       if(inheritedDE.getPublicId() != null) {
         DataElement parentDE = inheritedList.getParent(inheritedDE);
@@ -70,17 +69,22 @@ public class InheritanceValidator implements Validator, CadsrModuleListener {
             }
           } else { // parentDE mapped to concept. Verify that concepts match
             String conceptConcat = parentDE.getDataElementConcept().getProperty().getPreferredName();
+            logger.debug("*******  Beginning Validation   ********");
+            logger.debug("**********    Concept Codes(DEC->Property->PreferredName) from parent Data Element "+"["+parentDE.getLongName()+"] before split : ["+conceptConcat+"]");
             String[] revCodes = conceptConcat.split(":");
             String[] conceptCodes = new String[revCodes.length];
-            for(int i=0; i<revCodes.length; i++)
+            for(int i=0; i<revCodes.length; i++) {
               conceptCodes[i] = revCodes[revCodes.length - 1 - i];
+              logger.debug("**********   Concept Code: "+conceptCodes[i]);
+            }
 
             if(conceptCodes.length > 0) {
               try {
+            	  logger.debug("**********    Inherited Data Element ["+inheritedDE.getPublicId()+"v"+inheritedDE.getVersion()+"] - ["+inheritedDE.getLongName()+"]");  
                 if(!cadsrModule.matchDEToPropertyConcepts(inheritedDE, conceptCodes)) {
                   ValidationItem item = new ValidationError
                                 (PropertyAccessor.getProperty
-                                 ("inherited.concept.mismatch", LookupUtil.lookupFullName(inheritedDE)), inheritedDE);
+                                 ("inherited.concept.mismatch", LookupUtil.lookupFullName(inheritedDE)), inheritedDE);              
                   item.setIncludeInInherited(true);
                   items.addItem(item);
                 }
@@ -94,11 +98,13 @@ public class InheritanceValidator implements Validator, CadsrModuleListener {
 //                              ("parent.attribute.not.mapped", LookupUtil.lookupFullName(inheritedDE)), inheritedDE));
               
 //             }
+            logger.debug("*******  End Validation   ********");
           }
           parentDE = inheritedList.getParent(parentDE);
         }
       }
     }
+    logger.debug("******************* END  Inheritance Validator END **************");
     return items;
   }
 

@@ -831,7 +831,7 @@ public class CadsrPublicApiModule implements CadsrModule {
 	public boolean matchDEToPropertyConcepts(
 			gov.nih.nci.ncicb.cadsr.domain.DataElement de, String[] conceptCodes)
 			throws Exception {
-
+		logger.debug(" In public API - caDSR Module");
 		if (StringUtil.isEmpty(de.getPublicId()))
 			return false;
 
@@ -879,12 +879,16 @@ public class CadsrPublicApiModule implements CadsrModule {
 			return false;
 
 //		Iterator it = compConcepts.iterator();
+		logger.debug("******** Printing Concept codes comparison for "+searchDE.getPublicID()+"v"+searchDE.getVersion());
 		for(int i=0;i<list.size();i++){
-//		while (it.hasNext()) {
+//		while (it.hasNext()) {						
 			ComponentConcept comp = (ComponentConcept) list.get(i);
 			if (!conceptCodes[comp.getDisplayOrder()].equals(comp.getConcept()
-					.getPreferredName()))
+					.getPreferredName())) {
+				logger.debug("******** Not matching for item# "+i);
+				logger.debug("******** conceptCodes[comp.getDisplayOrder()] & comp.getConcept() for comp ID "+comp.getId()+": "+conceptCodes[comp.getDisplayOrder()]+" :: "+comp.getConcept().getPreferredName());
 				return false;
+				}
 		}
 
 		return true;
