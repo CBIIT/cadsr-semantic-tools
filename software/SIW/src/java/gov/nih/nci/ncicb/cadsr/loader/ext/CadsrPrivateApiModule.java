@@ -212,11 +212,10 @@ public class CadsrPrivateApiModule implements CadsrModule
   }
     
   public boolean matchDEToPropertyConcepts(gov.nih.nci.ncicb.cadsr.domain.DataElement de, String[] conceptCodes) throws Exception {
-    logger.debug("******** In private API - caDSR Module");
+	 String loggerErrMsg =  "******** In private API - caDSR Module";
     Map<String, Object> queryFields = new HashMap<String, Object>();
     queryFields.put(CadsrModule.PUBLIC_ID, de.getPublicId());
     queryFields.put(CadsrModule.VERSION, de.getVersion());
-    logger.debug("******** Printing properties comparison for "+de.getPublicId() + "v" + de.getVersion());
     List<DataElement> results = new ArrayList<DataElement>(findDataElement(queryFields));
     
     if(results.size() == 0) {
@@ -226,24 +225,29 @@ public class CadsrPrivateApiModule implements CadsrModule
     
     DataElement resultDE = results.get(0);
     Property resultProp = resultDE.getDataElementConcept().getProperty();
-    
+    loggerErrMsg = loggerErrMsg + "\n ******** Data Element :: "+resultDE.getPublicId() + "v" + resultDE.getVersion(); 
     // following DAO method reads concepts in reverse order
     String[] revCodes = new String[conceptCodes.length];
     for(int i = 0; i<conceptCodes.length; i++) {
       revCodes[i] = conceptCodes[revCodes.length - i - 1];
-      logger.debug("******** Concept code: "+revCodes[i]);
+      loggerErrMsg = loggerErrMsg + "\n ******** Concept code: "+revCodes[i];
     }
     
     List<Property> resultProps = DAOAccessor.getPropertyDAO().findByConceptCodes(revCodes, resultProp.getContext());
-    for(Property _prop : resultProps) {
-    	logger.debug("******** Properties Prop vs resultProp: "+_prop.getPublicId()+"v"+_prop.getVersion()+" :: "+resultProp.getPublicId()+"v"+resultProp.getVersion());    	
+    loggerErrMsg = loggerErrMsg + "\n Resulting property's context: " + resultProp.getContext();
+    if (resultProps.isEmpty()) {
+    	loggerErrMsg = loggerErrMsg + "\n ******** No Properties returned for the concept codes above in the above context using PropertyDAO().findByConceptCodes().";
+    }
+    for(Property _prop : resultProps) {    	
       if(_prop.getVersion().equals(resultProp.getVersion()) && 
          _prop.getPublicId().equals(resultProp.getPublicId())) {
-    	  logger.debug("******** Matched Property vs resultProps");
     	  return true;
+        } else {
+        	loggerErrMsg = loggerErrMsg + "\n ******** Non-matching Properties Prop vs resultProp: "+_prop.getPublicId()+"v"+_prop.getVersion()+" :: "+resultProp.getPublicId()+"v"+resultProp.getVersion();
         }
     }
-    logger.debug("******** None of them matched - Property vs resultProps");
+    loggerErrMsg = loggerErrMsg + "\n Properties didn't match - returning false";
+    logger.debug(loggerErrMsg);
     return false;
   }
   

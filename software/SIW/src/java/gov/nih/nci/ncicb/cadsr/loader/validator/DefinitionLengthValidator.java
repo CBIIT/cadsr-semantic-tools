@@ -2,6 +2,8 @@ package gov.nih.nci.ncicb.cadsr.loader.validator;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 import gov.nih.nci.ncicb.cadsr.domain.*;
 
 import gov.nih.nci.ncicb.cadsr.loader.ElementsLists;
@@ -17,6 +19,8 @@ public class DefinitionLengthValidator implements Validator {
   private ValidationItems items = ValidationItems.getInstance();
 
   private ProgressListener progressListener;
+  
+  private Logger logger = Logger.getLogger(DefinitionLengthValidator.class.getName());
 
   public void addProgressListener(ProgressListener l) {
     progressListener = l;
@@ -57,8 +61,11 @@ public class DefinitionLengthValidator implements Validator {
             }
           }
         }
-        if(oc.getPreferredDefinition().length() > 2000)
-          items.addItem(new ValidationError(PropertyAccessor.getProperty("alt.definition.too.long", LookupUtil.lookupFullName(oc)), oc));
+        if(oc.getPreferredDefinition().length() > 2000) {
+        	logger.debug("Object Class Definition Too long - Data element ID "+oc.getPublicId()+" : "+oc.getPreferredDefinition().length());
+        	logger.debug("Object Class Definition: "+oc.getPreferredDefinition());         	
+          items.addItem(new ValidationError(PropertyAccessor.getProperty("alt.definition.too.long", LookupUtil.lookupFullName(oc)), oc)); 
+          }
       }
 
 
@@ -97,6 +104,8 @@ public class DefinitionLengthValidator implements Validator {
         } else {
           Definition def = de.getDefinitions().get(0);
           if(def.getDefinition().length() > 2000) {
+        	logger.debug("Data Element Definition Too long - Data element ID "+de.getPublicId()+" : "+def.getDefinition().length());
+        	logger.debug("Data Element Definition: "+def.getDefinition());
             ValidationItem vItem = new ValidationError(PropertyAccessor.getProperty("alt.definition.too.long", LookupUtil.lookupFullName(de)), de);
             vItem.setIncludeInInherited(true);
             items.addItem(vItem);
