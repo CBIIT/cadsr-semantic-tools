@@ -68,8 +68,8 @@ public class InheritanceValidator implements Validator, CadsrModuleListener {
             }
           } else { // parentDE mapped to concept. Verify that concepts match
             String conceptConcat = parentDE.getDataElementConcept().getProperty().getPreferredName();
-            String loggerErrMsg = "*******  Beginning Inheritance Validator   ********";
-            loggerErrMsg = loggerErrMsg + "\n **********    Data Element getPublicId - "+parentDE.getPublicId()+" :: Data Element getId - "+parentDE.getId(); 
+            String loggerErrMsg = "\n *******  Beginning Inheritance Validator   ********";
+            loggerErrMsg = loggerErrMsg + "\n **********    Parent Data Element getPublicId - "+parentDE.getPublicId()+" :: Parent Data Element getId - "+parentDE.getId(); 
             loggerErrMsg = loggerErrMsg + "\n **********    Concept Codes(DEC->Property->PreferredName) from parent Data Element "+"["+parentDE.getLongName()+"] before split : ["+conceptConcat+"]"; 
             String[] revCodes = conceptConcat.split(":");
             String[] conceptCodes = new String[revCodes.length];
@@ -83,7 +83,7 @@ public class InheritanceValidator implements Validator, CadsrModuleListener {
             	    
                 if(!cadsrModule.matchDEToPropertyConcepts(inheritedDE, conceptCodes)) {
                 	loggerErrMsg = loggerErrMsg + "\n **********    Inherited Data Element ["+inheritedDE.getPublicId()+"v"+inheritedDE.getVersion()+"] - ["+inheritedDE.getLongName()+"]";
-                	loggerErrMsg = loggerErrMsg + "*******  End Inheritance Validator   ********";
+                	loggerErrMsg = loggerErrMsg + "\n *******  End Inheritance Validator   ********";
                 	logger.debug(loggerErrMsg);
                   ValidationItem item = new ValidationError
                                 (PropertyAccessor.getProperty

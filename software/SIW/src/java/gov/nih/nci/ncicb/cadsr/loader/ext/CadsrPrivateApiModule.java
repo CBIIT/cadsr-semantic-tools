@@ -212,7 +212,7 @@ public class CadsrPrivateApiModule implements CadsrModule
   }
     
   public boolean matchDEToPropertyConcepts(gov.nih.nci.ncicb.cadsr.domain.DataElement de, String[] conceptCodes) throws Exception {
-	 String loggerErrMsg =  "******** In private API - caDSR Module";
+	 String loggerErrMsg =  "\n ******** In private API - caDSR Module";
     Map<String, Object> queryFields = new HashMap<String, Object>();
     queryFields.put(CadsrModule.PUBLIC_ID, de.getPublicId());
     queryFields.put(CadsrModule.VERSION, de.getVersion());
@@ -234,7 +234,7 @@ public class CadsrPrivateApiModule implements CadsrModule
     }
     
     List<Property> resultProps = DAOAccessor.getPropertyDAO().findByConceptCodes(revCodes, resultProp.getContext());
-    loggerErrMsg = loggerErrMsg + "\n Resulting property's context: " + resultProp.getContext();
+    loggerErrMsg = loggerErrMsg + "\n Resulting property's context: " + resultProp.getContext().getName();
     if (resultProps.isEmpty()) {
     	loggerErrMsg = loggerErrMsg + "\n ******** No Properties returned for the concept codes above in the above context using PropertyDAO().findByConceptCodes().";
     }
