@@ -236,6 +236,25 @@
 					<keypass>${keystore.password}</keypass>
 				</configuration>
 			</plugin>
+			<plugin>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <executions>
+			      <execution>
+			        <phase>prepare-package</phase>
+			        <configuration>
+			          <tasks>
+			            <replace token= "-prod" value="" dir="target">
+			              <include name="**/*.xml"/>
+			              <include name="**/*.jnlp"/>
+			            </replace>    
+			          </tasks>
+			        </configuration>
+			        <goals>
+			          <goal>run</goal>
+			        </goals>
+			      </execution>
+			    </executions>
+			  </plugin>
 		</plugins>
 	</build>
 	<dependencies>
